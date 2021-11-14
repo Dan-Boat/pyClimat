@@ -1,0 +1,2 @@
+# pyClimat
+This repository contains scripts for Python Module for Climate Data Analysis and Visualization, which is under development. The module performs many climate data analysis like correlation, significance testing, causality testing, estimation of climatologies, etc. The current version of package can be used, however, it must be handle with caution since most of the functions are yet to be tested. Kindly contact me for help if required.  
