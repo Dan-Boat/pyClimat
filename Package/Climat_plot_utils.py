@@ -106,7 +106,8 @@ def apply_style_2(fontsize=21):
 
 # defining function for selecting background domain for cartopy
 
-def plot_background(p, domain=None, use_AlbersEqualArea=None,ax=None):
+def plot_background(p, domain=None, use_AlbersEqualArea=None,ax=None, left_labels=True,
+                    bottom_labels=True):
     """
     This funtion defines the plotting domain and also specifies the background. It requires 
     the plot handle from xarray.plot.imshow and other optional arguments 
@@ -201,6 +202,17 @@ def plot_background(p, domain=None, use_AlbersEqualArea=None,ax=None):
     
     gl.top_labels = False                  # labesl at top
     gl.right_labels = False
+    
+    if left_labels == True:
+        gl.left_labels = True
+    else:
+        gl.left_labels = False
+    
+    if bottom_labels == True:
+        gl.bottom_labels =True
+    else:
+        gl.bottom_labels = False
+        
     gl.xformatter = LongitudeFormatter()     # axis formatter
     gl.yformatter = LatitudeFormatter()
     gl.xlabel_style = {"fontsize": 20, "color": "black", "fontweight": "semibold"}   #axis style 

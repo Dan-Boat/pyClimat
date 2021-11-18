@@ -34,7 +34,8 @@ except:
 # annual plots 
 
 def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=None, levels=None, domain=None, center= True, output_name=None, 
-                     output_format=None, level_ticks=None, title=None, path_to_store=None, data_v10=None, data_u10=None, GNIP_data=None):
+                     output_format=None, level_ticks=None, title=None, path_to_store=None, data_v10=None, data_u10=None, GNIP_data=None,
+                     left_labels= True, bottom_labels=True):
     """
     
 
@@ -113,7 +114,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
     p.colorbar.ax.tick_params(labelsize=20, size=0,)
     
     # ploting background extent
-    plot_background(p, domain= domain)
+    plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels)
     
     if all(data is not None for data in [data_v10, data_u10]):
         # extracting variables for quiver 
@@ -150,7 +151,7 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                      output_format=None, level_ticks=None, title=None, path_to_store=None, data_v=None,
                      plot_winds_pattern=False, plot_winds_streamline=False,
                      data_u=None, cbar_pos=None, fig_title=None, season_label=None, plot_stats= False, compare_data1=None, compare_data2=None, max_pvalue=None,
-                     hatches=None, add_colorbar = True):
+                     hatches=None, add_colorbar = True, left_labels= True, bottom_labels=True):
     """
     
 
@@ -277,7 +278,7 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                 p.colorbar.ax.tick_params(labelsize=18, size=0)
     
             # ploting background extent
-            plot_background(p, domain= domain)
+            plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels)
             
             if plot_winds_pattern == True:
             
@@ -311,7 +312,7 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                 p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, transform = projection, extend= "neither", add_labels=False)
                 
             # ploting background extent
-            plot_background(p, domain= domain)
+            plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels)
             
             if plot_winds_pattern == True:
                 
@@ -395,7 +396,7 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
 
 def plot_monthly_mean(variable, data_mlt, cmap, units, months, axes=None, fig=None, vmax=None, vmin=None, levels=None, domain=None, output_name=None, 
                      output_format=None, level_ticks=None, title=None, path_to_store=None, data_v10=None, 
-                     data_u10=None):
+                     data_u10=None, left_labels= True, bottom_labels=True):
     """
     
 
@@ -498,7 +499,7 @@ def plot_monthly_mean(variable, data_mlt, cmap, units, months, axes=None, fig=No
             p.colorbar.ax.tick_params(labelsize=20)
     
             # ploting background extent
-            plot_background(p, domain= domain)
+            plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels)
             
             if all(data is not None for data in [data_v10, data_u10]):
                 # extracting variables for quiver 
@@ -530,7 +531,7 @@ def plot_monthly_mean(variable, data_mlt, cmap, units, months, axes=None, fig=No
                 p = data_mlt[months_num[i]].plot.imshow(ax =axes[i], cmap=cmap, transform = projection, extend= "neither")
                 
             # ploting background extent
-            plot_background(p, domain= domain)
+            plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels)
             
             if all(data is not None for data in [data_v10, data_u10]):
                 # extracting variables for quiver 
@@ -568,7 +569,7 @@ def plot_monthly_mean(variable, data_mlt, cmap, units, months, axes=None, fig=No
 
 def plot_iso_profiles(df_iso, df_geosp, dim, iso_color, iso_label, ax=None, season=None, month=None,  
                       xmax=None, xmin=None, ymax=None, ymin=None, ax_legend=None, isomax=None, isomin=None,
-                       output_name=None, output_format=None, title=None, path_to_store=None, ):
+                       output_name=None, output_format=None, title=None, path_to_store=None,):
     """
     
 
@@ -758,7 +759,7 @@ def scatter_plot_laspe_rate(reg_params, df_x_y_yhat, color, marker, label, ylabe
     
 def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, levels=None, domain=None, output_name=None, 
                      output_format=None, level_ticks=None, title=None, path_to_store=None, cbar = None, cbar_orientation=None, cbar_position = None,
-                     fig=None):
+                     fig=None, left_labels= True, bottom_labels=True):
     """
     
 
@@ -843,7 +844,7 @@ def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, 
         
     
     # ploting background extent
-    plot_background(p, domain= domain)
+    plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels)
     
     if title is not None:
         ax.set_title(title, fontsize=20, weight="bold", loc="left")
@@ -854,7 +855,7 @@ def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, 
     
 def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=None, units=None, ax=None, domain=None, output_name=None, 
                      output_format=None, level_ticks=None, title=None, path_to_store=None, cbar = None, cbar_orientation=None, cbar_position = None,
-                     fig=None, use_AlberEqualArea=None, vmax=None, vmin=None):
+                     fig=None, use_AlberEqualArea=None, vmax=None, vmin=None, left_labels= True, bottom_labels=True):
     """
     
 
@@ -957,9 +958,10 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
     
     if use_AlberEqualArea ==True: #!!! Its currently not possible to add labels after set boundary, cartopy >0.18 supports labels aside PlateCarree and Mercator but not after clipping boundaries
     # Alternative is to generate the Map and use any editting software to add the labels
-        plot_background(p, domain=domain, use_AlbersEqualArea=True, ax=ax)
+        plot_background(p, domain=domain, use_AlbersEqualArea=True, ax=ax, left_labels=left_labels,
+                        bottom_labels=bottom_labels)
     else:
-        plot_background(p, domain= domain)
+        plot_background(p, domain= domain, bottom_labels=bottom_labels, left_labels=left_labels)
     
     if title is not None:
         if mode_var is not None:

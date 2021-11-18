@@ -21,6 +21,8 @@ module_output_main_path = "/home/dboateng/Model_output_pst"
 exp_name_control = "a002_hpc-bw_e5w2.3_t159_PI_Alps_east_100_t159l31.6h"
 exp_name_east_0 = "a003_hpc-bw_e5w2.3_t159_PI_Alps_east_0_t159l31.6h"
 exp_name_east_200 = "a001_hpc-bw_e5w2.3_t159_PI_Alps_east_300_t159l31.6h"
+
+# for supplementary
 exp_name_east_150 = "a008_hpc-bw_e5w2.3_t159_PI_Alps_east_150_t159l31.6h"
 exp_name_east_50 = "a004_hpc-bw_e5w2.3_t159_PI_Alps_east_50_t159l31.6h"
 years= "1003_1017"
@@ -78,12 +80,18 @@ v10_east_200 = extract_var(Dataset=east_200_data , varname="v10")
 
 # compute long-term means for control experiment
 
+# seasonal and annual
 Alps_100_temp2_slt = compute_lterm_mean(data=temp2, time="season", season_calendar="standard")
 Alps_100_prec_slt = compute_lterm_mean(data=prec, time="season", season_calendar="standard")
 Alps_100_d18op_slt = compute_lterm_mean(data=d18op , time="season", season_calendar="standard")
 Alps_100_u10_slt = compute_lterm_mean(data=u10 , time="season", season_calendar="standard")
 Alps_100_v10_slt = compute_lterm_mean(data=v10 , time="season", season_calendar="standard")
 
+Alps_100_temp2_alt = compute_lterm_mean(data=temp2, time="annual")
+Alps_100_prec_alt = compute_lterm_mean(data=prec, time="annual")
+Alps_100_d18op_alt = compute_lterm_mean(data=d18op , time="annual")
+Alps_100_u10_alt = compute_lterm_mean(data=u10 , time="annual")
+Alps_100_v10_alt = compute_lterm_mean(data=v10 , time="annual")
 
 # contruct seasonal difference means
 #east_150
@@ -93,12 +101,24 @@ east_150_d18op_slt = compute_lterm_diff(data_control=d18op, data_main=d18op_east
 east_150_u10_slt = compute_lterm_mean(data=u10_east_150, time="season", season_calendar="standard")
 east_150_v10_slt = compute_lterm_mean(data=v10_east_150, time="season", season_calendar="standard")
 
+east_150_temp2_alt = compute_lterm_diff(data_control= temp2, data_main=temp2_east_150, time="annual")
+east_150_prec_alt = compute_lterm_diff(data_control=prec, data_main=prec_east_150, time="annual")
+east_150_d18op_alt = compute_lterm_diff(data_control=d18op, data_main=d18op_east_150, time="annual")
+east_150_u10_alt = compute_lterm_mean(data=u10_east_150, time="annual")
+east_150_v10_alt = compute_lterm_mean(data=v10_east_150, time="annual")
+
 #east_0
 east_0_temp2_slt = compute_lterm_diff(data_control= temp2, data_main=temp2_east_0, time="season", season_calendar="standard")
 east_0_prec_slt = compute_lterm_diff(data_control=prec, data_main=prec_east_0, time="season", season_calendar="standard")
 east_0_d18op_slt = compute_lterm_diff(data_control=d18op, data_main=d18op_east_0, time="season", season_calendar="standard")
 east_0_u10_slt = compute_lterm_mean(data=u10_east_0, time="season", season_calendar="standard")
 east_0_v10_slt = compute_lterm_mean(data=v10_east_0, time="season", season_calendar="standard")
+
+east_0_temp2_alt = compute_lterm_diff(data_control= temp2, data_main=temp2_east_0, time="annual",)
+east_0_prec_alt = compute_lterm_diff(data_control=prec, data_main=prec_east_0, time="annual",)
+east_0_d18op_alt = compute_lterm_diff(data_control=d18op, data_main=d18op_east_0, time="annual",)
+east_0_u10_alt = compute_lterm_mean(data=u10_east_0, time="annual",)
+east_0_v10_alt = compute_lterm_mean(data=v10_east_0, time="annual",)
 
 #east_50
 east_50_temp2_slt = compute_lterm_diff(data_control= temp2, data_main=temp2_east_50, time="season", season_calendar="standard")
@@ -107,12 +127,24 @@ east_50_d18op_slt = compute_lterm_diff(data_control=d18op, data_main=d18op_east_
 east_50_u10_slt = compute_lterm_mean(data=u10_east_50, time="season", season_calendar="standard")
 east_50_v10_slt = compute_lterm_mean(data=v10_east_50, time="season", season_calendar="standard")
 
+east_50_temp2_alt = compute_lterm_diff(data_control= temp2, data_main=temp2_east_50, time="annual")
+east_50_prec_alt = compute_lterm_diff(data_control=prec, data_main=prec_east_50, time="annual")
+east_50_d18op_alt = compute_lterm_diff(data_control=d18op, data_main=d18op_east_50, time="annual")
+east_50_u10_alt = compute_lterm_mean(data=u10_east_50, time="annual")
+east_50_v10_alt = compute_lterm_mean(data=v10_east_50, time="annual")
+
 #east_200
 east_200_temp2_slt = compute_lterm_diff(data_control= temp2, data_main=temp2_east_200, time="season", season_calendar="standard")
 east_200_prec_slt = compute_lterm_diff(data_control=prec, data_main=prec_east_200, time="season", season_calendar="standard")
 east_200_d18op_slt = compute_lterm_diff(data_control=d18op, data_main=d18op_east_200, time="season", season_calendar="standard")
 east_200_u10_slt = compute_lterm_mean(data=u10_east_200, time="season", season_calendar="standard")
 east_200_v10_slt = compute_lterm_mean(data=v10_east_200, time="season", season_calendar="standard")
+
+east_200_temp2_alt = compute_lterm_diff(data_control= temp2, data_main=temp2_east_200, time="annual")
+east_200_prec_alt = compute_lterm_diff(data_control=prec, data_main=prec_east_200, time="annual")
+east_200_d18op_alt = compute_lterm_diff(data_control=d18op, data_main=d18op_east_200, time="annual")
+east_200_u10_alt = compute_lterm_mean(data=u10_east_200, time="annual")
+east_200_v10_alt = compute_lterm_mean(data=v10_east_200, time="annual")
 
 # visualising long-term difference
 
