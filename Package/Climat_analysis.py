@@ -347,7 +347,7 @@ def compute_lterm_diff(data_control, data_main, time="annual", month=None, seaso
     return data_ltmean_diff
     
 
-def extract_transect(data, maxlon, minlon, maxlat, minlat, sea_land_mask=None, minelev=None, maxelev=None, Dataset=None):
+def extract_transect(data, maxlon, minlon, maxlat, minlat, sea_land_mask=False, minelev=None, maxelev=None, Dataset=None):
     """
     This function extract grid points base on coordinate extents or land sea masks or max, min elevations: it can be used to estimate 
     the statistics of a selected domain like the Alps or Andes!
@@ -406,13 +406,13 @@ def extract_transect(data, maxlon, minlon, maxlat, minlat, sea_land_mask=None, m
         
         print("Using dataset for masking")
         
-        if sea_land_mask is not None:
-            if sea_land_mask in (["yes", "YES", "Yes", "yep"]):
-                data_extract = xr.where(data_extract["slm"] == 1, data_extract, data_extract*np.nan)
-            elif sea_land_mask in (["no", "NO", "No", "nope"]):
-                data_extract = xr.where(data_extract.slm == 0, data_extract, data_extract*np.nan)
-            else:
-                print("define yes or no for sea land mask")
+        if sea_land_mask == True:
+        
+            data_extract = xr.where(data_extract["slm"] == 1, data_extract, data_extract*np.nan)
+        else:
+            
+            data_extract = xr.where(data_extract.slm == 0, data_extract, data_extract*np.nan)
+
         if minelev is not None:
             data_extract = xr.where(data_extract.geosp >= minelev, data_extract, data_extract*np.nan)
             
@@ -423,7 +423,7 @@ def extract_transect(data, maxlon, minlon, maxlat, minlat, sea_land_mask=None, m
     return data_extract
     
 
-def extract_profile(data, maxlon, minlon, maxlat, minlat, dim, to_pandas=None, sea_land_mask=None, minelev=None, maxelev=None, 
+def extract_profile(data, maxlon, minlon, maxlat, minlat, dim, to_pandas=True, sea_land_mask=False, minelev=None, maxelev=None, 
                     Dataset=None):
     """
     
@@ -474,27 +474,26 @@ def extract_profile(data, maxlon, minlon, maxlat, minlat, dim, to_pandas=None, s
     else:
         print("Define the dimension to extract the profile")
         
-    if to_pandas is not None:
-        if to_pandas in ["yes", "Yes", "YES", "yep"]:
-            data_prof = data_prof.to_pandas()
-            data_prof = data_prof.T
-            # sort values base on the dim 
-            
-            if isinstance(data_prof, pd.Series):
-                data_prof = data_prof.sort_index(axis = 0, ascending = True)
-            elif isinstance(data_prof, pd.DataFrame):
-                data_prof = data_prof.sort_values(by=[dim])
-            else:
-                print("Check the instance of the data to be sorted")
+    if to_pandas ==True:
+        data_prof = data_prof.to_pandas()
+        data_prof = data_prof.T
         
+        # sort values base on the dim 
+            
+        if isinstance(data_prof, pd.Series):
+            data_prof = data_prof.sort_index(axis = 0, ascending = True)
+        elif isinstance(data_prof, pd.DataFrame):
+            data_prof = data_prof.sort_values(by=[dim])
         else:
-            print("Use yes if you want to convert to Dataframe for ploting or saving in csv")
+            print("Check the instance of the data to be sorted")
+    else:
+        print("Profile data not stored in DataFrame")
     
             
     return data_prof
 
 
-def linregression(data_x, data_y, season=None, month=None, return_yhat=None):
+def linregression(data_x, data_y, season=None, month=None, return_yhat=True):
     """
     
 
@@ -536,19 +535,17 @@ def linregression(data_x, data_y, season=None, month=None, return_yhat=None):
     regression_stats = stats.linregress(data_x, data_y)
     print("y = {:.5f}x [‰/100m]+ {:.2f}, r²={:.2f}".format(regression_stats.slope*100, regression_stats.intercept, 
                                                            regression_stats.rvalue*-1))
-    if return_yhat is not None:
-        if return_yhat in ["Yes", "yes", "yep"]:
-            yhat = regression_stats.slope * data_x  + regression_stats.intercept
+    if return_yhat == True:
+        
+        yhat = regression_stats.slope * data_x  + regression_stats.intercept
+        
+        df_x_y_yhat = pd.DataFrame(columns=["X", "Y", "yhat"])
+        
+        df_x_y_yhat["yhat"] = yhat
+        df_x_y_yhat["X"] = data_x
+        df_x_y_yhat["Y"] = data_y
             
-            df_x_y_yhat = pd.DataFrame(columns=["X", "Y", "yhat"])
-            
-            df_x_y_yhat["yhat"] = yhat
-            df_x_y_yhat["X"] = data_x
-            df_x_y_yhat["Y"] = data_y
-            
-            return regression_stats, df_x_y_yhat
-        else:
-            print("Only regression stats are return")
+        return regression_stats, df_x_y_yhat
             
     else:
         print("Only regression stats are return")

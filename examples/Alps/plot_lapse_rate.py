@@ -84,82 +84,82 @@ Alps_0_d18op_slt = compute_lterm_mean(data=d18op_Alps_0, time="season", season_c
 Alps_0_elev_slt = compute_lterm_mean(data=elev_Alps_0, time="season", season_calendar="standard")
 
 # defining coordinates 
-maxlat_east, minlat_east, maxlon_east, minlon_east = 48.5, 46, 18, 12
-maxlat_west, minlat_west, maxlon_west, minlon_west = 46.5, 44, 8, 1
+#maxlat_east, minlat_east, maxlon_east, minlon_east = 48.5, 46, 18, 12
+maxlat_west, minlat_west, maxlon_west, minlon_west = 46.8, 44, 8, 1
 maxlat_south, minlat_south, maxlon_south, minlon_south = 47, 43, 13, 8
 maxlat_north, minlat_north, maxlon_north, minlon_north = 50, 47, 14, 5
 
 # extracting transects 
 # control 
-elev_control_east = extract_transect(data=elev_slt, maxlon=maxlon_east, minlon=minlon_east , maxlat= maxlat_east , minlat=minlat_east , sea_land_mask="yes", Dataset=control_data)
-elev_control_north = extract_transect(data=elev_slt, maxlon=maxlon_north, minlon=minlon_north , maxlat=maxlat_north , minlat=minlat_north , sea_land_mask="yes", Dataset=control_data)
-elev_control_west = extract_transect(data=elev_slt, maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask="yes", Dataset=control_data)
-elev_control_south = extract_transect(data=elev_slt, maxlon=maxlon_south, minlon=minlon_south , maxlat=maxlat_south, minlat=minlat_south, sea_land_mask="yes", Dataset=control_data)
+#elev_control_east = extract_transect(data=elev_slt, maxlon=maxlon_east, minlon=minlon_east , maxlat= maxlat_east , minlat=minlat_east , sea_land_mask=True, Dataset=control_data)
+elev_control_north = extract_transect(data=elev_slt, maxlon=maxlon_north, minlon=minlon_north , maxlat=maxlat_north , minlat=minlat_north , sea_land_mask=True, Dataset=control_data)
+elev_control_west = extract_transect(data=elev_slt, maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask=True, Dataset=control_data)
+elev_control_south = extract_transect(data=elev_slt, maxlon=maxlon_south, minlon=minlon_south , maxlat=maxlat_south, minlat=minlat_south, sea_land_mask=True, Dataset=control_data)
 
-d18op_control_east = extract_transect(data=d18op_slt ,maxlon=maxlon_east, minlon=minlon_east , maxlat= maxlat_east , minlat=minlat_east, sea_land_mask="yes", Dataset=control_data)
-d18op_control_north = extract_transect(data=d18op_slt , maxlon=maxlon_north, minlon=minlon_north , maxlat=maxlat_north , minlat=minlat_north, sea_land_mask="yes", Dataset=control_data)
-d18op_control_west = extract_transect(data=d18op_slt , maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask="yes", Dataset=control_data)
-d18op_control_south = extract_transect(data=d18op_slt ,maxlon=maxlon_south, minlon=minlon_south , maxlat=maxlat_south, minlat=minlat_south, sea_land_mask="yes", Dataset=control_data)
+#d18op_control_east = extract_transect(data=d18op_slt ,maxlon=maxlon_east, minlon=minlon_east , maxlat= maxlat_east , minlat=minlat_east, sea_land_mask=True, Dataset=control_data)
+d18op_control_north = extract_transect(data=d18op_slt , maxlon=maxlon_north, minlon=minlon_north , maxlat=maxlat_north , minlat=minlat_north, sea_land_mask=True, Dataset=control_data)
+d18op_control_west = extract_transect(data=d18op_slt , maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask=True, Dataset=control_data)
+d18op_control_south = extract_transect(data=d18op_slt ,maxlon=maxlon_south, minlon=minlon_south , maxlat=maxlat_south, minlat=minlat_south, sea_land_mask=True, Dataset=control_data)
 
 
 #east 150
-elev_east_150_east = extract_transect(data=east_150_elev_slt, maxlon=maxlon_east, minlon=minlon_east, maxlat= maxlat_east , minlat=minlat_east, sea_land_mask="yes", Dataset=east_150_data)
-elev_east_150_north = extract_transect(data=east_150_elev_slt,  maxlon=maxlon_north, minlon=minlon_north, maxlat=maxlat_north , minlat=minlat_north, sea_land_mask="yes", Dataset=east_150_data)
-elev_east_150_west = extract_transect(data=east_150_elev_slt, maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask="yes", Dataset=east_150_data)
-elev_east_150_south = extract_transect(data=east_150_elev_slt, maxlon=maxlon_south, minlon=minlon_south, maxlat=maxlat_south, minlat=minlat_south, sea_land_mask="yes", Dataset=east_150_data)
+#elev_east_150_east = extract_transect(data=east_150_elev_slt, maxlon=maxlon_east, minlon=minlon_east, maxlat= maxlat_east , minlat=minlat_east, sea_land_mask=True, Dataset=east_150_data)
+elev_east_150_north = extract_transect(data=east_150_elev_slt,  maxlon=maxlon_north, minlon=minlon_north, maxlat=maxlat_north , minlat=minlat_north, sea_land_mask=True, Dataset=east_150_data)
+elev_east_150_west = extract_transect(data=east_150_elev_slt, maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask=True, Dataset=east_150_data)
+elev_east_150_south = extract_transect(data=east_150_elev_slt, maxlon=maxlon_south, minlon=minlon_south, maxlat=maxlat_south, minlat=minlat_south, sea_land_mask=True, Dataset=east_150_data)
 
 
-d18op_east_150_east = extract_transect(data=east_150_d18op_slt, maxlon=maxlon_east, minlon=minlon_east, maxlat= maxlat_east, minlat=minlat_east, sea_land_mask="yes", Dataset=east_150_data)
-d18op_east_150_north = extract_transect(data=east_150_d18op_slt,  maxlon=maxlon_north, minlon=minlon_north, maxlat=maxlat_north , minlat=minlat_north, sea_land_mask="yes", Dataset=east_150_data)
-d18op_east_150_west = extract_transect(data=east_150_d18op_slt, maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask="yes", Dataset=east_150_data)
-d18op_east_150_south = extract_transect(data=east_150_d18op_slt, maxlon=maxlon_south, minlon=minlon_south, maxlat=maxlat_south, minlat=minlat_south, sea_land_mask="yes", Dataset=east_150_data)
+#d18op_east_150_east = extract_transect(data=east_150_d18op_slt, maxlon=maxlon_east, minlon=minlon_east, maxlat= maxlat_east, minlat=minlat_east, sea_land_mask=True, Dataset=east_150_data)
+d18op_east_150_north = extract_transect(data=east_150_d18op_slt,  maxlon=maxlon_north, minlon=minlon_north, maxlat=maxlat_north , minlat=minlat_north, sea_land_mask=True, Dataset=east_150_data)
+d18op_east_150_west = extract_transect(data=east_150_d18op_slt, maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask=True, Dataset=east_150_data)
+d18op_east_150_south = extract_transect(data=east_150_d18op_slt, maxlon=maxlon_south, minlon=minlon_south, maxlat=maxlat_south, minlat=minlat_south, sea_land_mask=True, Dataset=east_150_data)
 
 
 #east 200
-elev_east_200_east = extract_transect(data=east_200_elev_slt, maxlon=maxlon_east, minlon=minlon_east, maxlat= maxlat_east , minlat=minlat_east, sea_land_mask="yes", Dataset=east_200_data)
-elev_east_200_north = extract_transect(data=east_200_elev_slt,  maxlon=maxlon_north, minlon=minlon_north, maxlat=maxlat_north , minlat=minlat_north, sea_land_mask="yes", Dataset=east_200_data)
-elev_east_200_west = extract_transect(data=east_200_elev_slt, maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask="yes", Dataset=east_200_data)
-elev_east_200_south = extract_transect(data=east_200_elev_slt, maxlon=maxlon_south, minlon=minlon_south, maxlat=maxlat_south, minlat=minlat_south, sea_land_mask="yes", Dataset=east_200_data)
+#elev_east_200_east = extract_transect(data=east_200_elev_slt, maxlon=maxlon_east, minlon=minlon_east, maxlat= maxlat_east , minlat=minlat_east, sea_land_mask=True, Dataset=east_200_data)
+elev_east_200_north = extract_transect(data=east_200_elev_slt,  maxlon=maxlon_north, minlon=minlon_north, maxlat=maxlat_north , minlat=minlat_north, sea_land_mask=True, Dataset=east_200_data)
+elev_east_200_west = extract_transect(data=east_200_elev_slt, maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask=True, Dataset=east_200_data)
+elev_east_200_south = extract_transect(data=east_200_elev_slt, maxlon=maxlon_south, minlon=minlon_south, maxlat=maxlat_south, minlat=minlat_south, sea_land_mask=True, Dataset=east_200_data)
 
-d18op_east_200_east = extract_transect(data=east_200_d18op_slt, maxlon=maxlon_east, minlon=minlon_east, maxlat= maxlat_east, minlat=minlat_east, sea_land_mask="yes", Dataset=east_200_data)
-d18op_east_200_north = extract_transect(data=east_200_d18op_slt,  maxlon=maxlon_north, minlon=minlon_north, maxlat=maxlat_north , minlat=minlat_north, sea_land_mask="yes", Dataset=east_200_data)
-d18op_east_200_west = extract_transect(data=east_200_d18op_slt, maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask="yes", Dataset=east_200_data)
-d18op_east_200_south = extract_transect(data=east_200_d18op_slt, maxlon=maxlon_south, minlon=minlon_south, maxlat=maxlat_south, minlat=minlat_south, sea_land_mask="yes", Dataset=east_200_data)
+#d18op_east_200_east = extract_transect(data=east_200_d18op_slt, maxlon=maxlon_east, minlon=minlon_east, maxlat= maxlat_east, minlat=minlat_east, sea_land_mask=True, Dataset=east_200_data)
+d18op_east_200_north = extract_transect(data=east_200_d18op_slt,  maxlon=maxlon_north, minlon=minlon_north, maxlat=maxlat_north , minlat=minlat_north, sea_land_mask=True, Dataset=east_200_data)
+d18op_east_200_west = extract_transect(data=east_200_d18op_slt, maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask=True, Dataset=east_200_data)
+d18op_east_200_south = extract_transect(data=east_200_d18op_slt, maxlon=maxlon_south, minlon=minlon_south, maxlat=maxlat_south, minlat=minlat_south, sea_land_mask=True, Dataset=east_200_data)
 
 
 #east 0
-elev_east_0_east = extract_transect(data=east_0_elev_slt , maxlon=maxlon_east , minlon=minlon_east , maxlat= maxlat_east , minlat=minlat_east , sea_land_mask="yes", Dataset=east_0_data)
-elev_east_0_north = extract_transect(data=east_0_elev_slt ,  maxlon=maxlon_north , minlon=minlon_north , maxlat=maxlat_north , minlat=minlat_north, sea_land_mask="yes", Dataset=east_0_data)
-elev_east_0_west = extract_transect(data=east_0_elev_slt , maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask="yes", Dataset=east_0_data)
-elev_east_0_south = extract_transect(data=east_0_elev_slt , maxlon=maxlon_south , minlon=minlon_south , maxlat=maxlat_south, minlat=minlat_south, sea_land_mask="yes", Dataset=east_0_data)
+#elev_east_0_east = extract_transect(data=east_0_elev_slt , maxlon=maxlon_east , minlon=minlon_east , maxlat= maxlat_east , minlat=minlat_east , sea_land_mask=True, Dataset=east_0_data)
+elev_east_0_north = extract_transect(data=east_0_elev_slt ,  maxlon=maxlon_north , minlon=minlon_north , maxlat=maxlat_north , minlat=minlat_north, sea_land_mask=True, Dataset=east_0_data)
+elev_east_0_west = extract_transect(data=east_0_elev_slt , maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask=True, Dataset=east_0_data)
+elev_east_0_south = extract_transect(data=east_0_elev_slt , maxlon=maxlon_south , minlon=minlon_south , maxlat=maxlat_south, minlat=minlat_south, sea_land_mask=True, Dataset=east_0_data)
 
-d18op_east_0_east = extract_transect(data=east_0_d18op_slt , maxlon=maxlon_east , minlon=minlon_east , maxlat= maxlat_east , minlat=minlat_east , sea_land_mask="yes", Dataset=east_0_data)
-d18op_east_0_north = extract_transect(data=east_0_d18op_slt ,  maxlon=maxlon_north , minlon=minlon_north , maxlat=maxlat_north , minlat=minlat_north, sea_land_mask="yes", Dataset=east_0_data)
-d18op_east_0_west = extract_transect(data=east_0_d18op_slt ,maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask="yes", Dataset=east_0_data)
-d18op_east_0_south = extract_transect(data=east_0_d18op_slt , maxlon=maxlon_south , minlon=minlon_south , maxlat=maxlat_south, minlat=minlat_south, sea_land_mask="yes", Dataset=east_0_data)
+#d18op_east_0_east = extract_transect(data=east_0_d18op_slt , maxlon=maxlon_east , minlon=minlon_east , maxlat= maxlat_east , minlat=minlat_east , sea_land_mask=True, Dataset=east_0_data)
+d18op_east_0_north = extract_transect(data=east_0_d18op_slt ,  maxlon=maxlon_north , minlon=minlon_north , maxlat=maxlat_north , minlat=minlat_north, sea_land_mask=True, Dataset=east_0_data)
+d18op_east_0_west = extract_transect(data=east_0_d18op_slt ,maxlon=maxlon_west,  minlon=minlon_west, maxlat=maxlat_west, minlat=minlat_west, sea_land_mask=True, Dataset=east_0_data)
+d18op_east_0_south = extract_transect(data=east_0_d18op_slt , maxlon=maxlon_south , minlon=minlon_south , maxlat=maxlat_south, minlat=minlat_south, sea_land_mask=True, Dataset=east_0_data)
 
 season = "JJA"
 
 # performing regresion (change DJF to JJA for summer plots)
-control_east_reg, control_east_df = linregression(data_x=elev_control_east , data_y=d18op_control_east, season=season, return_yhat="yes")
-control_west_reg, control_west_df = linregression(data_x=elev_control_west , data_y=d18op_control_west, season=season, return_yhat="yes")
-control_north_reg, control_north_df = linregression(data_x=elev_control_north , data_y=d18op_control_north, season=season, return_yhat="yes")
-control_south_reg, control_south_df = linregression(data_x=elev_control_south , data_y=d18op_control_south, season=season, return_yhat="yes")
+#control_east_reg, control_east_df = linregression(data_x=elev_control_east , data_y=d18op_control_east, season=season, return_yhat=True)
+control_west_reg, control_west_df = linregression(data_x=elev_control_west , data_y=d18op_control_west, season=season, return_yhat=True)
+control_north_reg, control_north_df = linregression(data_x=elev_control_north , data_y=d18op_control_north, season=season, return_yhat=True)
+control_south_reg, control_south_df = linregression(data_x=elev_control_south , data_y=d18op_control_south, season=season, return_yhat=True)
 
-east_150_east_reg, east_150_east_df = linregression(data_x=elev_east_150_east , data_y=d18op_east_150_east, season=season, return_yhat="yes")
-east_150_west_reg, east_150_west_df = linregression(data_x=elev_east_150_west , data_y=d18op_east_150_west, season=season, return_yhat="yes")
-east_150_north_reg, east_150_north_df = linregression(data_x=elev_east_150_north , data_y=d18op_east_150_north, season=season, return_yhat="yes")
-east_150_south_reg, east_150_south_df = linregression(data_x=elev_east_150_south , data_y=d18op_east_150_south, season=season, return_yhat="yes")
+#east_150_east_reg, east_150_east_df = linregression(data_x=elev_east_150_east , data_y=d18op_east_150_east, season=season, return_yhat=True)
+east_150_west_reg, east_150_west_df = linregression(data_x=elev_east_150_west , data_y=d18op_east_150_west, season=season, return_yhat=True)
+east_150_north_reg, east_150_north_df = linregression(data_x=elev_east_150_north , data_y=d18op_east_150_north, season=season, return_yhat=True)
+east_150_south_reg, east_150_south_df = linregression(data_x=elev_east_150_south , data_y=d18op_east_150_south, season=season, return_yhat=True)
 
-east_200_east_reg, east_200_east_df = linregression(data_x=elev_east_200_east , data_y=d18op_east_200_east, season=season, return_yhat="yes")
-east_200_west_reg, east_200_west_df = linregression(data_x=elev_east_200_west , data_y=d18op_east_200_west, season=season, return_yhat="yes")
-east_200_north_reg, east_200_north_df = linregression(data_x=elev_east_200_north , data_y=d18op_east_200_north, season=season, return_yhat="yes")
-east_200_south_reg, east_200_south_df = linregression(data_x=elev_east_200_south , data_y=d18op_east_200_south, season=season, return_yhat="yes")
+#east_200_east_reg, east_200_east_df = linregression(data_x=elev_east_200_east , data_y=d18op_east_200_east, season=season, return_yhat=True)
+east_200_west_reg, east_200_west_df = linregression(data_x=elev_east_200_west , data_y=d18op_east_200_west, season=season, return_yhat=True)
+east_200_north_reg, east_200_north_df = linregression(data_x=elev_east_200_north , data_y=d18op_east_200_north, season=season, return_yhat=True)
+east_200_south_reg, east_200_south_df = linregression(data_x=elev_east_200_south , data_y=d18op_east_200_south, season=season, return_yhat=True)
 
-east_0_east_reg, east_0_east_df = linregression(data_x=elev_east_0_east , data_y=d18op_east_0_east, season=season, return_yhat="yes")
-east_0_west_reg, east_0_west_df = linregression(data_x=elev_east_0_west , data_y=d18op_east_0_west, season=season, return_yhat="yes")
-east_0_north_reg, east_0_north_df = linregression(data_x=elev_east_0_north , data_y=d18op_east_0_north, season=season, return_yhat="yes")
-east_0_south_reg, east_0_south_df = linregression(data_x=elev_east_0_south , data_y=d18op_east_0_south, season=season, return_yhat="yes")
+#east_0_east_reg, east_0_east_df = linregression(data_x=elev_east_0_east , data_y=d18op_east_0_east, season=season, return_yhat=True)
+east_0_west_reg, east_0_west_df = linregression(data_x=elev_east_0_west , data_y=d18op_east_0_west, season=season, return_yhat=True)
+east_0_north_reg, east_0_north_df = linregression(data_x=elev_east_0_north , data_y=d18op_east_0_north, season=season, return_yhat=True)
+east_0_south_reg, east_0_south_df = linregression(data_x=elev_east_0_south , data_y=d18op_east_0_south, season=season, return_yhat=True)
 
 # plotting 
 
@@ -169,10 +169,10 @@ fig, (ax1,ax2,ax3) = plt.subplots(nrows = 3, ncols = 1, figsize=(8, 17),)
 
 apply_style_2()
 
-scatter_plot_laspe_rate(ax=ax1, reg_params= control_east_reg , df_x_y_yhat=control_east_df , color=blue, marker= "*", label= "east",
+scatter_plot_laspe_rate(ax=ax1, reg_params= control_west_reg , df_x_y_yhat=control_west_df , color=red, marker= "*", label= "west",
                         ylabel="$\delta^{18}$Op ‰ vs SMOW", xlabel= "Elevation [km]", title="[A] Alps 100 (" + season + ")", xmax=1500, xmin=0,
                         ymax=0, ymin= -9)
-scatter_plot_laspe_rate(ax=ax1, reg_params= control_west_reg , df_x_y_yhat=control_west_df , color=red, marker= "o", label= "west",)
+#scatter_plot_laspe_rate(ax=ax1, reg_params= control_west_reg , df_x_y_yhat=control_west_df , color=red, marker= "o", label= "west",)
 scatter_plot_laspe_rate(ax=ax1, reg_params= control_north_reg , df_x_y_yhat=control_north_df , color=black, marker= "D", label= "north",)
 scatter_plot_laspe_rate(ax=ax1, reg_params= control_south_reg , df_x_y_yhat=control_south_df , color=green, marker= "^", label= "south",)
 
@@ -186,17 +186,17 @@ ax1.legend(frameon=True, fontsize=15, loc="upper right", framealpha=0.5)
 # scatter_plot_laspe_rate(ax=ax2, reg_params= east_150_north_reg , df_x_y_yhat=east_150_north_df , color=black, marker= "D", label= "north",)
 # scatter_plot_laspe_rate(ax=ax2, reg_params= east_150_south_reg , df_x_y_yhat=east_150_south_df , color=green, marker= "^", label= "south",)
 
-scatter_plot_laspe_rate(ax=ax2, reg_params= east_200_east_reg , df_x_y_yhat=east_200_east_df , color=blue, marker= "*", label= "east",
+scatter_plot_laspe_rate(ax=ax2, reg_params= east_200_west_reg , df_x_y_yhat=east_200_west_df , color=red, marker= "*", label= "west",
                         ylabel="$\delta^{18}$Op ‰ vs SMOW", xlabel= "Elevation [m]",title="[B] Alps east 200 (" + season + ")",
                          xmax=3200, xmin=0, ymin=-14, ymax=0)
-scatter_plot_laspe_rate(ax=ax2, reg_params= east_200_west_reg , df_x_y_yhat=east_200_west_df , color=red, marker= "o", label= "west",)
+#scatter_plot_laspe_rate(ax=ax2, reg_params= east_200_west_reg , df_x_y_yhat=east_200_west_df , color=red, marker= "o", label= "west",)
 scatter_plot_laspe_rate(ax=ax2, reg_params= east_200_north_reg , df_x_y_yhat=east_200_north_df , color=black, marker= "D", label= "north",)
 scatter_plot_laspe_rate(ax=ax2, reg_params= east_200_south_reg , df_x_y_yhat=east_200_south_df , color=green, marker= "^", label= "south",)
 
 ax2.legend(frameon=True, fontsize=15, loc="upper right", framealpha=0.5)
 
-scatter_plot_laspe_rate(ax=ax3, reg_params= east_0_east_reg , df_x_y_yhat=east_0_east_df , color=blue, marker= "*", label= "east",
-                        )
+# scatter_plot_laspe_rate(ax=ax3, reg_params= east_0_east_reg , df_x_y_yhat=east_0_east_df , color=blue, marker= "*", label= "east",
+#                         )
 scatter_plot_laspe_rate(ax=ax3, reg_params= east_0_west_reg , df_x_y_yhat=east_0_west_df , color=red, marker= "o", label= "west",
                         ylabel="$\delta^{18}$Op ‰ vs SMOW", xlabel= "Elevation [m]", title="[C] Alps east 0 (" + season + ")",
                         xmax=1500, xmin=0, ymax=-2, ymin=-8)
@@ -207,4 +207,4 @@ ax3.legend(frameon=True, fontsize=15, loc="upper right",framealpha=0.5)
 
 plt.tight_layout()
 plt.subplots_adjust(left=0.15, right=0.88, top=0.97, bottom=0.05)
-plt.savefig(os.path.join(path_to_store, "fig8_new.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_store, "fig7.svg"), format= "svg", bbox_inches="tight", dpi=600)

@@ -35,7 +35,8 @@ except:
 
 def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=None, levels=None, domain=None, center= True, output_name=None, 
                      output_format=None, level_ticks=None, title=None, path_to_store=None, data_v10=None, data_u10=None, GNIP_data=None,
-                     left_labels= True, bottom_labels=True):
+                     left_labels= True, bottom_labels=True, add_colorbar=True, plot_stats= False, compare_data1=None, compare_data2=None, max_pvalue=None,
+                     hatches=None,):
     """
     
 
@@ -73,6 +74,15 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
     data_v10 = datarray (required for ploting winds)
     data_v10 = datarray (required for ploting winds)
     
+    GNIP_data = DataFrame with lon, lat and d18Op for plotting a scatter circles with filled colormap 
+    left_labels: TYPE: Boolean, Default is True
+        DESCRIPTION. To add lat coordinates on the left of the plots, optioanl 
+    bottom_labels: TYPE: Boolean, Default is True
+        DESCRIPTION. To add lon coordinates on the bottom of the plots, optioanl 
+    add_colorbar: TYPE: Boolean, Default is True
+        DESCRIPTION. To add colormap to the plot
+        
+    
     center: TYPE: Boolean, True to apply norm for centering zero
 
     Returns
@@ -91,27 +101,49 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
         if vmin < 0:
             
             if center==True:
+                if add_colorbar ==True:
             
-                 p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
-                                 levels=levels, transform = projection, norm=norm, 
-                                 cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
-                                               "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither")
+                     p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
+                                     levels=levels, transform = projection, norm=norm, 
+                                     cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
+                                                   "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither")
+                else:
+                    p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
+                                    levels=levels, transform = projection, norm=norm, add_colorbar=False, add_labels=False) 
+                                   
+                    
+            else:
+                if add_colorbar == True:
+                    p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
+                                    levels=levels, transform = projection, 
+                                    cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
+                                                  "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither")
+                else:
+                    p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
+                                    levels=levels, transform = projection, add_colorbar=False, add_labels=False,)
+                                    
+        else:
+            if add_colorbar == True:
+                
+                p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
+                                     levels=levels, transform = projection, 
+                                     cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
+                                                   "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither")
             else:
                 p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
-                                levels=levels, transform = projection, 
-                                cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
-                                              "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither")
-        else:
-            p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
-                                 levels=levels, transform = projection, 
-                                 cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
-                                               "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither")
+                                     levels=levels, transform = projection, add_colorbar=False, add_labels=False)
+                                     
+    # when limits are not defined for the plot            
     else:
         p = data_alt.plot.imshow(ax =ax, cmap=cmap, transform = projection, 
                                  cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
                                                "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither")
-    p.colorbar.set_label(label=variable + " [" + units + "]", size= 20, fontweight="bold")
-    p.colorbar.ax.tick_params(labelsize=20, size=0,)
+    
+    
+    if add_colorbar == True:
+        
+        p.colorbar.set_label(label=variable + " [" + units + "]", size= 20, fontweight="bold")
+        p.colorbar.ax.tick_params(labelsize=20, size=0,)
     
     # ploting background extent
     plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels)
@@ -133,6 +165,26 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
         qk = ax.quiverkey(q, 0.95, -0.1, 2, r'$1 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
                           {"size": 20, "weight":"bold"})
         
+    if plot_stats == True:
+        data1 = compare_data1
+        data2 = compare_data2
+        
+        if domain == "Europe":
+            minlat, maxlat, minlon, maxlon = 35, 65, -15, 40
+            stats_results = student_t_test_btn_datasets(dataA=data1, dataB=data2, return_pvalue=True, 
+                                                        minlat=minlat, minlon=minlon, maxlon=maxlon, maxlat=maxlat,
+                                                        max_pvalue=max_pvalue)
+        else:
+            stats_results = student_t_test_btn_datasets(dataA=data1, dataB=data2, return_pvalue=True, max_pvalue=max_pvalue)
+        
+        if hatches is not None:
+            ax.contourf(stats_results.lon.values, stats_results.lat.values, stats_results.t_statistic.values, colors="none", hatches=[hatches])
+        else:
+            ax.contourf(stats_results.lon.values, stats_results.lat.values, stats_results.t_statistic.values, colors="none", hatches=["//"])
+            
+            
+            
+        
     if GNIP_data is not None:
         if center == True:
             ax.scatter(x=GNIP_data["lon"], y=GNIP_data["lat"], c=GNIP_data["d18op"], cmap=cmap, vmax=vmax, vmin=vmin, norm=norm, edgecolor="k", s= 70)
@@ -145,6 +197,12 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
     #optional if one plot is required, alternatively save from the control script
     if all(parameter is not None for parameter in [output_format, output_name, path_to_store]):
         plt.savefig(os.path.join(path_to_store, output_name + "." + output_format), format= output_format, bbox_inches="tight")
+    else:
+        print("The output would not be save on directory")
+        
+        
+        
+        
 
 
 def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=None, vmax=None, vmin=None, levels=None, domain=None, output_name=None, 
@@ -182,7 +240,7 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
     output_name : TYPE: str, optional
         DESCRIPTION. The default is None. Filename of generated figures
     output_format : TYPE: str, optional
-        DESCRIPTION. The default is None. Format to save figure eg. pdf, svg, tiff
+        DESCRIPTION. The default is Notime="season", season_calendar="standard"ne. Format to save figure eg. pdf, svg, tiff
     level_ticks : TYPE: float, optional
         DESCRIPTION. The default is None. Interval of ticks for colorbar
     title : TYPE: Bolean, optional
@@ -263,11 +321,17 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                                  levels=levels, transform = projection, norm=norm, 
                                  add_colorbar=False, add_labels=False)
                 else:
-                    p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, 
-                                 levels=levels, transform = projection, 
-                                 cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": "vertical", 
-                                               "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "neither",
-                                 add_colorbar=True, cbar_ax=cbar_ax, add_labels=False) 
+                    if add_colorbar == True:
+                        
+                        p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, 
+                                     levels=levels, transform = projection, 
+                                     cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": "vertical", 
+                                                   "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "neither",
+                                     add_colorbar=True, cbar_ax=cbar_ax, add_labels=False) 
+                    else: 
+                        p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, 
+                                     levels=levels, transform = projection, add_colorbar=True, add_labels=False)
+                                     
             else:
                 p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, transform = projection, 
                                  cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": "vertical", 
@@ -569,7 +633,8 @@ def plot_monthly_mean(variable, data_mlt, cmap, units, months, axes=None, fig=No
 
 def plot_iso_profiles(df_iso, df_geosp, dim, iso_color, iso_label, ax=None, season=None, month=None,  
                       xmax=None, xmin=None, ymax=None, ymin=None, ax_legend=None, isomax=None, isomin=None,
-                       output_name=None, output_format=None, title=None, path_to_store=None,):
+                       output_name=None, output_format=None, title=None, path_to_store=None, left_labels=True,
+                       bottom_labels=True, right_labels=True):
     """
     
 
@@ -616,6 +681,9 @@ def plot_iso_profiles(df_iso, df_geosp, dim, iso_color, iso_label, ax=None, seas
         DESCRIPTION. The default is None. Title of plots
     path_to_store : TYPE: str, optional
         DESCRIPTION. The default is None. Directory to store data
+        
+    left labels : TYPE: Bol, optional
+        DESCRIPTION. To set the left axis label to None
 
     Raises
     ------
@@ -644,17 +712,35 @@ def plot_iso_profiles(df_iso, df_geosp, dim, iso_color, iso_label, ax=None, seas
     if all(parameter is not None for parameter in [xmax, xmin, ymax, ymin]):
         ax.set_xlim(xmin, xmax)
         ax.set_ylim(ymin, ymax)
-    
-    if dim == "lon":
-         ax.set_xlabel("Longitude [E°]", fontsize=20)
-    elif dim == "lat":
-         ax.set_xlabel("Latitude [N°]", fontsize=20)
-    else:
-        raise ValueError("Define dim as lat or lon")
+        
+        
+    if bottom_labels == True:
+        if dim == "lon":
+             ax.set_xlabel("Longitude [E°]", fontsize=20)
+        elif dim == "lat":
+             ax.set_xlabel("Latitude [N°]", fontsize=20)
+        else:
+            raise ValueError("Define dim as lat or lon")
             
-    ax.set_ylabel("Elevation [m]", fontsize=20)
-    ax.tick_params(which="both")
+            
+    if left_labels == True:
+        ax.set_ylabel("Elevation [m]", fontsize=20)
+            
     
+    if left_labels ==False:
+        ax.grid(True)
+        #ax.axes.yaxis.set_visible(False)
+        ax.set_yticklabels([])
+    
+        
+    if bottom_labels == False:
+        ax.grid(True)
+        #ax.axes.yaxis.set_visible(False)
+        ax.set_yticklabels([])
+        
+        
+        
+    ax.tick_params(which="both")
     #creating secondary axis 
     ax2 = ax.twinx()
     ax2.grid(False)
@@ -664,7 +750,13 @@ def plot_iso_profiles(df_iso, df_geosp, dim, iso_color, iso_label, ax=None, seas
     
     if all(parameter is not None for parameter in [isomax, isomin]):
         ax2.set_ylim(isomin, isomax)
-    ax2.set_ylabel(u'$\delta^{18}$O ‰ vs SMOW', fontsize=20)
+    if right_labels == True:
+    
+        ax2.set_ylabel(u'$\delta^{18}$O ‰ vs SMOW', fontsize=20)
+        
+    else:
+        ax2.set_yticklabels([])
+        
     ax2.tick_params(axis= "y")
     ax2.tick_params(axis= "x")
     

@@ -63,7 +63,7 @@ Greys = plt.cm.Greys
 RdGy = plt.cm.RdGy
 PiYG = plt.cm.PiYG_r
 PuOr = plt.cm.PuOr
-BrBG = plt.cm.BrBG_r
+BrBG = plt.cm.BrBG
 RdYlBu = plt.cm.RdYlBu
 RdYlBu_r = plt.cm.RdYlBu_r
 RdYlGn = plt.cm.RdYlGn
@@ -78,7 +78,8 @@ def apply_style(fontsize=21):
     plt.rc('font',**font)
     plt.rc('legend',**{'fontsize':20})
     small_size=fontsize-1
-    plt.style.use('fivethirtyeight')    
+    
+    plt.style.use("seaborn-colorblind")    
     plt.rcParams['text.latex.preamble'] = [r"\usepackage{lmodern}"]
     mpl.rc('text', usetex=True)
     #mpl.rc('font', size=20, family='serif')
@@ -102,7 +103,7 @@ def apply_style_2(fontsize=21):
     mpl.rc('ytick', labelsize=small_size)
     mpl.rc('legend', fontsize=small_size)
     mpl.rc('axes', labelsize=fontsize)
-    mpl.rc('lines', linewidth=2.5)
+    mpl.rc('lines', linewidth=3)
 
 # defining function for selecting background domain for cartopy
 
