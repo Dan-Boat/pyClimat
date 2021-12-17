@@ -55,21 +55,21 @@ v10_alt = compute_lterm_mean(data=v10, time="annual")
 
 # defining coordinates for gridbox
 
-#west 
-lat_w, h_w = 44 , 2.8  # lat and height
+#west --> 44, 47 N 1, 8 E
+lat_w, h_w = 44 , 3  # lat and height
 lon_w , w_w = 1, 7  # long and width 
 
-# #east
+# #east --> 46, 48.5 N 10, 17 E
 # lat_e, h_e = 46, 2.5
 # lon_e, w_e = 10, 7
 
-#north
-lat_n, h_n = 47, 3
-lon_n, w_n = 5, 9
+#north --> 46.5, 50 N 5, 16 E
+lat_n, h_n = 46.5, 3.5
+lon_n, w_n = 5, 11
 
-# south
-lat_s, h_s = 43, 4
-lon_s, w_s = 8, 5
+# south--> 43, 47 N 7.5, 15 E
+lat_s, h_s = 44, 3
+lon_s, w_s = 7.5, 7.5
 
 # #isotopic profiles
 # lat_A, h_A = 46, 1
@@ -121,4 +121,4 @@ plot_annual_mean(ax=ax4, variable="Precipitation", data_alt=prec_alt, cmap=Blues
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas first 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.06)
-plt.savefig(os.path.join(path_to_store, "fig1.svg"), format= "svg", bbox_inches="tight", dpi=600)
+#plt.savefig(os.path.join(path_to_store, "fig1.svg"), format= "svg", bbox_inches="tight", dpi=600)

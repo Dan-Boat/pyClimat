@@ -634,7 +634,7 @@ def plot_monthly_mean(variable, data_mlt, cmap, units, months, axes=None, fig=No
 def plot_iso_profiles(df_iso, df_geosp, dim, iso_color, iso_label, ax=None, season=None, month=None,  
                       xmax=None, xmin=None, ymax=None, ymin=None, ax_legend=None, isomax=None, isomin=None,
                        output_name=None, output_format=None, title=None, path_to_store=None, left_labels=True,
-                       bottom_labels=True, right_labels=True):
+                       bottom_labels=True, right_labels=True, shade_color=None, shade_alpha=None):
     """
     
 
@@ -707,7 +707,14 @@ def plot_iso_profiles(df_iso, df_geosp, dim, iso_color, iso_label, ax=None, seas
     
     # filling elevation data
     
-    ax.fill_between(df_geosp.index, df_geosp,  0, color="dimgrey", alpha=0.2, edgecolor = "dimgrey", linestyle="-")
+    if shade_color is not None: 
+        if shade_alpha is None:
+            ax.fill_between(df_geosp.index, df_geosp,  0, color=shade_color, alpha=0.1, edgecolor = shade_color, linestyle="-")
+        else:
+            ax.fill_between(df_geosp.index, df_geosp,  0, color=shade_color, alpha=shade_alpha, edgecolor = shade_color, linestyle="-")
+    else:
+        
+        ax.fill_between(df_geosp.index, df_geosp,  0, color="dimgrey", alpha=0.2, edgecolor = "dimgrey", linestyle="-")
     
     if all(parameter is not None for parameter in [xmax, xmin, ymax, ymin]):
         ax.set_xlim(xmin, xmax)
@@ -776,7 +783,8 @@ def plot_iso_profiles(df_iso, df_geosp, dim, iso_color, iso_label, ax=None, seas
 
 def scatter_plot_laspe_rate(reg_params, df_x_y_yhat, color, marker, label, ylabel=None, xlabel=None, ax=None, ax_legend=None,
                             output_name=None, output_format=None, title=None, path_to_store=None,
-                            xmax=None, xmin=None, ymax=None, ymin=None):
+                            xmax=None, xmin=None, ymax=None, ymin=None, left_labels=True,
+                            bottom_labels=True,):
     """
     
 
@@ -825,11 +833,34 @@ def scatter_plot_laspe_rate(reg_params, df_x_y_yhat, color, marker, label, ylabe
     ax.scatter(df_x_y_yhat["X"], df_x_y_yhat["Y"], color=color, marker=marker)
     ax.plot(df_x_y_yhat["X"], df_x_y_yhat["yhat"], 
             color=color, label= "ILR = {:.2f} [‰/km], r²={:.2f}".format(reg_params.slope*1000, 
-                                                                         reg_params.rvalue*-1) + " [" + label + "]")
+                                                                      reg_params.rvalue*-1) + " [" + label + "]")
     
-    if all(parameter is not None for parameter in [xlabel, ylabel]):
-        ax.set_xlabel(xlabel, fontsize= 20,)
-        ax.set_ylabel(ylabel, fontsize= 20,)
+    #ax.set_aspect("equal", "box")
+    
+    if bottom_labels ==True:
+        ax.set_xlabel("Elevation [m]", fontsize=20)
+        
+    elif bottom_labels ==False:
+        ax.grid(True)
+        ax.set_xticklabels([])
+    else:
+        raise ValueError("define xlabel or set bottom labels to False")
+    
+    
+    if left_labels ==True:
+        ax.set_ylabel(u'$\delta^{18}$O ‰ vs SMOW', fontsize=20)
+        
+    elif left_labels ==False:
+        ax.grid(True)
+        ax.set_yticklabels([])
+    else:
+        raise ValueError("define xlabel or set bottom labels to False")
+        
+    
+    
+    # if all(parameter is not None for parameter in [xlabel, ylabel]):
+    #     ax.set_xlabel(xlabel, fontsize= 20,)
+    #     ax.set_ylabel(ylabel, fontsize= 20,)
         
     if all(parameter is not None for parameter in [xmax, xmin, ymax, ymin]):
         ax.set_xlim(xmin, xmax)
@@ -837,7 +868,7 @@ def scatter_plot_laspe_rate(reg_params, df_x_y_yhat, color, marker, label, ylabe
     
     if ax_legend =="True":
         ax.legend(frameon=True, fontsize=18, loc="upper right")
-        
+       
     if title is not None:
         ax.set_title(title, fontdict= {"fontsize": 20, "fontweight":"bold"}, loc="left")
         

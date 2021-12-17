@@ -22,6 +22,8 @@ a005 = "a005_hpc-bw_e5w2.3_t159_PI_Alps_150_t159l31.6h"
 a006 = "a006_hpc-bw_e5w2.3_t159_PI_Alps_0_t159l31.6h"
 t017 = "t017_hpc-bw_e5w2.3_PI_Alps150_t159l31.6h"
 a008 = "a008_hpc-bw_e5w2.3_t159_PI_Alps_east_150_t159l31.6h"
+a009 = "a009_hpc-bw_e5w2.3_t159_PI_AW200E100_t159l31.6h"
+a010 = "a010_hpc-bw_e5w2.3_t159_PI_AW200E0_t159l31.6h"
 
 filename = "T159_jan_surf.nc"
 
@@ -34,6 +36,8 @@ a008_data = read_ECHAM_input(main_path=module_output_main_path , exp_name = a008
 a005_data = read_ECHAM_input(main_path=module_output_main_path , exp_name = a005, filename=filename, read_var=True, varname="OROMEA")
 a006_data = read_ECHAM_input(main_path=module_output_main_path , exp_name = a006, filename=filename, read_var=True, varname="OROMEA")
 t017_data = read_ECHAM_input(main_path=module_output_main_path , exp_name = t017, filename=filename, read_var=True, varname="OROMEA")
+a009_data = read_ECHAM_input(main_path=module_output_main_path , exp_name = a009, filename=filename, read_var=True, varname="OROMEA")
+a010_data = read_ECHAM_input(main_path=module_output_main_path , exp_name = a010, filename=filename, read_var=True, varname="OROMEA")
 
 
 #visualisation
@@ -41,13 +45,21 @@ projection = ccrs.PlateCarree()
 path_to_store = os.path.join(module_output_main_path, "plots")
 
 fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15), subplot_kw={"projection":projection})
-plot_echam_topo(variable="Elevation", data=a001_data, cmap=Greys, units="m", ax=ax1, vmax=3000, vmin=0, levels=12, level_ticks=6, domain="Europe", title="Alps east 200%", cbar=False)
-plot_echam_topo(variable="Elevation", data=t017_data, cmap=Greys, units="m", ax=ax2, vmax=3000, vmin=0, levels=12, level_ticks=6, domain="Europe", title="Alps 200%", cbar=False)
-plot_echam_topo(variable="Elevation", data=a003_data, cmap=Greys, units="m", ax=ax5, vmax=3000, vmin=0, levels=12, level_ticks=6, domain="Europe", title="Alps east 0%", cbar=False)
-plot_echam_topo(variable="Elevation", data=a006_data, cmap=Greys, units="m", ax=ax6, vmax=3000, vmin=0, levels=12, level_ticks=6, domain="Europe", title="Alps 0%", cbar=False)
-plot_echam_topo(variable="Elevation", data=a005_data, cmap=Greys, units="m", ax=ax3, vmax=3000, vmin=0, levels=12, level_ticks=6, domain="Europe", title="Alps 150%", cbar=False)
-plot_echam_topo(variable="Elevation", data=a008_data, cmap=Greys, units="m", ax=ax4, vmax=3000, vmin=0, levels=12, level_ticks=6, domain="Europe", title = "Alps east 150%",
-                cbar_position= [0.90, 0.30, 0.02, 0.40], cbar_orientation="vertical", cbar=True, fig=fig)
+
+plot_echam_topo(variable="Elevation", data=a001_data, cmap=Greys, units="m", ax=ax1, vmax=3500, vmin=0, levels=12, level_ticks=6,
+                domain="Europe", title="AW100E200", cbar=False)
+
+plot_echam_topo(variable="Elevation", data=t017_data, cmap=Greys, units="m", ax=ax5, vmax=3500, vmin=0, levels=12, level_ticks=6, 
+                domain="Europe", title="A200", cbar=False)
+
+plot_echam_topo(variable="Elevation", data=a003_data, cmap=Greys, units="m", ax=ax2, vmax=3500, vmin=0, levels=12, level_ticks=6, 
+                domain="Europe", title="AW100E0", cbar=False)
+plot_echam_topo(variable="Elevation", data=a006_data, cmap=Greys, units="m", ax=ax6, vmax=3500, vmin=0, levels=12, level_ticks=6, 
+                domain="Europe", title="A0", cbar_position= [0.90, 0.30, 0.02, 0.40], cbar_orientation="vertical", cbar=True, fig=fig)
+plot_echam_topo(variable="Elevation", data=a009_data, cmap=Greys, units="m", ax=ax3, vmax=3500, vmin=0, levels=12, level_ticks=6, 
+                domain="Europe", title="AW200E100", cbar=False)
+plot_echam_topo(variable="Elevation", data=a010_data, cmap=Greys, units="m", ax=ax4, vmax=3500, vmin=0, levels=12, level_ticks=6, 
+                domain="Europe", title = "AW200E0",cbar=False)
 
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 

@@ -21,13 +21,13 @@ module_output_main_path = "/home/dboateng/Model_output_pst"
 exp_name_control = "a002_hpc-bw_e5w2.3_t159_PI_Alps_east_100_t159l31.6h"
 exp_name_east_0 = "a003_hpc-bw_e5w2.3_t159_PI_Alps_east_0_t159l31.6h"
 exp_name_east_150 = "a001_hpc-bw_e5w2.3_t159_PI_Alps_east_300_t159l31.6h"
-exp_name_east_50 = "a004_hpc-bw_e5w2.3_t159_PI_Alps_east_50_t159l31.6h"
+#exp_name_east_50 = "a004_hpc-bw_e5w2.3_t159_PI_Alps_east_50_t159l31.6h"
 years= "1003_1017"
 period = "1m"
 
 #ERA-interim
 
-path_to_msl = "/home/dboateng/Datasets/Reanalysis/era_interim/msl_monthly.nc"
+path_to_msl = "/home/dboateng/Datasets/ERA5/monthly_1950_2021/msl_monthly.nc"
 
 slp_ERA = read_ERA_processed(path=path_to_msl, varname="msl") / 100 #Pa--> hpa
 slp_ERA = slp_ERA.rename({"longitude": "lon", "latitude":"lat"})
@@ -74,57 +74,57 @@ fig, ((ax1,ax2), (ax3,ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(18,10)
 
 plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[0]*1), mode_var=var_frac_ERA[0], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal",use_AlberEqualArea=False,
-                      ax=ax1, fig=fig, title="[A] ERA-Interim")
+                      ax=ax1, fig=fig, title="[A] ERA5")
 plot_eofsAsCovariance(variable= "slp", data=(eofs[0]*-1), mode_var=var_frac[0], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] Alps 100")
 plot_eofsAsCovariance(variable= "mslp", data=(eofs_east_0[0]*-1), mode_var=var_frac_east_0[0], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] Alps east 0")
 plot_eofsAsCovariance(variable= "mslp", data=(eofs_east_150[0]*1), mode_var=var_frac_east_150[0], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] Alps east 150")
+                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] Alps east 200")
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.07)
-plt.savefig(os.path.join(path_to_store, "figS10.png"), format= "png", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_store, "fig1B.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
 # EA
 fig, ((ax1,ax2), (ax3,ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(18,10), subplot_kw={"projection":projection})
 
-plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[1]*-1), mode_var=var_frac_ERA[1], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
+plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[1]), mode_var=var_frac_ERA[1], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal",use_AlberEqualArea=False,
-                      ax=ax1, fig=fig, title="[A] ERA-Interim")
+                      ax=ax1, fig=fig, title="[A] ERA5")
 plot_eofsAsCovariance(variable= "slp", data=(eofs[1]*-1), mode_var=var_frac[1], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] Alps 100")
 plot_eofsAsCovariance(variable= "slp", data=(eofs_east_0[1]*-1), mode_var=var_frac_east_0[1], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] Alps east 0")
 plot_eofsAsCovariance(variable= "slp", data=(eofs_east_150[1]*-1), mode_var=var_frac_east_150[1], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] Alps east 150")
+                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] Alps east 200")
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.07)
-plt.savefig(os.path.join(path_to_store, "fig10.png"), format= "png", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_store, "fig2B.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
 # SCAN
 
 fig, ((ax1,ax2), (ax3,ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(18,10), subplot_kw={"projection":projection})
 
-plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[2]*-1), mode_var=var_frac_ERA[2], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
+plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[2]), mode_var=var_frac_ERA[2], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal",use_AlberEqualArea=False,
-                      ax=ax1, fig=fig, title="[A] ERA-Interim")
+                      ax=ax1, fig=fig, title="[A] ERA5")
 plot_eofsAsCovariance(variable= "slp", data=(eofs[2]*-1), mode_var=var_frac[2], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] Alps 100")
 plot_eofsAsCovariance(variable= "slp", data=(eofs_east_0[2]*-1), mode_var=var_frac_east_0[2], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] Alps east 0")
 plot_eofsAsCovariance(variable= "slp", data=(eofs_east_150[2]*-1), mode_var=var_frac_east_150[2], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] Alps east 150")
+                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] Alps east 200")
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.07)
-plt.savefig(os.path.join(path_to_store, "figS11.png"), format= "png", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_store, "fig3B.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
 

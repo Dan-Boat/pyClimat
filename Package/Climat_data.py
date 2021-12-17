@@ -141,7 +141,7 @@ def read_Gtopo(path, tile_name, extract_var=None):
     Parameters
     ----------
     path : TYPE: str
-        DESCRIPTION. directrory to all the tile files 
+        DESCRIPTION. directrory to all the tile files (or path to tiles)
     tile_name : TYPE: str
         DESCRIPTION. Which tile to use for modification (check the image in the original files folder)
     extract_var : TYPE, optional : or yes

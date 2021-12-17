@@ -242,23 +242,33 @@ Alps_200_geosp_lat_a = extract_profile(data = Alps_200_elev_alt, maxlon=maxlon_B
 # visualisation
 
 path_to_store = os.path.join(module_output_main_path, "plots")
+plt.style.use("bmh")
+plt.rcParams['text.latex.preamble'] = [r"\usepackage{lmodern}"]
+mpl.rc('text', usetex=True)
+mpl.rc('font', size=20, family='serif')
+mpl.rc('xtick', labelsize=20)
+mpl.rc('ytick', labelsize=20)
+mpl.rc('legend', fontsize=20)
+mpl.rc('axes', labelsize=20)
+mpl.rc('lines', linewidth=3)
+
 #fig, ((ax1,ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 13),sharey=False, sharex=False)
 
-apply_style_2(fontsize=22)
+
 
 fig, (ax1,ax2) = plt.subplots(nrows = 1, ncols = 2,sharey=False, sharex=False, figsize=(20, 8))
 
 plot_iso_profiles(df_iso=control_d18op_lon , df_geosp=control_geosp_lon , dim="lon", iso_color=black, iso_label="Alps 100%",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1, title="[A]", 
-                  right_labels =False)
+                  right_labels =False, )
 plot_iso_profiles(df_iso=east_150_d18op_lon , df_geosp=east_150_geosp_lon , dim="lon", iso_color=blue, iso_label="Alps east 150%",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1, 
-                  right_labels =False)
+                  right_labels =False, )
 plot_iso_profiles(df_iso=east_0_d18op_lon , df_geosp=east_0_geosp_lon , dim="lon", iso_color=red, iso_label="Alps east 0%",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1, 
-                  right_labels =False)
+                  right_labels =False,)
 plot_iso_profiles(df_iso=east_200_d18op_lon , df_geosp=east_200_geosp_lon , dim="lon", iso_color=green, iso_label="Alps east 200%",
-                  season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1, right_labels =False)
+                  season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1, right_labels =False,)
 
 
 plot_iso_profiles(df_iso=control_d18op_lat , df_geosp=control_geosp_lat , dim="lat", iso_color=black, iso_label=None,
@@ -314,26 +324,25 @@ plt.savefig(os.path.join(path_to_store, "fig5.svg"), format= "svg", bbox_inches=
 
 fig, (ax1,ax2) = plt.subplots(nrows = 1, ncols = 2,sharey=False, sharex=False, figsize=(20,8))
 
-apply_style_2()
 plot_iso_profiles(df_iso=control_d18op_lon , df_geosp=control_geosp_lon , dim="lon", iso_color=black, iso_label="Alps 100%",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1, title="[A]",
-                  right_labels=False)
+                  right_labels=False,)
 plot_iso_profiles(df_iso=east_200_d18op_lon , df_geosp=east_200_geosp_lon , dim="lon", iso_color=blue, iso_label="Alps east 200%",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1, 
-                  right_labels=False)
+                  right_labels=False, shade_color=blue)
 plot_iso_profiles(df_iso=Alps_200_d18op_lon , df_geosp=Alps_200_geosp_lon, dim="lon", iso_color=red, iso_label="Alps 200%",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1,
-                  right_labels=False)
+                  right_labels=False, shade_color=red)
 
 
 plot_iso_profiles(df_iso=control_d18op_lon , df_geosp=control_geosp_lon , dim="lon", iso_color=black, iso_label=None,
-                  season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax2, title="[B]", left_labels=False,
-                 )
+                  season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax2, title="[B]", left_labels=False, shade_alpha=0.2,
+                 shade_color=black)
 plot_iso_profiles(df_iso=east_0_d18op_lon , df_geosp=east_0_geosp_lon , dim="lon", iso_color=green, iso_label="Alps east 0%", 
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax2, left_labels=False,
-                  )
+                  shade_color=green, shade_alpha=0.2)
 plot_iso_profiles(df_iso=Alps_0_d18op_lon , df_geosp=Alps_0_geosp_lon, dim="lon", iso_color=purple, iso_label="Alps 0%",
-                  season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax2, left_labels=False,)
+                  season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax2, left_labels=False,shade_color="indigo", shade_alpha=0.3)
 
 
 #fig, (ax1,ax2) = plt.subplots(nrows = 1, ncols = 2,sharey=False, sharex=False, figsize=(20,8))
