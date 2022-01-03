@@ -1096,6 +1096,119 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
     if all(parameter is not None for parameter in [output_format, output_name, path_to_store]):
         plt.savefig(os.path.join(path_to_store, output_name + "." + output_format), format= output_format, bbox_inches="tight")
         
+        
+def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig=None, vmax=None, vmin=None, levels=None, output_name=None, 
+                     output_format=None, level_ticks=None, title=None, path_to_store=None, plot_colorbar=True,
+                     cbar_pos=None, fig_title=None, season_label=None, geosp_data=None, dim=None, left_labels=True, bottom_labels=True,
+                     right_labels=True):
+    
+    # extracting coords from data
+    x = data.index.values
+    y = data.columns.values
+     
+    # applying meshgrid 
+    X,Y = np.meshgrid(x,y)
+    Z = data.values.T
+     
+    if ax is None:
+        fig, ax = plt.subplots(nrows=1, ncols=1, sharex= False, sharey= False, figsize=(8, 7))
+    
+    #ploting with plt.contourf 
+    norm = MidpointNormalize(midpoint=0)
+    
+    if all(parameter is not None for parameter in [vmin, vmax, levels, level_ticks]):
+        ticks = np.linspace(vmin, vmax, level_ticks)
+        if vmin < 0:
+            p = ax.contourf(X,Y,Z, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, norm=norm)
+        else:
+            p = ax.contourf(X,Y,Z, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels,)
+    else:
+        p = ax.contourf(X,Y,Z, cmap=cmap)
+        
+    # invert axis bcos of higher values at the surface
+    ax.invert_yaxis()
+    
+    if plot_colorbar == True:
+        if cbar_pos is None:
+            cbar_pos = [0.90, 0.30, 0.03, 0.45]
+        
+        if fig is not None:
+            
+            cbar_ax = fig.add_axes(cbar_pos)   # axis for subplot colorbar # left, bottom, width, height
+            
+            cbar_ax.get_xaxis().set_visible(False)
+            cbar_ax.yaxis.set_ticks_position('right')
+            cbar_ax.set_yticklabels([])
+            cbar_ax.tick_params(size=0)
+        
+        if level_ticks is not None:
+            cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
+                     format="%.2f", ticks = ticks, extend = "neither", pad = 0.05)
+        else:
+            cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
+                     format="%.2f", extend = "neither", pad=0.05)
+            
+        cb.set_label(label=variable + " [" + units + "]", size= 20, fontweight="bold")
+        cb.ax.tick_params(labelsize=20, size=0,)
+        
+    if geosp_data is not None:
+        ax2 = ax.twinx()
+        ax2.grid(False)
+        
+        if season:
+            df = geosp_data[season]
+        else:
+            df = geosp_data
+            
+        ax2.fill_between(df.index, df/1000, 0, color=black, edgecolor=black, linestyle="-", linewidth=2.5)
+        
+        # setting limit to match pressure levels (Try with the cdo converted height levels later)
+        ax2.set_ylim(0, 16)
+    
+    if bottom_labels == True:
+        if dim == "lon":
+             ax.set_xlabel("Longitude [E°]", fontsize=20)
+        elif dim == "lat":
+             ax.set_xlabel("Latitude [N°]", fontsize=20)
+        else:
+            raise ValueError("Define dim as lat or lon")
+
+        
+            
+    if left_labels == True:
+        ax.set_ylabel("Pressure [hPa]", fontsize=20)
+            
+    
+    if left_labels ==False:
+        ax.grid(True)
+        #ax.axes.yaxis.set_visible(False)
+        ax.set_yticklabels([])
+    
+        
+    if bottom_labels == False:
+        ax.grid(True)
+        #ax.axes.yaxis.set_visible(False)
+        ax.set_yticklabels([])
+        
+    if right_labels == True:
+    
+        ax2.set_ylabel("Height [km]", fontsize=20)
+        
+    else:
+        ax2.set_yticklabels([])
+    
+    
+    if title is not None:
+        ax.set_title(title, fontdict= {"fontsize": 20, "fontweight":"bold"}, loc="left")
+        
+    plt.tight_layout()
+    
+    #optional if one plot is required, alternatively save from the control script
+    if all(parameter is not None for parameter in [output_format, output_name, path_to_store]):
+        plt.savefig(os.path.join(path_to_store, output_name + "." + output_format), format= output_format, bbox_inches="tight")
+        
+               
+
 def plot_wind_streamlines():
     pass
 

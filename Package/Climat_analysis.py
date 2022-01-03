@@ -20,8 +20,10 @@ from eofs.xarray import Eof
 
 try:
     from .Climat_data import *
+    from .Climat_utils import vert_coord_convertion
 except:
     from Climat_data import *
+    from Climat_utils import vert_coord_convertion
     
 
 
@@ -41,7 +43,7 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
     Dataset_wiso : TYPE, optional
         DESCRIPTION. The default is None. Wiso Dataset is required for calcullating d18op and d18ov   
     other_data: TYPE: datarray, optional 
-        DESCRIPTION: Additional data required for calculating units eg. Pa/s--> m/s require temperature data on pressure levels
+        DESCRIPTION: Additional data required for calculating units eg. Pa/s--> m/s require temperature data on pressure levels (in K)
     lev_units: TYPE: str, optional 
         DESCRIPTION: Units of vertical levels eg. hPa
     lev: TYPE: int, optional 
@@ -144,18 +146,18 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
     elif varname == "slm":
         var_data = Dataset["slm"]
         
-    # Wind velocity zonal
+    # Surface Wind velocity zonal
     elif varname == "u10":
         var_data = Dataset["u10"]
         
-    # wind velocity meridoinal
+    # Surface wind velocity meridoinal
     elif varname == "v10":
         var_data = Dataset["v10"]
         
     elif varname == "wind10":
         var_data = Dataset["wind10"]
     
-        #geopotential height at pressure levels
+    # geopotential height at pressure levels
     elif varname == "geopoth":
         var_data = Dataset["geopoth"]
         if lev_units is not None:
@@ -168,12 +170,6 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
     # mean sea level pressure    
     elif varname == "slp":
         var_data = Dataset["slp"]
-        if lev_units is not None:
-            if lev_units == "hPa":
-                var_data["lev"] = var_data.lev / 100  #Pa --> hPa
-                var_data["lev"].attrs["units"] = "hPa"
-            else:
-                 raise ValueError("You have defined incorrect units or its not implemented")
         
         if units is not None:
             if units == "hPa":
@@ -186,58 +182,80 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
         var_data = Dataset[varname]
         
         if lev_units is not None:
-            if lev_units == "hPa":
-                var_data["lev"] = var_data.lev / 100  #Pa --> hPa
-                var_data["lev"].attrs["units"] = "hPa"
-            else:
-                 raise ValueError("You have defined incorrect units or its not implemented")
-        
+            var_data = vert_coord_convertion(data=var_data, units=lev_units)
+            
         if units is not None:
             #Other data must be temperature on pressure levels with the same shape as omega
             if units == "m/s":
                 rgas=287.058  # m²/s²K
                 g=9.80665
-                pa = Dataset["lev"]
-                other_data["st"]
+                pa = Dataset["lev"] # must be the same size and shape as omega and t
                 rho = pa/(rgas*other_data)
                 var_data /= (rho*g)  #Pa/s -->m/s
+            elif units == "Pa/s":
+                var_data = var_data
+                
             else:
                 raise ValueError("You have defined incorrect units or its not implemented")
+                
         if lev is not None:
             var_data = var_data.sel(lev=lev)
-        else:
-            raise ValueError("You have defined incorrect vertical level")
+        
+        
     # meridional wind at vertical levels    
     elif varname == "v":
         var_data = Dataset[varname]
         if lev_units is not None:
-            if lev_units == "hPa":
-                var_data["lev"] = var_data.lev / 100  #Pa --> hPa
-                var_data["lev"].attrs["units"] = "hPa"
-            else:
-                 raise ValueError("You have defined incorrect units or its not implemented")
-        
+            var_data = vert_coord_convertion(data=var_data, units=lev_units)
+            
         if lev is not None:
             var_data = var_data.sel(lev=lev)
-        else:
-            raise ValueError("You have defined incorrect vertical level")
+            
     # zonal wind at vertical levels    
     elif varname == "u":
         var_data = Dataset[varname]
         if lev_units is not None:
-            if lev_units == "hPa":
-                var_data["lev"] = var_data.lev / 100  #Pa --> hPa
-                var_data["lev"].attrs["units"] = "hPa"
-            else:
-                 raise ValueError("You have defined incorrect units or its not implemented")
+            var_data = vert_coord_convertion(data=var_data, units=lev_units)
+            
         if lev is not None:
             var_data = var_data.sel(lev=lev)
-        else:
-            raise ValueError("You have defined incorrect vertical level")
+            
     elif varname == "e/p":
         var_prec = Dataset["aprl"] + Dataset["aprc"]
         var_evap = Dataset["evap"] 
         var_data = var_evap/var_prec
+        
+    # temperature at vertical levels    
+    elif varname == "st":
+        var_data = Dataset[varname]
+        if lev_units is not None:
+            var_data = vert_coord_convertion(data=var_data, units=lev_units)
+            
+                 
+        if lev is not None:
+            var_data = var_data.sel(lev=lev)
+            
+    # total cloud cover at vertical levels 
+    elif varname == "aclcac":
+        var_data = Dataset[varname]
+        if lev_units is not None:
+            var_data = vert_coord_convertion(data=var_data, units=lev_units)
+                 
+        if lev is not None:
+            var_data = var_data.sel(lev=lev)
+            
+    # specific humidity at vertical levels         
+    elif varname == "q":
+        var_data = Dataset[varname]
+        if lev_units is not None:
+            var_data = vert_coord_convertion(data=var_data, units=lev_units)
+                 
+        if lev is not None:
+            var_data = var_data.sel(lev=lev)
+            
+    elif varname == "latent heat":
+        var_data = Dataset["ahfl"]
+        
         
     else:
         print("Check the Varname or it has not been implemeted")
@@ -409,9 +427,6 @@ def extract_transect(data, maxlon, minlon, maxlat, minlat, sea_land_mask=False, 
         if sea_land_mask == True:
         
             data_extract = xr.where(data_extract["slm"] == 1, data_extract, data_extract*np.nan)
-        else:
-            
-            data_extract = xr.where(data_extract.slm == 0, data_extract, data_extract*np.nan)
 
         if minelev is not None:
             data_extract = xr.where(data_extract.geosp >= minelev, data_extract, data_extract*np.nan)
@@ -492,7 +507,47 @@ def extract_profile(data, maxlon, minlon, maxlat, minlat, dim, to_pandas=True, s
             
     return data_prof
 
-
+def extract_vertical_section(data, maxlon, minlon, maxlat, minlat, dim, sea_land_mask=False, minelev=None, maxelev=None, 
+                    Dataset=None, season = None, month=None):
+    
+    data_extract = extract_transect(data=data, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, sea_land_mask=sea_land_mask, 
+                                    minelev=minelev, maxelev=maxelev, Dataset=Dataset)
+    
+    if dim in ["lat", "latitude"]:
+        print("Computing the mean across longitude")
+        data_sect = data_extract.mean(dim="lon")
+    elif dim in ["lon", "longitude"]:
+        print("Computing the mean across latitude")
+        data_sect = data_extract.mean(dim="lat")
+    else:
+        print("Define the dimension to extract the profile")
+        
+    # select season if required
+    if season is not None:
+        data_sect = data_sect.sel(season=season)
+        
+    if month is not None: 
+        data_sect = data_sect.sel(month=month)
+    
+    # convert to pandas 
+    df = data_sect.to_pandas()
+    df = df.T  # transpose axis
+    
+    # sortby using the columns 
+    if isinstance(df, pd.Series):
+        df = df.sort_values(axis=1, ascending=True)
+        df = df.sort_values(axis=0, ascending=True)
+    elif isinstance(df, pd.DataFrame):
+        df = df.sort_values(by=[dim], axis=0)
+        #df = df.sort_values(by=["lev"], axis=1)
+    
+    return df
+        
+    
+    
+    
+    
+    
 def linregression(data_x, data_y, season=None, month=None, return_yhat=True):
     """
     
@@ -635,6 +690,9 @@ def EOF_analysis(data, maxlon, minlon, maxlat, minlat, return_variance=False, re
         
     # applying the EOF function (ref: http://doi.org/10.5334/jors.122)
     
+    if True in data_anomalies.isnull():
+        data_anomalies = data_anomalies.dropna(dim="time")
+        
     Solver = Eof(data_anomalies)
     
     if all(parameter is not None for parameter in [neofs, pcscaling]):
