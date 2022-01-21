@@ -225,6 +225,24 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
         var_evap = Dataset["evap"] 
         var_data = var_evap/var_prec
         
+    elif varname == "E-P":
+        var_prec = Dataset["aprl"] + Dataset["aprc"]
+        var_evap = Dataset["evap"] 
+        
+        if units is not None:
+            if units == "mm/month":
+                var_prec = var_prec *60*60*24*30  #mm/month (positive values)
+                var_evap = var_evap *60*60*24*30*-1  #mm/month (positive values)
+                
+            else:
+                print("Define unit well or the default is kg/m²s")
+            
+            var_data = var_evap - var_prec
+            var_data.attrs["units"] = units
+        else:
+            var_data = var_evap - var_prec
+        
+            
     # temperature at vertical levels    
     elif varname == "st":
         var_data = Dataset[varname]
@@ -247,6 +265,11 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
     # specific humidity at vertical levels         
     elif varname == "q":
         var_data = Dataset[varname]
+        
+        if units is not None:
+            if units =="g/kg":
+                var_data = var_data * 1000 #--->g/kg
+                
         if lev_units is not None:
             var_data = vert_coord_convertion(data=var_data, units=lev_units)
                  
@@ -254,7 +277,7 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
             var_data = var_data.sel(lev=lev)
             
     elif varname == "latent heat":
-        var_data = Dataset["ahfl"]
+        var_data = Dataset["ahfl"] * -1 #positive values
         
         
     else:

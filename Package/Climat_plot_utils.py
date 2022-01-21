@@ -48,6 +48,7 @@ gold = "gold"
 magenta = "magenta"
 black = "black"
 grey = "grey"
+golden = "darkgoldenrod"
 
 #divergence colors 
 RdBu_r = plt.cm.RdBu_r
@@ -57,6 +58,7 @@ Spectral_r = plt.cm.Spectral_r
 terrain = plt.cm.terrain
 viridis = plt.cm.viridis
 BwR_r = plt.cm.bwr_r
+BwR = plt.cm.bwr
 Seismic = plt.cm.seismic
 Reds = plt.cm.Reds
 Greys = plt.cm.Greys
@@ -70,6 +72,8 @@ RdYlGn = plt.cm.RdYlGn
 Spectral = plt.cm.Spectral
 YlGnBu = plt.cm.YlGnBu
 winter = plt.cm.winter
+PuBu = plt.cm.PuBu
+PuBu_r = plt.cm.PuBu_r
 
 # defining plot styles (which contains fonts and backgrouds)
 # plt.style.use (can be seaborn, dark_background, fivethirtyeight, bmh)
