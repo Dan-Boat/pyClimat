@@ -169,7 +169,10 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
     
     # mean sea level pressure    
     elif varname == "slp":
-        var_data = Dataset["slp"]
+        if hasattr(Dataset, "aps"):
+            var_data = Dataset["aps"]
+        else:    
+            var_data = Dataset["slp"]
         
         if units is not None:
             if units == "hPa":

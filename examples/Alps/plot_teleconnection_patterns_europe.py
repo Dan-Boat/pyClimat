@@ -18,10 +18,13 @@ from Package import *
 
 # Path to experiments
 module_output_main_path = "/home/dboateng/Model_output_pst"
-exp_name_control = "a002_hpc-bw_e5w2.3_t159_PI_Alps_east_100_t159l31.6h"
-exp_name_east_0 = "a003_hpc-bw_e5w2.3_t159_PI_Alps_east_0_t159l31.6h"
-exp_name_east_150 = "a001_hpc-bw_e5w2.3_t159_PI_Alps_east_300_t159l31.6h"
-#exp_name_east_50 = "a004_hpc-bw_e5w2.3_t159_PI_Alps_east_50_t159l31.6h"
+exp_name_AW100E100 = "a002_hpc-bw_e5w2.3_t159_PI_Alps_east_100_t159l31.6h"
+exp_name_AW100E0 = "a003_hpc-bw_e5w2.3_t159_PI_Alps_east_0_t159l31.6h"
+exp_name_AW100E200 = "a001_hpc-bw_e5w2.3_t159_PI_Alps_east_300_t159l31.6h"
+exp_name_AW200E100 = "a009_hpc-bw_e5w2.3_t159_PI_AW200E100_t159l31.6h"
+exp_name_AW200E0 = "a010_hpc-bw_e5w2.3_t159_PI_AW200E0_t159l31.6h"
+#exp_name_AW200E200 = "t017_hpc-bw_e5w2.3_PI_Alps150_t159l31.6h"
+
 years= "1003_1017"
 period = "1m"
 
@@ -33,30 +36,51 @@ slp_ERA = read_ERA_processed(path=path_to_msl, varname="msl") / 100 #Pa--> hpa
 slp_ERA = slp_ERA.rename({"longitude": "lon", "latitude":"lat"})
 
 # reading dataset
-control_data = read_ECHAM_processed(main_path=module_output_main_path , exp_name= exp_name_control, years=years,
+AW100E100_data = read_ECHAM_processed(main_path=module_output_main_path , exp_name= exp_name_AW100E100, years=years,
                                                   period=period, add_name="slp", read_wiso=False)
-east_0_data = read_ECHAM_processed(main_path=module_output_main_path , exp_name= exp_name_east_0, years=years,
+AW100E0_data = read_ECHAM_processed(main_path=module_output_main_path , exp_name= exp_name_AW100E0, years=years,
                                                   period=period, add_name="slp", read_wiso=False)
-east_150_data = read_ECHAM_processed(main_path=module_output_main_path , exp_name= exp_name_east_150, years=years,
+AW100E200_data = read_ECHAM_processed(main_path=module_output_main_path , exp_name= exp_name_AW100E200, years=years,
                                                   period=period, add_name="slp", read_wiso=False)
+AW200E100_data = read_ECHAM_processed(main_path=module_output_main_path , exp_name= exp_name_AW200E100, years=years,
+                                                  period=period, add_name="slp", read_wiso=False)
+AW200E0_data = read_ECHAM_processed(main_path=module_output_main_path , exp_name= exp_name_AW200E0, years=years,
+                                                  period=period, add_name="slp", read_wiso=False)
+#AW200E200_data = read_ECHAM_processed(main_path=module_output_main_path , exp_name= exp_name_AW200E200, years=years,
+#                                                  period=period, add_name="slp", read_wiso=False)
 
 # reading sea level presure
 
-slp = extract_var(Dataset=control_data , varname="slp", units="hPa")
-slp_east_0 = extract_var(Dataset= east_0_data , varname="slp", units="hPa")
-slp_east_150 = extract_var(Dataset=east_150_data , varname="slp", units="hPa")
+slp_AW100E100 = extract_var(Dataset=AW100E100_data , varname="slp", units="hPa")
+slp_AW100E0 = extract_var(Dataset= AW100E0_data , varname="slp", units="hPa")
+slp_AW100E200 = extract_var(Dataset=AW100E200_data , varname="slp", units="hPa")
+slp_AW200E100 = extract_var(Dataset=AW200E100_data , varname="slp", units="hPa")
+slp_AW200E0 = extract_var(Dataset=AW200E0_data , varname="slp", units="hPa")
+#slp_AW200E200 = extract_var(Dataset=AW200E200_data , varname="slp", units="hPa")
 
 
 #performing EOF analysis (using winter data extracted for North Atlantic region)
-eofs, pcs, var_frac = EOF_analysis(data=slp, maxlon=60, minlon=-80, maxlat=80, minlat=20, season="JJA",
+eofs_AW100E100, pcs_AW100E100, var_frac_AW100E100 = EOF_analysis(data=slp_AW100E100, maxlon=60, minlon=-80, maxlat=80, minlat=20, season="JJA",
                     neofs=4, pcscaling=1, apply_coslat_weights=True, return_variance=True, neigs=3,
                     return_pcs=True, npcs=4)
-eofs_east_0, pcs_east_0, var_frac_east_0 = EOF_analysis(data=slp_east_0, maxlon=60, minlon=-80, maxlat=80, minlat=20, season="JJA",
+eofs_AW100E0, pcs_AW100E0, var_frac_AW100E0 = EOF_analysis(data=slp_AW100E0, maxlon=60, minlon=-80, maxlat=80, minlat=20, season="JJA",
                     neofs=4, pcscaling=1, apply_coslat_weights=True, return_variance=True, neigs=3,
                     return_pcs=True, npcs=4)
-eofs_east_150, pcs_east_150, var_frac_east_150 = EOF_analysis(data=slp_east_150, maxlon=60, minlon=-80, maxlat=80, minlat=20, season="JJA",
+eofs_AW100E200, pcs_AW100E200, var_frac_AW100E200 = EOF_analysis(data=slp_AW100E200, maxlon=60, minlon=-80, maxlat=80, minlat=20, season="JJA",
                     neofs=4, pcscaling=1, apply_coslat_weights=True, return_variance=True, neigs=3,
                     return_pcs=True, npcs=4)
+
+eofs_AW200E100, pcs_AW200E100, var_frac_AW200E100 = EOF_analysis(data=slp_AW200E100, maxlon=60, minlon=-80, maxlat=80, minlat=20, season="JJA",
+                    neofs=4, pcscaling=1, apply_coslat_weights=True, return_variance=True, neigs=3,
+                    return_pcs=True, npcs=4)
+
+eofs_AW200E0, pcs_AW200E0, var_frac_AW200E0 = EOF_analysis(data=slp_AW200E0, maxlon=60, minlon=-80, maxlat=80, minlat=20, season="JJA",
+                    neofs=4, pcscaling=1, apply_coslat_weights=True, return_variance=True, neigs=3,
+                    return_pcs=True, npcs=4)
+
+# eofs_AW200E200, pcs_AW200E200, var_frac_AW200E200 = EOF_analysis(data=slp_AW200E200, maxlon=60, minlon=-80, maxlat=80, minlat=20, season="JJA",
+#                     neofs=4, pcscaling=1, apply_coslat_weights=True, return_variance=True, neigs=3,
+#                     return_pcs=True, npcs=4)
 
 eofs_ERA, pcs_ERA, var_frac_ERA = EOF_analysis(data=slp_ERA, maxlon=60, minlon=-80, maxlat=80, minlat=20, season="JJA",
                     neofs=4, pcscaling=1, apply_coslat_weights=True, return_variance=True, neigs=3,
@@ -70,57 +94,74 @@ path_to_store = os.path.join(module_output_main_path, "plots")
 #projection = ccrs.AlbersEqualArea(central_latitude=40, central_longitude=-35, standard_parallels=(0, 80))
 
 # NAO
-fig, ((ax1,ax2), (ax3,ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(18,10), subplot_kw={"projection":projection})
+fig, ((ax1,ax2), (ax3,ax4), (ax5, ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20,15), subplot_kw={"projection":projection})
 
-plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[0]*-1), mode_var=var_frac_ERA[0], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
+plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[0]*-1), mode_var=var_frac_ERA[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal",use_AlberEqualArea=False,
-                      ax=ax1, fig=fig, title="[A] ERA5")
-plot_eofsAsCovariance(variable= "slp", data=(eofs[0]*-1), mode_var=var_frac[0], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] Alps 100")
-plot_eofsAsCovariance(variable= "mslp", data=(eofs_east_0[0]*1), mode_var=var_frac_east_0[0], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] Alps east 0")
-plot_eofsAsCovariance(variable= "mslp", data=(eofs_east_150[0]*-1), mode_var=var_frac_east_150[0], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] Alps east 200")
+                      ax=ax1, fig=fig, title="[A] ERA5", bottom_labels=False)
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E100[0]*-1), mode_var=var_frac_AW100E100[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] AE100E100", bottom_labels=False, left_labels=False)
+plot_eofsAsCovariance(variable= "mslp", data=(eofs_AW100E0[0]*1), mode_var=var_frac_AW100E0[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] AW100E0", bottom_labels=False)
+plot_eofsAsCovariance(variable= "mslp", data=(eofs_AW100E200[0]*-1), mode_var=var_frac_AW100E200[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] AW100E200", bottom_labels=False, left_labels=False)
+
+plot_eofsAsCovariance(variable= "mslp", data=(eofs_AW200E0[0]*1), mode_var=var_frac_AW200E0[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax5, fig=fig, title="[C] AW200E0")
+plot_eofsAsCovariance(variable= "mslp", data=(eofs_AW200E100[0]*1), mode_var=var_frac_AW200E100[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax6, fig=fig, title="[D] AW200E100", left_labels=False)
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
-plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.07)
-plt.savefig(os.path.join(path_to_store, "fig1C.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
+#plt.savefig(os.path.join(path_to_store, "fig13.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
 # EA
-fig, ((ax1,ax2), (ax3,ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(18,10), subplot_kw={"projection":projection})
+fig, ((ax1,ax2), (ax3,ax4), (ax5, ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20,15), subplot_kw={"projection":projection})
 
-plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[-1]), mode_var=var_frac_ERA[1], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
+plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[1]*-1), mode_var=var_frac_ERA[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal",use_AlberEqualArea=False,
-                      ax=ax1, fig=fig, title="[A] ERA5")
-plot_eofsAsCovariance(variable= "slp", data=(eofs[1]*-1), mode_var=var_frac[1], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] Alps 100")
-plot_eofsAsCovariance(variable= "slp", data=(eofs_east_0[1]*-1), mode_var=var_frac_east_0[1], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] Alps east 0")
-plot_eofsAsCovariance(variable= "slp", data=(eofs_east_150[1]*1), mode_var=var_frac_east_150[1], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] Alps east 200")
+                      ax=ax1, fig=fig, title="[A] ERA5", bottom_labels=False)
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E100[1]*-1), mode_var=var_frac_AW100E100[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] AW100E100", bottom_labels=False, left_labels=False)
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E0[1]*-1), mode_var=var_frac_AW100E0[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] AW100E0", bottom_labels=False)
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E200[1]*1), mode_var=var_frac_AW100E200[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] AW100E200", bottom_labels=False, left_labels=False)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E0[1]*1), mode_var=var_frac_AW200E0[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax5, fig=fig, title="[C] AW200E0")
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E100[1]*-1), mode_var=var_frac_AW200E100[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax6, fig=fig, title="[D] AW200E100", left_labels=False)
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
-plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.07)
-plt.savefig(os.path.join(path_to_store, "fig2C.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
+#plt.savefig(os.path.join(path_to_store, "fig14.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
 # SCAN
-fig, ((ax1,ax2), (ax3,ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(18,10), subplot_kw={"projection":projection})
+fig, ((ax1,ax2), (ax3,ax4), (ax5, ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20,15), subplot_kw={"projection":projection})
 
-plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[2]*-1), mode_var=var_frac_ERA[2], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
+plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[2]*-1), mode_var=var_frac_ERA[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal",use_AlberEqualArea=False,
-                      ax=ax1, fig=fig, title="[A] ERA5")
-plot_eofsAsCovariance(variable= "slp", data=(eofs[2]*-1), mode_var=var_frac[2], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] Alps 100")
-plot_eofsAsCovariance(variable= "slp", data=(eofs_east_0[2]*-1), mode_var=var_frac_east_0[2], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] Alps east 0")
-plot_eofsAsCovariance(variable= "slp", data=(eofs_east_150[2]*1), mode_var=var_frac_east_150[2], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] Alps east 200")
+                      ax=ax1, fig=fig, title="[A] ERA5", bottom_labels=False)
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E100[2]*-1), mode_var=var_frac_AW100E100[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] AW100E100", left_labels=False, bottom_labels=False)
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E0[2]*-1), mode_var=var_frac_AW100E0[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] AW100E0", bottom_labels=False)
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E200[2]*1), mode_var=var_frac_AW100E200[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] AW100E200", left_labels=False, bottom_labels=False)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E0[2]*-1), mode_var=var_frac_AW200E0[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax5, fig=fig, title="[C] AW200E0")
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E100[2]*-1), mode_var=var_frac_AW200E100[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax6, fig=fig, title="[D] AW200E100", left_labels=False)
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
-plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.07)
-plt.savefig(os.path.join(path_to_store, "fig3C.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
+#plt.savefig(os.path.join(path_to_store, "fig15.svg"), format= "svg", bbox_inches="tight", dpi=600)
+
+plt.show()
