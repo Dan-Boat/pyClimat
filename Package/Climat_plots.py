@@ -1117,7 +1117,7 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
 def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig=None, vmax=None, vmin=None, levels=None, output_name=None, 
                      output_format=None, level_ticks=None, title=None, path_to_store=None, plot_colorbar=True,
                      cbar_pos=None, fig_title=None, season_label=None, geosp_data=None, dim=None, left_labels=True, bottom_labels=True,
-                     right_labels=True):
+                     right_labels=True, use_norm=False):
     
     # extracting coords from data
     x = data.index.values
@@ -1135,7 +1135,7 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
     
     if all(parameter is not None for parameter in [vmin, vmax, levels, level_ticks]):
         ticks = np.linspace(vmin, vmax, level_ticks)
-        if vmin < 0:
+        if vmin < 0 and use_norm==True:
             p = ax.contourf(X,Y,Z, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, norm=norm)
         else:
             p = ax.contourf(X,Y,Z, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels,)

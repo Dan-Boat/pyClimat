@@ -152,6 +152,11 @@ def plot_vertical_vars(first=True, second=False):
         q_AW100E100_slt = compute_lterm_mean(data=q_AW100E100, time="season", season_calendar="standard")
         q_AW100E0_slt = compute_lterm_mean(data=q_AW100E0, time="season", season_calendar="standard")
         q_AW100E200_slt = compute_lterm_mean(data=q_AW100E200, time="season", season_calendar="standard")
+        
+        #extract_profile 
+        df_q_AW100E100 = extract_vertical_section(data=q_AW100E100_slt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lon", season="JJA")
+        df_q_AW100E0 = extract_vertical_section(data=q_AW100E0_slt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lon", season="JJA")
+        df_q_AW100E200 = extract_vertical_section(data=q_AW100E200_slt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lon", season="JJA")
     
     
     
@@ -218,7 +223,10 @@ def plot_vertical_vars(first=True, second=False):
         q_AW200E0 = extract_var(Dataset=AW200E0_plev, varname="q", lev_units="hPa", units="g/kg")
         #q_AW200E200 = extract_var(Dataset=AW200E200_plev, varname="q", lev_units="hPa", units="g/kg")
         
-        
+        #lterm means
+        q_AW200E100_slt = compute_lterm_mean(data=q_AW200E100, time="season", season_calendar="standard")
+        q_AW200E0_slt = compute_lterm_mean(data=q_AW200E0, time="season", season_calendar="standard")
+        #q_AW200E200_slt = compute_lterm_mean(data=q_AW100E200, time="season", season_calendar="standard")
         
         #extract_profile 
         df_q_AW200E100 = extract_vertical_section(data=q_AW200E100_slt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lon", season="JJA")
@@ -236,15 +244,15 @@ def plot_vertical_vars(first=True, second=False):
     
         fig, ((ax1,ax2,ax3),(ax4,ax5,ax6),(ax7,ax8,ax9))= plt.subplots(nrows = 3, ncols = 3, sharey=False, sharex=False, figsize=(25, 20))
         
-        plot_vertical_section(variable="Omega", data=df_omega_AW100E100 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.08, vmin=-0.08, levels=22,
+        plot_vertical_section(variable="Omega", data=df_omega_AW100E100 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.10, vmin=-0.20, levels=22,
                               level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.72, 0.02, 0.23], geosp_data=df_elev_AW100E100, dim="lon", ax=ax1, fig=fig, 
-                              bottom_labels=False, right_labels=False, left_labels=True, title= "[A]            AW100E100")
-        plot_vertical_section(variable="Omega", data=df_omega_AW100E0 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.08, vmin=-0.08, levels=22,
+                              bottom_labels=False, right_labels=False, left_labels=True, title= "[A]            AW100E100", use_norm=True)
+        plot_vertical_section(variable="Omega", data=df_omega_AW100E0 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.10, vmin=-0.20, levels=22,
                               level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW100E0 , dim="lon", ax=ax2, fig=fig,
-                              bottom_labels=False, right_labels=False, left_labels=False, title="[B]             AW100E0")
-        plot_vertical_section(variable="Omega", data=df_omega_AW100E200 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.08, vmin=-0.08, levels=22,
+                              bottom_labels=False, right_labels=False, left_labels=False, title="[B]             AW100E0", use_norm=True)
+        plot_vertical_section(variable="Omega", data=df_omega_AW100E200 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.10, vmin=-0.20, levels=22,
                               level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW100E200, dim="lon", ax=ax3, fig=fig,
-                              bottom_labels=False, right_labels=True, left_labels=False, title="[C]             AW100E200")
+                              bottom_labels=False, right_labels=True, left_labels=False, title="[C]             AW100E200", use_norm=True)
         
         plot_vertical_section(variable="Clouds", data=df_aclcac_AW100E100 , cmap=PuBu, units="-", season="JJA", vmax=0.3, vmin=0, levels=22,
                               level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.39, 0.02, 0.23], geosp_data=df_elev_AW100E100, dim="lon", ax=ax4, fig=fig, 
@@ -276,13 +284,13 @@ def plot_vertical_vars(first=True, second=False):
     if second == True:
         fig, ((ax1,ax2,ax3),(ax4,ax5,ax6),(ax7,ax8,ax9))= plt.subplots(nrows = 3, ncols = 3, sharey=False, sharex=False, figsize=(25, 20))
         
-        plot_vertical_section(variable="Omega", data=df_omega_AW200E100 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.08, vmin=-0.08, levels=22,
+        plot_vertical_section(variable="Omega", data=df_omega_AW200E100 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.10, vmin=-0.20, levels=22,
                               level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.72, 0.02, 0.23], geosp_data=df_elev_AW200E100 , dim="lon", ax=ax1, fig=fig, 
-                              bottom_labels=False, right_labels=False, left_labels=True, title= "[A]            AW200E100")
-        plot_vertical_section(variable="Omega", data=df_omega_AW200E0 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.08, vmin=-0.08, levels=22,
+                              bottom_labels=False, right_labels=False, left_labels=True, title= "[A]            AW200E100", use_norm=True)
+        plot_vertical_section(variable="Omega", data=df_omega_AW200E0 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.10, vmin=-0.20, levels=22,
                               level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW200E0 , dim="lon", ax=ax2, fig=fig,
-                              bottom_labels=False, right_labels=False, left_labels=False, title="[B]             AW200E0")
-        # plot_vertical_section(variable="Omega", data=df_omega_AW200E200 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.08, vmin=-0.08, levels=22,
+                              bottom_labels=False, right_labels=False, left_labels=False, title="[B]             AW200E0", use_norm=True)
+        # plot_vertical_section(variable="Omega", data=df_omega_AW200E200 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.10, vmin=-0.20, levels=22,
         #                       level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW200E200, dim="lon", ax=ax3, fig=fig,
         #                       bottom_labels=False, right_labels=True, left_labels=False, title="[C]             AW200E200")
         
@@ -306,7 +314,7 @@ def plot_vertical_vars(first=True, second=False):
         #                       level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW200E200, dim="lon", ax=ax9, fig=fig,
         #                       bottom_labels=True, right_labels=True, left_labels=False, title="[I]")
         
-        
+        print(df_omega_AW200E100.min())
         
         plt.tight_layout() 
         plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
@@ -315,4 +323,4 @@ def plot_vertical_vars(first=True, second=False):
 
 
 
-plot_vertical_vars(first=True, second=False)
+plot_vertical_vars(first=False, second=True)

@@ -207,127 +207,128 @@ d18op_aw200e200_alt = compute_lterm_diff(data_control= d18op_aw100e100, data_mai
 projection = ccrs.PlateCarree()
 path_to_store = os.path.join(module_output_main_path, "plots")
 
-def plot_summer_diff():
-    # d18op
-    fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15), subplot_kw={"projection": projection})
+def plot_summer_diff(varname =None):
+    if varname == "d18op":
+        # d18op
+        fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15), subplot_kw={"projection": projection})
+        
+        
+        plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e100_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
+                           axes=[ax1], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], title=True, 
+                           season_label= ["[A]  AW100E100"], bottom_labels=False, left_labels=True)
+        
+        plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e100_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
+                           axes=[ax2], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25], title=True, 
+                           season_label= ["[B]  AW200E100 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
+                           compare_data2=d18op_aw200e100, max_pvalue=0.05, plot_stats=True)
+        
+        plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e0_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
+                           axes=[ax3], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
+                           season_label= ["[C]  AW100E0 - AW100E100"], bottom_labels=False, left_labels=True, compare_data1=d18op_aw100e100,
+                           compare_data2=d18op_aw100e0, max_pvalue=0.05, plot_stats=True)
+        
+        plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e0_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
+                           axes=[ax4], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
+                           season_label= ["[D]  AW200E0 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
+                           compare_data2=d18op_aw200e0, max_pvalue=0.05, plot_stats=True)
+        
+        plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e200_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
+                           axes=[ax5], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
+                           season_label= ["[E]  AW100E200 - AW100E100"], bottom_labels=True, left_labels=True, compare_data1=d18op_aw100e100,
+                           compare_data2=d18op_aw100e200, max_pvalue=0.05, plot_stats=True)
+        
+        plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e200_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
+                           axes=[ax6], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
+                           season_label= ["[F]  AW200E200 - AW100E100"], bottom_labels=True, left_labels=False, compare_data1=d18op_aw100e100,
+                           compare_data2=d18op_aw200e200, max_pvalue=0.05, plot_stats=True)
+        
+        
+        fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+        plt.tight_layout()
+        plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
+        plt.savefig(os.path.join(path_to_store, "fig2.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
     
-    plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e100_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
-                       axes=[ax1], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], title=True, 
-                       season_label= ["[A]  AW100E100"], bottom_labels=False, left_labels=True)
-    
-    plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e100_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
-                       axes=[ax2], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25], title=True, 
-                       season_label= ["[B]  AW200E100 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
-                       compare_data2=d18op_aw200e100, max_pvalue=0.05, plot_stats=True)
-    
-    plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e0_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
-                       axes=[ax3], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                       season_label= ["[C]  AW100E0 - AW100E100"], bottom_labels=False, left_labels=True, compare_data1=d18op_aw100e100,
-                       compare_data2=d18op_aw100e0, max_pvalue=0.05, plot_stats=True)
-    
-    plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e0_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
-                       axes=[ax4], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                       season_label= ["[D]  AW200E0 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
-                       compare_data2=d18op_aw200e0, max_pvalue=0.05, plot_stats=True)
-    
-    plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e200_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
-                       axes=[ax5], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                       season_label= ["[E]  AW100E200 - AW100E100"], bottom_labels=True, left_labels=True, compare_data1=d18op_aw100e100,
-                       compare_data2=d18op_aw100e200, max_pvalue=0.05, plot_stats=True)
-    
-    plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e200_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
-                       axes=[ax6], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                       season_label= ["[F]  AW200E200 - AW100E100"], bottom_labels=True, left_labels=False, compare_data1=d18op_aw100e100,
-                       compare_data2=d18op_aw200e200, max_pvalue=0.05, plot_stats=True)
-    
-    
-    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
-    plt.tight_layout()
-    plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
-    plt.savefig(os.path.join(path_to_store, "fig2.svg"), format= "svg", bbox_inches="tight", dpi=600)
-    
-    
-    
+    if varname == "Temperature":
     # Temperature 
-    fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15), subplot_kw={"projection": projection})
+        fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15), subplot_kw={"projection": projection})
+        
+        
+        plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw100e100_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
+                           axes=[ax1], fig=fig, vmax=30, vmin=-10, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], title=True, 
+                           season_label= ["[A]  AW100E100"], bottom_labels=False, left_labels=True)
+        
+        plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw200e100_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
+                           axes=[ax2], fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25], title=True, 
+                           season_label= ["[B]  AW200E100 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
+                           compare_data2=temp2_aw200e100, max_pvalue=0.05, plot_stats=True)
+        
+        plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw100e0_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
+                           axes=[ax3], fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
+                           season_label= ["[C]  AW100E0 - AW100E100"], bottom_labels=False, left_labels=True, compare_data1=temp2_aw100e100,
+                           compare_data2=temp2_aw100e0, max_pvalue=0.05, plot_stats=True)
+        
+        plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw200e0_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
+                           axes=[ax4], fig=fig, vmax=13, vmin=-13, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
+                           season_label= ["[D]  AW200E0 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
+                           compare_data2=temp2_aw200e0, max_pvalue=0.05, plot_stats=True)
+        
+        plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw100e200_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
+                           axes=[ax5], fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
+                           season_label= ["[E]  AW100E200 - AW100E100"], bottom_labels=True, left_labels=True, compare_data1=temp2_aw100e100,
+                           compare_data2=temp2_aw100e200, max_pvalue=0.05, plot_stats=True)
+        
+        plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw200e200_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
+                           axes=[ax6], fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
+                           season_label= ["[F]  AW200E200 - AW100E100"], bottom_labels=True, left_labels=False, compare_data1=temp2_aw100e100,
+                           compare_data2=temp2_aw200e200, max_pvalue=0.05, plot_stats=True)
     
     
-    plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw100e100_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
-                       axes=[ax1], fig=fig, vmax=30, vmin=-10, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], title=True, 
-                       season_label= ["[A]  AW100E100"], bottom_labels=False, left_labels=True)
+        fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+        plt.tight_layout()
+        plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
+        plt.savefig(os.path.join(path_to_store, "fig3.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
-    plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw200e100_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
-                       axes=[ax2], fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25], title=True, 
-                       season_label= ["[B]  AW200E100 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
-                       compare_data2=temp2_aw200e100, max_pvalue=0.05, plot_stats=True)
-    
-    plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw100e0_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
-                       axes=[ax3], fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                       season_label= ["[C]  AW100E0 - AW100E100"], bottom_labels=False, left_labels=True, compare_data1=temp2_aw100e100,
-                       compare_data2=temp2_aw100e0, max_pvalue=0.05, plot_stats=True)
-    
-    plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw200e0_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
-                       axes=[ax4], fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                       season_label= ["[D]  AW200E0 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
-                       compare_data2=temp2_aw200e0, max_pvalue=0.05, plot_stats=True)
-    
-    plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw100e200_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
-                       axes=[ax5], fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                       season_label= ["[E]  AW100E200 - AW100E100"], bottom_labels=True, left_labels=True, compare_data1=temp2_aw100e100,
-                       compare_data2=temp2_aw100e200, max_pvalue=0.05, plot_stats=True)
-    
-    plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw200e200_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
-                       axes=[ax6], fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                       season_label= ["[F]  AW200E200 - AW100E100"], bottom_labels=True, left_labels=False, compare_data1=temp2_aw100e100,
-                       compare_data2=temp2_aw200e200, max_pvalue=0.05, plot_stats=True)
-    
-    
-    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
-    plt.tight_layout()
-    plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
-    plt.savefig(os.path.join(path_to_store, "fig3.svg"), format= "svg", bbox_inches="tight", dpi=600)
-    
-    
-    #prec
-    fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15), subplot_kw={"projection": projection})
-    
-    
-    plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw100e100_slt , cmap=Blues, units="mm/month", seasons=["JJA"], 
-                       axes=[ax1], fig=fig, vmax=250, vmin=0, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], title=True, 
-                       season_label= ["[A]  AW100E100"], bottom_labels=False, left_labels=True, plot_winds_pattern=True, data_v= v10_aw100e100_slt,
-                       data_u=u10_aw100e100_slt)
-    
-    plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw200e100_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
-                       axes=[ax2], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25], title=True, 
-                       season_label= ["[B]  AW200E100 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
-                       compare_data2=prec_aw200e100, max_pvalue=0.05, plot_stats=True)
-    
-    plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw100e0_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
-                       axes=[ax3], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                       season_label= ["[C]  AW100E0 - AW100E100"], bottom_labels=False, left_labels=True, compare_data1=prec_aw100e100,
-                       compare_data2=prec_aw100e0, max_pvalue=0.05, plot_stats=True)
-    
-    plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw200e0_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
-                       axes=[ax4], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                       season_label= ["[D]  AW200E0 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
-                       compare_data2=prec_aw200e0, max_pvalue=0.05, plot_stats=True)
-    
-    plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw100e200_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
-                       axes=[ax5], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                       season_label= ["[E]  AW100E200 - AW100E100"], bottom_labels=True, left_labels=True, compare_data1=prec_aw100e100,
-                       compare_data2=prec_aw100e200, max_pvalue=0.05, plot_stats=True)
-    
-    plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw200e200_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
-                       axes=[ax6], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                       season_label= ["[F]  AW200E200 - AW100E100"], bottom_labels=True, left_labels=False, compare_data1=prec_aw100e100,
-                       compare_data2=prec_aw200e200, max_pvalue=0.05, plot_stats=True)
-    
-    
-    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
-    plt.tight_layout()
-    plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
-    plt.savefig(os.path.join(path_to_store, "fig4.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    if varname == "Precipitation":
+        #prec
+        fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15), subplot_kw={"projection": projection})
+        
+        
+        plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw100e100_slt , cmap=Blues, units="mm/month", seasons=["JJA"], 
+                           axes=[ax1], fig=fig, vmax=250, vmin=0, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], title=True, 
+                           season_label= ["[A]  AW100E100"], bottom_labels=False, left_labels=True, plot_winds_pattern=True, data_v= v10_aw100e100_slt,
+                           data_u=u10_aw100e100_slt)
+        
+        plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw200e100_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
+                           axes=[ax2], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25], title=True, 
+                           season_label= ["[B]  AW200E100 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
+                           compare_data2=prec_aw200e100, max_pvalue=0.05, plot_stats=True)
+        
+        plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw100e0_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
+                           axes=[ax3], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
+                           season_label= ["[C]  AW100E0 - AW100E100"], bottom_labels=False, left_labels=True, compare_data1=prec_aw100e100,
+                           compare_data2=prec_aw100e0, max_pvalue=0.05, plot_stats=True)
+        
+        plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw200e0_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
+                           axes=[ax4], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
+                           season_label= ["[D]  AW200E0 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
+                           compare_data2=prec_aw200e0, max_pvalue=0.05, plot_stats=True)
+        
+        plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw100e200_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
+                           axes=[ax5], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
+                           season_label= ["[E]  AW100E200 - AW100E100"], bottom_labels=True, left_labels=True, compare_data1=prec_aw100e100,
+                           compare_data2=prec_aw100e200, max_pvalue=0.05, plot_stats=True)
+        
+        plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw200e200_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
+                           axes=[ax6], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
+                           season_label= ["[F]  AW200E200 - AW100E100"], bottom_labels=True, left_labels=False, compare_data1=prec_aw100e100,
+                           compare_data2=prec_aw200e200, max_pvalue=0.05, plot_stats=True)
+        
+        
+        fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+        plt.tight_layout()
+        plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
+        plt.savefig(os.path.join(path_to_store, "fig4.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
 # supplementary for annual difference
@@ -411,7 +412,7 @@ def plot_annual_diff():
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
-    plt.savefig(os.path.join(path_to_store, "figS6.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    #plt.savefig(os.path.join(path_to_store, "figS6.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
     
     #prec
@@ -451,4 +452,6 @@ def plot_annual_diff():
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
-    plt.savefig(os.path.join(path_to_store, "figS7.svg"), format= "svg", bbox_inches="tight", dpi=600)
+   # plt.savefig(os.path.join(path_to_store, "figS7.svg"), format= "svg", bbox_inches="tight", dpi=600)
+   
+plot_summer_diff(varname="Temperature")
