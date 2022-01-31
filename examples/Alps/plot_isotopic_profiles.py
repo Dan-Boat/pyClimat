@@ -172,53 +172,53 @@ mpl.rc('axes', labelsize=20)
 mpl.rc('lines', linewidth=3)
 
 
-apply_style()
+#apply_style()
 
 fig, ((ax1,ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 13),sharey=False, sharex=False)
 
 plot_iso_profiles(df_iso=aw100e100_d18op_lon , df_geosp=aw100e100_geosp_lon , dim="lon", iso_color=black, iso_label="AW100E100",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1, title="[A]", 
-                  right_labels =False, bottom_labels=False)
+                  right_labels =False, bottom_labels=False, )#shade_color=black, shade_alpha=0.2)
 
 plot_iso_profiles(df_iso=aw100e0_d18op_lon , df_geosp=aw100e0_geosp_lon , dim="lon", iso_color=blue, iso_label="AW100E0",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1,
-                  right_labels =False, bottom_labels=False)
+                  right_labels =False, bottom_labels=False,)# shade_color=blue, shade_alpha=0.3)
 
 plot_iso_profiles(df_iso=aw100e200_d18op_lon , df_geosp=aw100e200_geosp_lon , dim="lon", iso_color=red, iso_label="AW100E200",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1,
-                  right_labels =False, bottom_labels=False)
+                  right_labels =False, bottom_labels=False,)# shade_color=red, shade_alpha=0.1)
 
 plot_iso_profiles(df_iso=aw100e150_d18op_lon , df_geosp=aw100e150_geosp_lon , dim="lon", iso_color=green, iso_label="AW100E150",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1,
-                  right_labels =False, bottom_labels=False)
+                  right_labels =False, bottom_labels=False, )#shade_color= green, shade_alpha=0.15)
 
 
 
 plot_iso_profiles(df_iso=aw100e100_d18op_lon , df_geosp=aw100e100_geosp_lon , dim="lon", iso_color=black, iso_label=None,
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=0, isomin=-16, ax=ax3, title="[C]", 
-                  right_labels =False, bottom_labels=True)
+                  right_labels =False, bottom_labels=True, )#shade_alpha=0.15, shade_color=black)
 
 plot_iso_profiles(df_iso=aw200e100_d18op_lon , df_geosp=aw200e100_geosp_lon , dim="lon", iso_color=golden, iso_label="AW200E100",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=0, isomin=-16, ax=ax3, 
-                  right_labels =False, bottom_labels=True)
+                  right_labels =False, bottom_labels=True, )#shade_alpha=0.1, shade_color=golden)
 
 plot_iso_profiles(df_iso=aw200e0_d18op_lon , df_geosp=aw200e0_geosp_lon , dim="lon", iso_color=purple, iso_label="AW200E0",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=0, isomin=-16, ax=ax3,  
-                  right_labels =False, bottom_labels=True)
+                  right_labels =False, bottom_labels=True, )#shade_alpha=0.05, shade_color=purple)
 
 
 plot_iso_profiles(df_iso=aw100e100_d18op_lat , df_geosp=aw100e100_geosp_lat , dim="lat", iso_color=black, iso_label=None,
                   season="JJA", xmax=54, xmin=40, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax2, title="[B]", left_labels=False,
-                  bottom_labels=False)
+                  bottom_labels=False,)# shade_color=black, shade_alpha=0.2)
 plot_iso_profiles(df_iso=aw100e0_d18op_lat , df_geosp=aw100e0_geosp_lat , dim="lat", iso_color=blue, iso_label=None,
                   season="JJA", xmax=54, xmin=40, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax2, left_labels=False,
-                  bottom_labels=False)
+                  bottom_labels=False, )#shade_color=blue, shade_alpha=0.3)
 plot_iso_profiles(df_iso=aw100e200_d18op_lat , df_geosp=aw100e200_geosp_lat , dim="lat", iso_color=red, iso_label=None,
                   season="JJA", xmax=54, xmin=40, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax2,  left_labels=False,
-                  bottom_labels=False)
+                  bottom_labels=False, )#shade_color=red, shade_alpha=0.1)
 plot_iso_profiles(df_iso=aw100e150_d18op_lat , df_geosp=aw100e150_geosp_lat , dim="lat", iso_color=green, iso_label=None,
                   season="JJA", xmax=54, xmin=40, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax2,  left_labels=False,
-                  bottom_labels=False)
+                  bottom_labels=False, )#shade_color= green, shade_alpha=0.15)
 
 
 

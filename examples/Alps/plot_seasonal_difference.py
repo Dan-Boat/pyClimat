@@ -394,7 +394,7 @@ def plot_annual_diff():
                        compare_data2=temp2_aw100e0, max_pvalue=0.05, plot_stats=True)
     
     plot_annual_mean(variable="Temperature", data_alt=temp2_aw200e0_alt , cmap=RdBu_r, units="°C",  
-                       ax=ax4, fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
+                       ax=ax4, fig=fig, vmax=13, vmin=-13, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
                        title= "[D]  AW200E0 - AW100E100", bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
                        compare_data2=temp2_aw200e0, max_pvalue=0.05, plot_stats=True)
     
@@ -412,7 +412,7 @@ def plot_annual_diff():
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
-    #plt.savefig(os.path.join(path_to_store, "figS6.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    plt.savefig(os.path.join(path_to_store, "figS6.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
     
     #prec
@@ -452,6 +452,13 @@ def plot_annual_diff():
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
-   # plt.savefig(os.path.join(path_to_store, "figS7.svg"), format= "svg", bbox_inches="tight", dpi=600)
-   
-plot_summer_diff(varname="Temperature")
+    plt.savefig(os.path.join(path_to_store, "figS7.svg"), format= "svg", bbox_inches="tight", dpi=600)
+
+    
+if __name__ == '__main__':
+    #plot_summer_diff(varname="Temperature")
+    #plot_summer_diff(varname="d18op")
+    #plot_summer_diff(varname="Precipitation")
+    
+    # annual plots 
+    plot_annual_diff()

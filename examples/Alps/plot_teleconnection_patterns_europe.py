@@ -23,7 +23,7 @@ exp_name_AW100E0 = "a003_hpc-bw_e5w2.3_t159_PI_Alps_east_0_t159l31.6h"
 exp_name_AW100E200 = "a001_hpc-bw_e5w2.3_t159_PI_Alps_east_300_t159l31.6h"
 exp_name_AW200E100 = "a009_hpc-bw_e5w2.3_t159_PI_AW200E100_t159l31.6h"
 exp_name_AW200E0 = "a010_hpc-bw_e5w2.3_t159_PI_AW200E0_t159l31.6h"
-#exp_name_AW200E200 = "t017_hpc-bw_e5w2.3_PI_Alps150_t159l31.6h"
+exp_name_AW200E200 = "t017_hpc-bw_e5w2.3_PI_Alps150_t159l31.6h"
 
 years= "1003_1017"
 period = "1m"
@@ -46,8 +46,8 @@ AW200E100_data = read_ECHAM_processed(main_path=module_output_main_path , exp_na
                                                   period=period, add_name="slp", read_wiso=False)
 AW200E0_data = read_ECHAM_processed(main_path=module_output_main_path , exp_name= exp_name_AW200E0, years=years,
                                                   period=period, add_name="slp", read_wiso=False)
-#AW200E200_data = read_ECHAM_processed(main_path=module_output_main_path , exp_name= exp_name_AW200E200, years=years,
-#                                                  period=period, add_name="slp", read_wiso=False)
+AW200E200_data = read_ECHAM_processed(main_path=module_output_main_path , exp_name= exp_name_AW200E200, years=years,
+                                                  period=period, add_name="slp", read_wiso=False)
 
 # reading sea level presure
 
@@ -56,7 +56,7 @@ slp_AW100E0 = extract_var(Dataset= AW100E0_data , varname="slp", units="hPa")
 slp_AW100E200 = extract_var(Dataset=AW100E200_data , varname="slp", units="hPa")
 slp_AW200E100 = extract_var(Dataset=AW200E100_data , varname="slp", units="hPa")
 slp_AW200E0 = extract_var(Dataset=AW200E0_data , varname="slp", units="hPa")
-#slp_AW200E200 = extract_var(Dataset=AW200E200_data , varname="slp", units="hPa")
+slp_AW200E200 = extract_var(Dataset=AW200E200_data , varname="slp", units="hPa")
 
 
 #performing EOF analysis (using winter data extracted for North Atlantic region)
@@ -78,9 +78,9 @@ eofs_AW200E0, pcs_AW200E0, var_frac_AW200E0 = EOF_analysis(data=slp_AW200E0, max
                     neofs=4, pcscaling=1, apply_coslat_weights=True, return_variance=True, neigs=3,
                     return_pcs=True, npcs=4)
 
-# eofs_AW200E200, pcs_AW200E200, var_frac_AW200E200 = EOF_analysis(data=slp_AW200E200, maxlon=60, minlon=-80, maxlat=80, minlat=20, season="JJA",
-#                     neofs=4, pcscaling=1, apply_coslat_weights=True, return_variance=True, neigs=3,
-#                     return_pcs=True, npcs=4)
+eofs_AW200E200, pcs_AW200E200, var_frac_AW200E200 = EOF_analysis(data=slp_AW200E200, maxlon=60, minlon=-80, maxlat=80, minlat=20, season="JJA",
+                    neofs=4, pcscaling=1, apply_coslat_weights=True, return_variance=True, neigs=3,
+                    return_pcs=True, npcs=4)
 
 eofs_ERA, pcs_ERA, var_frac_ERA = EOF_analysis(data=slp_ERA, maxlon=60, minlon=-80, maxlat=80, minlat=20, season="JJA",
                     neofs=4, pcscaling=1, apply_coslat_weights=True, return_variance=True, neigs=3,
@@ -114,7 +114,7 @@ plot_eofsAsCovariance(variable= "mslp", data=(eofs_AW200E100[0]*1), mode_var=var
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
-#plt.savefig(os.path.join(path_to_store, "fig13.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_store, "fig12.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
 # EA
@@ -132,13 +132,13 @@ plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E200[1]*1), mode_var=var_
 
 plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E0[1]*1), mode_var=var_frac_AW200E0[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=False, ax=ax5, fig=fig, title="[C] AW200E0")
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E100[1]*-1), mode_var=var_frac_AW200E100[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E100[2]*-1), mode_var=var_frac_AW200E100[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=False, ax=ax6, fig=fig, title="[D] AW200E100", left_labels=False)
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
-#plt.savefig(os.path.join(path_to_store, "fig14.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_store, "fig13.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
 # SCAN
@@ -156,12 +156,12 @@ plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E200[2]*1), mode_var=var_
 
 plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E0[2]*-1), mode_var=var_frac_AW200E0[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=False, ax=ax5, fig=fig, title="[C] AW200E0")
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E100[2]*-1), mode_var=var_frac_AW200E100[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E100[1]*-1), mode_var=var_frac_AW200E100[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=False, ax=ax6, fig=fig, title="[D] AW200E100", left_labels=False)
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
-#plt.savefig(os.path.join(path_to_store, "fig15.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_store, "figS13.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 plt.show()

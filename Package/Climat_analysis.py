@@ -167,10 +167,12 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
             else:
                  raise ValueError("You have defined incorrect units or its not implemented")
     
-    # mean sea level pressure    
+    # mean sea level pressure or surface pressure  
     elif varname == "slp":
         if hasattr(Dataset, "aps"):
             var_data = Dataset["aps"]
+        elif hasattr(Dataset, "psl"):
+            var_data = Dataset["psl"]
         else:    
             var_data = Dataset["slp"]
         
