@@ -226,7 +226,7 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                      output_format=None, level_ticks=None, title=None, path_to_store=None, data_v=None,
                      plot_winds_pattern=False, plot_winds_streamline=False,
                      data_u=None, cbar_pos=None, fig_title=None, season_label=None, plot_stats= False, compare_data1=None, compare_data2=None, max_pvalue=None,
-                     hatches=None, add_colorbar = True, left_labels= True, bottom_labels=True):
+                     hatches=None, add_colorbar = True, left_labels= True, bottom_labels=True, show_arrow_scale=True):
     """
     
 
@@ -347,7 +347,7 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                                      add_colorbar=True, cbar_ax=cbar_ax, add_labels=False) 
                     else: 
                         p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, 
-                                     levels=levels, transform = projection, add_colorbar=True, add_labels=False)
+                                     levels=levels, transform = projection, add_colorbar=False, add_labels=False)
                                      
             else:
                 p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, transform = projection, 
@@ -377,8 +377,10 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                     # ploting winds using quiver 
                     q = axes[i].quiver(X[skip], Y[skip], u[skip], v[skip], transform=projection,  pivot= "mid", scale= 50,
                                   headwidth=3, headlength=5, headaxislength=4.5)
-                    qk = axes[i].quiverkey(q, 1.02, -0.02, 2, r'$1 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
-                              {"size": 20, "weight":"bold"})
+                    
+                    if show_arrow_scale==True:
+                        qk = axes[i].quiverkey(q, 1.02, -0.02, 2, r'$1 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
+                                               {"size": 20, "weight":"bold"})
             
         else:
             if all(parameter is not None for parameter in [vmin, vmax, levels, level_ticks]):

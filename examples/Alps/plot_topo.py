@@ -47,19 +47,20 @@ path_to_store = os.path.join(module_output_main_path, "plots")
 fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15), subplot_kw={"projection":projection})
 
 plot_echam_topo(variable="Elevation", data=a001_data, cmap=Greys, units="m", ax=ax1, vmax=3500, vmin=0, levels=12, level_ticks=6,
-                domain="Europe", title="AW100E200", cbar=False)
+                domain="Europe", title="AW100E200", cbar=False, bottom_labels=False)
 
 plot_echam_topo(variable="Elevation", data=t017_data, cmap=Greys, units="m", ax=ax5, vmax=3500, vmin=0, levels=12, level_ticks=6, 
-                domain="Europe", title="A200", cbar=False)
+                domain="Europe", title="A200", cbar=False, bottom_labels=True)
 
 plot_echam_topo(variable="Elevation", data=a003_data, cmap=Greys, units="m", ax=ax2, vmax=3500, vmin=0, levels=12, level_ticks=6, 
-                domain="Europe", title="AW100E0", cbar=False)
-plot_echam_topo(variable="Elevation", data=a006_data, cmap=Greys, units="m", ax=ax6, vmax=3500, vmin=0, levels=12, level_ticks=6, 
-                domain="Europe", title="A0", cbar_position= [0.90, 0.30, 0.02, 0.40], cbar_orientation="vertical", cbar=True, fig=fig)
+                domain="Europe", title="AW100E0", cbar=False, bottom_labels=False, left_labels=False)
+plot_echam_topo(variable="Elevation", data=a002_data, cmap=Greys, units="m", ax=ax6, vmax=3500, vmin=0, levels=12, level_ticks=6, 
+                domain="Europe", title="AW100E100", cbar_position= [0.90, 0.30, 0.02, 0.40], cbar_orientation="vertical", cbar=True, fig=fig,
+                bottom_labels=True, left_labels=False)
 plot_echam_topo(variable="Elevation", data=a009_data, cmap=Greys, units="m", ax=ax3, vmax=3500, vmin=0, levels=12, level_ticks=6, 
-                domain="Europe", title="AW200E100", cbar=False)
+                domain="Europe", title="AW200E100", cbar=False, bottom_labels=False)
 plot_echam_topo(variable="Elevation", data=a010_data, cmap=Greys, units="m", ax=ax4, vmax=3500, vmin=0, levels=12, level_ticks=6, 
-                domain="Europe", title = "AW200E0",cbar=False)
+                domain="Europe", title = "AW200E0",cbar=False, bottom_labels=False, left_labels=False)
 
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
