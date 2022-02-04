@@ -394,7 +394,7 @@ def plot_annual_diff():
                        compare_data2=temp2_aw100e0, max_pvalue=0.05, plot_stats=True)
     
     plot_annual_mean(variable="Temperature", data_alt=temp2_aw200e0_alt , cmap=RdBu_r, units="°C",  
-                       ax=ax4, fig=fig, vmax=13, vmin=-13, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
+                       ax=ax4, fig=fig, vmax=14, vmin=-14, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
                        title= "[D]  AW200E0 - AW100E100", bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
                        compare_data2=temp2_aw200e0, max_pvalue=0.05, plot_stats=True)
     
@@ -456,9 +456,9 @@ def plot_annual_diff():
 
     
 if __name__ == '__main__':
-    plot_summer_diff(varname="Temperature")
+    #plot_summer_diff(varname="Temperature")
     #plot_summer_diff(varname="d18op")
     #plot_summer_diff(varname="Precipitation")
     
     # annual plots 
-    #plot_annual_diff()
+    plot_annual_diff()

@@ -127,7 +127,7 @@ def read_ERA_processed(path, varname):
 
     """
     
-    dataset = xr.open_dataset(path, decode_cf=True, use_cftime=True)
+    dataset = xr.open_dataset(path)
     data = dataset[varname]
     
     return data

@@ -57,6 +57,12 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
     """
     
     #Temperature
+    if hasattr(Dataset, "mlev"):
+        Dataset = Dataset.rename({"mlev":"lev"})
+        
+        if Dataset_wiso is not None:
+            Dataset_wiso = Dataset_wiso.rename({"mlev":"lev"})
+        
     if varname == "temp2":
         var_data = Dataset[varname]
         if units is not None:
@@ -97,9 +103,15 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
                 
     # d18o in water vapour
     elif varname == "d18ov":
-        var_data_echam = Dataset["q"][:,29,:,:]
-        if Dataset_wiso is not None:
-             var_data_wiso = Dataset_wiso["q18o"][:,29,:,:]
+        if lev is not None:
+            var_data_echam = Dataset["q"].sel(lev=lev)
+            if Dataset_wiso is not None:
+                var_data_wiso = Dataset_wiso["q18o"].sel(lev=lev)
+        else:
+            var_data_echam = Dataset["q"][:,30,:,:]
+            if Dataset_wiso is not None:
+                 var_data_wiso = Dataset_wiso["q18o"][:,30,:,:]
+                 
         SMOW = 0.2228
         wiso_wtgs = var_data_wiso / var_data_echam
         var_data = ((wiso_wtgs/SMOW) -1)
@@ -123,7 +135,10 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
    
     # relative humidity near surface            
     elif varname == "relhum":
-        var_data = (Dataset["relhum"][:,29,:,:] + Dataset["relhum"][:,30,:,:]) / 2 #mean of the last 2 levels close to surface
+        if lev is not None:
+            var_data = Dataset["relhum"].sel(lev=lev)
+        else:
+            var_data = Dataset["relhum"][:,30,:,:]
         if units is not None:
             if units == "%":
                 var_data = var_data *100 #%
@@ -427,19 +442,31 @@ def extract_transect(data, maxlon, minlon, maxlat, minlat, sea_land_mask=False, 
 
     """
     
+    #convert lon to -180 to 180
+    if hasattr(data, "longitude"):
+        data = data.rename({"longitude": "lon", "latitude":"lat"})
+    
     if Dataset is not None:
         
-        # add mask arrary
-        slm = Dataset["slm"]
-        geosp = Dataset["geosp"] / 9.8
-        data.coords["slm"] = (("lat","lon"), slm[0].data)
-        data.coords["geosp"] = (("lat","lon"), geosp[0].data) #same for all time point
+        if hasattr(Dataset, "longitude"):
+            Dataset = Dataset.rename({"longitude": "lon", "latitude":"lat"}) 
+        # add mask arrary (sea mask and elevation is the same for the time, therefore, extrating one index is fine)
+        
+        if sea_land_mask == True:
+            slm = Dataset["slm"]
+            data.coords["slm"] = (("lat","lon"), slm[0].data)
+        if minelev or maxelev is not None:
+            
+            geosp = Dataset["geosp"] / 9.8
+            data.coords["geosp"] = (("lat","lon"), geosp[0].data) #same for all time point
     
-    #convert lon to -180 to 180
+    
+        
     data = data.assign_coords({"lon": (((data.lon + 180) % 360) - 180)})
     
     lat_range = (data.lat >= minlat) & (data.lat <= maxlat)
     lon_range = (data.lon >= minlon) & (data.lon <= maxlon)
+    
     data_extract = data.where((lat_range & lon_range), drop=True)
     
     # Caution! Since the mask can only be removed when both the lat and lon cordinates are satisfied, some points might 
@@ -448,21 +475,21 @@ def extract_transect(data, maxlon, minlon, maxlat, minlat, sea_land_mask=False, 
     # Alternative solution implemented!
     # I have replace all the false conditions with np.nan values and must be removed when converted to DataFrame
     
-    if Dataset is not None:
+    if sea_land_mask == True:
+        if hasattr(data_extract, "slm"):
+            data_extract = xr.where(data_extract["slm"]==1, data_extract, data_extract*np.nan)
+    if minelev and maxelev is not None:
+        if hasattr(data_extract, "geosp"):
+            data_extract = xr.where((data_extract.geosp >= minelev) & (data_extract.geosp <= maxelev), data_extract, data_extract*np.nan)
         
-        print("Using dataset for masking")
-        
-        if sea_land_mask == True:
-        
-            data_extract = xr.where(data_extract["slm"] == 1, data_extract, data_extract*np.nan)
-
-        if minelev is not None:
+    elif minelev is not None:
+        if hasattr(data_extract, "geosp"):
             data_extract = xr.where(data_extract.geosp >= minelev, data_extract, data_extract*np.nan)
-            
-        if maxelev is not None:
+        
+    elif maxelev is not None:
+        if hasattr(data_extract, "geosp"):
             data_extract = xr.where(data_extract.geosp <= maxelev, data_extract, data_extract*np.nan)
-        
-        
+          
     return data_extract
     
 
