@@ -934,7 +934,7 @@ def student_t_test_btn_datasets(dataA, dataB, max_pvalue=0.1, return_pvalue=Fals
             
     #creating dataset to store values 
     
-    stats_result = xr.Dataset(coords={"lon": (["lon"], dataA.lon), "lat": (["lat"], dataA.lat)})
+    stats_result = xr.Dataset(coords={"lon": (["lon"], dataA.lon.data), "lat": (["lat"], dataA.lat.data)})
     
     stats_result["t_statistic"] = (["lat", "lon"], stats_data)
     
