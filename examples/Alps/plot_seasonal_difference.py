@@ -215,31 +215,31 @@ def plot_summer_diff(varname =None):
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e100_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
                            axes=[ax1], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], title=True, 
-                           season_label= ["[A]  AW100E100"], bottom_labels=False, left_labels=True)
+                           season_label= ["[A]  CTL"], bottom_labels=False, left_labels=True)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e100_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
                            axes=[ax2], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25], title=True, 
-                           season_label= ["[B]  AW200E100 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
+                           season_label= ["[B]  W2E1 - CTL"], bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
                            compare_data2=d18op_aw200e100, max_pvalue=0.05, plot_stats=True)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e0_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
                            axes=[ax3], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[C]  AW100E0 - AW100E100"], bottom_labels=False, left_labels=True, compare_data1=d18op_aw100e100,
+                           season_label= ["[C]  W1E0 - CTL"], bottom_labels=False, left_labels=True, compare_data1=d18op_aw100e100,
                            compare_data2=d18op_aw100e0, max_pvalue=0.05, plot_stats=True)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e0_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
                            axes=[ax4], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[D]  AW200E0 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
+                           season_label= ["[D]  W2E0 - CTL"], bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
                            compare_data2=d18op_aw200e0, max_pvalue=0.05, plot_stats=True)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e200_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
                            axes=[ax5], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[E]  AW100E200 - AW100E100"], bottom_labels=True, left_labels=True, compare_data1=d18op_aw100e100,
+                           season_label= ["[E]  W1E2 - CTL"], bottom_labels=True, left_labels=True, compare_data1=d18op_aw100e100,
                            compare_data2=d18op_aw100e200, max_pvalue=0.05, plot_stats=True)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e200_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
                            axes=[ax6], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[F]  AW200E200 - AW100E100"], bottom_labels=True, left_labels=False, compare_data1=d18op_aw100e100,
+                           season_label= ["[F]  W2E2 - CTL"], bottom_labels=True, left_labels=False, compare_data1=d18op_aw100e100,
                            compare_data2=d18op_aw200e200, max_pvalue=0.05, plot_stats=True)
         
         
@@ -256,31 +256,31 @@ def plot_summer_diff(varname =None):
         
         plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw100e100_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
                            axes=[ax1], fig=fig, vmax=30, vmin=-10, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], title=True, 
-                           season_label= ["[A]  AW100E100"], bottom_labels=False, left_labels=True)
+                           season_label= ["[A]  CTL"], bottom_labels=False, left_labels=True)
         
         plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw200e100_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
                            axes=[ax2], fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25], title=True, 
-                           season_label= ["[B]  AW200E100 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
+                           season_label= ["[B]  W2E1 - CTL"], bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
                            compare_data2=temp2_aw200e100, max_pvalue=0.05, plot_stats=True)
         
         plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw100e0_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
                            axes=[ax3], fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[C]  AW100E0 - AW100E100"], bottom_labels=False, left_labels=True, compare_data1=temp2_aw100e100,
+                           season_label= ["[C]  W1E0 - CTL"], bottom_labels=False, left_labels=True, compare_data1=temp2_aw100e100,
                            compare_data2=temp2_aw100e0, max_pvalue=0.05, plot_stats=True)
         
         plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw200e0_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
                            axes=[ax4], fig=fig, vmax=13, vmin=-13, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[D]  AW200E0 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
+                           season_label= ["[D]  W2E0 - CTL"], bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
                            compare_data2=temp2_aw200e0, max_pvalue=0.05, plot_stats=True)
         
         plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw100e200_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
                            axes=[ax5], fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[E]  AW100E200 - AW100E100"], bottom_labels=True, left_labels=True, compare_data1=temp2_aw100e100,
+                           season_label= ["[E]  W1E2 - CTL"], bottom_labels=True, left_labels=True, compare_data1=temp2_aw100e100,
                            compare_data2=temp2_aw100e200, max_pvalue=0.05, plot_stats=True)
         
         plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw200e200_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
                            axes=[ax6], fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[F]  AW200E200 - AW100E100"], bottom_labels=True, left_labels=False, compare_data1=temp2_aw100e100,
+                           season_label= ["[F]  W2E2 - CTL"], bottom_labels=True, left_labels=False, compare_data1=temp2_aw100e100,
                            compare_data2=temp2_aw200e200, max_pvalue=0.05, plot_stats=True)
     
     
@@ -296,32 +296,32 @@ def plot_summer_diff(varname =None):
         
         plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw100e100_slt , cmap=Blues, units="mm/month", seasons=["JJA"], 
                            axes=[ax1], fig=fig, vmax=250, vmin=0, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], title=True, 
-                           season_label= ["[A]  AW100E100"], bottom_labels=False, left_labels=True, plot_winds_pattern=True, data_v= v10_aw100e100_slt,
+                           season_label= ["[A]  CTL"], bottom_labels=False, left_labels=True, plot_winds_pattern=True, data_v= v10_aw100e100_slt,
                            data_u=u10_aw100e100_slt)
         
         plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw200e100_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
                            axes=[ax2], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25], title=True, 
-                           season_label= ["[B]  AW200E100 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
+                           season_label= ["[B]  W2E1 - CTL"], bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
                            compare_data2=prec_aw200e100, max_pvalue=0.05, plot_stats=True)
         
         plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw100e0_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
                            axes=[ax3], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[C]  AW100E0 - AW100E100"], bottom_labels=False, left_labels=True, compare_data1=prec_aw100e100,
+                           season_label= ["[C]  W1E0 - CTL"], bottom_labels=False, left_labels=True, compare_data1=prec_aw100e100,
                            compare_data2=prec_aw100e0, max_pvalue=0.05, plot_stats=True)
         
         plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw200e0_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
                            axes=[ax4], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[D]  AW200E0 - AW100E100"], bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
+                           season_label= ["[D]  W2E0 - CTL"], bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
                            compare_data2=prec_aw200e0, max_pvalue=0.05, plot_stats=True)
         
         plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw100e200_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
                            axes=[ax5], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[E]  AW100E200 - AW100E100"], bottom_labels=True, left_labels=True, compare_data1=prec_aw100e100,
+                           season_label= ["[E]  W1E2 - CTL"], bottom_labels=True, left_labels=True, compare_data1=prec_aw100e100,
                            compare_data2=prec_aw100e200, max_pvalue=0.05, plot_stats=True)
         
         plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw200e200_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
                            axes=[ax6], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[F]  AW200E200 - AW100E100"], bottom_labels=True, left_labels=False, compare_data1=prec_aw100e100,
+                           season_label= ["[F]  W2E2 - CTL"], bottom_labels=True, left_labels=False, compare_data1=prec_aw100e100,
                            compare_data2=prec_aw200e200, max_pvalue=0.05, plot_stats=True)
         
         
@@ -340,31 +340,31 @@ def plot_annual_diff():
     
     plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw100e100_alt, cmap=YlGnBu, units="‰", 
                        ax=ax1, fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25],  
-                       title= "[A]  AW100E100", bottom_labels=False, left_labels=True)
+                       title= "[A]  CTL", bottom_labels=False, left_labels=True)
     
     plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw200e100_alt , cmap=RdBu, units="‰",  
                        ax=ax2, fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25],  
-                       title= "[B]  AW200E100 - AW100E100", bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
+                       title= "[B]  W2E1 - CTL", bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
                        compare_data2=d18op_aw200e100, max_pvalue=0.05, plot_stats=True)
     
     plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw100e0_alt , cmap=RdBu, units="‰", 
                        ax=ax3, fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, add_colorbar=False,
-                       title= "[C]  AW100E0 - AW100E100", bottom_labels=False, left_labels=True, compare_data1=d18op_aw100e100,
+                       title= "[C]  W1E0 - CTL", bottom_labels=False, left_labels=True, compare_data1=d18op_aw100e100,
                        compare_data2=d18op_aw100e0, max_pvalue=0.05, plot_stats=True)
     
     plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw200e0_alt , cmap=RdBu, units="‰",  
                        ax=ax4, fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, add_colorbar=False,
-                       title= "[D]  AW200E0 - AW100E100", bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
+                       title= "[D]  W2E0 - CTL", bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
                        compare_data2=d18op_aw200e0, max_pvalue=0.05, plot_stats=True)
     
     plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw100e200_alt , cmap=RdBu, units="‰",
                        ax=ax5, fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, add_colorbar=False,
-                       title= "[E]  AW100E200 - AW100E100", bottom_labels=True, left_labels=True, compare_data1=d18op_aw100e100,
+                       title= "[E]  W1E2 - CTL", bottom_labels=True, left_labels=True, compare_data1=d18op_aw100e100,
                        compare_data2=d18op_aw100e200, max_pvalue=0.05, plot_stats=True)
     
     plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw200e200_alt , cmap=RdBu, units="‰",
                        ax=ax6, fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, add_colorbar=False,
-                       title= "[F]  AW200E200 - AW100E100", bottom_labels=True, left_labels=False, compare_data1=d18op_aw100e100,
+                       title= "[F]  W2E2 - CTL", bottom_labels=True, left_labels=False, compare_data1=d18op_aw100e100,
                        compare_data2=d18op_aw200e200, max_pvalue=0.05, plot_stats=True)
     
     
@@ -381,31 +381,31 @@ def plot_annual_diff():
     
     plot_annual_mean(variable="Temperature", data_alt=temp2_aw100e100_alt , cmap=RdBu_r, units="°C",  
                        ax=ax1, fig=fig, vmax=30, vmin=-10, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], 
-                       title= "[A]  AW100E100", bottom_labels=False, left_labels=True)
+                       title= "[A]  CTL", bottom_labels=False, left_labels=True)
     
     plot_annual_mean(variable="Temperature", data_alt=temp2_aw200e100_alt , cmap=RdBu_r, units="°C",  
                        ax=ax2, fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25],  
-                       title= "[B]  AW200E100 - AW100E100", bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
+                       title= "[B]  W2E1 - CTL", bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
                        compare_data2=temp2_aw200e100, max_pvalue=0.05, plot_stats=True)
     
     plot_annual_mean(variable="Temperature", data_alt=temp2_aw100e0_alt , cmap=RdBu_r, units="°C",  
                        ax=ax3, fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[C]  AW100E0 - AW100E100", bottom_labels=False, left_labels=True, compare_data1=temp2_aw100e100,
+                       title= "[C]  W1E0 - CTL", bottom_labels=False, left_labels=True, compare_data1=temp2_aw100e100,
                        compare_data2=temp2_aw100e0, max_pvalue=0.05, plot_stats=True)
     
     plot_annual_mean(variable="Temperature", data_alt=temp2_aw200e0_alt , cmap=RdBu_r, units="°C",  
                        ax=ax4, fig=fig, vmax=14, vmin=-14, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[D]  AW200E0 - AW100E100", bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
+                       title= "[D]  W2E0 - CTL", bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
                        compare_data2=temp2_aw200e0, max_pvalue=0.05, plot_stats=True)
     
     plot_annual_mean(variable="Temperature", data_alt=temp2_aw100e200_alt , cmap=RdBu_r, units="°C", 
                        ax=ax5, fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[E]  AW100E200 - AW100E100", bottom_labels=True, left_labels=True, compare_data1=temp2_aw100e100,
+                       title= "[E]  W1E2 - CTL", bottom_labels=True, left_labels=True, compare_data1=temp2_aw100e100,
                        compare_data2=temp2_aw100e200, max_pvalue=0.05, plot_stats=True)
     
     plot_annual_mean(variable="Temperature", data_alt=temp2_aw200e200_alt , cmap=RdBu_r, units="°C", 
                        ax=ax6, fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[F]  AW200E200 - AW100E100", bottom_labels=True, left_labels=False, compare_data1=temp2_aw100e100,
+                       title= "[F]  W2E2 - CTL", bottom_labels=True, left_labels=False, compare_data1=temp2_aw100e100,
                        compare_data2=temp2_aw200e200, max_pvalue=0.05, plot_stats=True)
     
     
@@ -421,31 +421,31 @@ def plot_annual_diff():
     
     plot_annual_mean(variable="Precipitation", data_alt=prec_aw100e100_alt , cmap=Blues, units="mm/month",
                        ax=ax1, fig=fig, vmax=300, vmin=0, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], 
-                       title= "[A]  AW100E100", bottom_labels=False, left_labels=True)
+                       title= "[A]  CTL", bottom_labels=False, left_labels=True)
     
     plot_annual_mean(variable="Precipitation", data_alt=prec_aw200e100_alt , cmap=BrBG, units="mm/month",  
                        ax=ax2, fig=fig, vmax=100, vmin=-100, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25], 
-                       title= "[B]  AW200E100 - AW100E100", bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
+                       title= "[B]  W2E1 - CTL", bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
                        compare_data2=prec_aw200e100, max_pvalue=0.05, plot_stats=True)
     
     plot_annual_mean(variable="Precipitation", data_alt=prec_aw100e0_alt , cmap=BrBG, units="mm/month",  
                        ax=ax3, fig=fig, vmax=100, vmin=-100, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[C]  AW100E0 - AW100E100", bottom_labels=False, left_labels=True, compare_data1=prec_aw100e100,
+                       title= "[C]  W1E0 - CTL", bottom_labels=False, left_labels=True, compare_data1=prec_aw100e100,
                        compare_data2=prec_aw100e0, max_pvalue=0.05, plot_stats=True)
     
     plot_annual_mean(variable="Precipitation", data_alt=prec_aw200e0_alt , cmap=BrBG, units="mm/month",
                        ax=ax4, fig=fig, vmax=100, vmin=-100, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[D]  AW200E0 - AW100E100", bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
+                       title= "[D]  W2E0 - CTL", bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
                        compare_data2=prec_aw200e0, max_pvalue=0.05, plot_stats=True)
     
     plot_annual_mean(variable="Precipitation", data_alt=prec_aw100e200_alt , cmap=BrBG, units="mm/month", 
                        ax=ax5, fig=fig, vmax=100, vmin=-100, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[E]  AW100E200 - AW100E100", bottom_labels=True, left_labels=True, compare_data1=prec_aw100e100,
+                       title= "[E]  W1E2 - CTL", bottom_labels=True, left_labels=True, compare_data1=prec_aw100e100,
                        compare_data2=prec_aw100e200, max_pvalue=0.05, plot_stats=True)
     
     plot_annual_mean(variable="Precipitation", data_alt=prec_aw200e200_alt , cmap=BrBG, units="mm/month",  
                        ax=ax6, fig=fig, vmax=100, vmin=-100, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[F]  AW200E200 - AW100E100", bottom_labels=True, left_labels=False, compare_data1=prec_aw100e100,
+                       title= "[F]  W2E2 - CTL", bottom_labels=True, left_labels=False, compare_data1=prec_aw100e100,
                        compare_data2=prec_aw200e200, max_pvalue=0.05, plot_stats=True)
     
     
@@ -456,9 +456,9 @@ def plot_annual_diff():
 
     
 if __name__ == '__main__':
-    #plot_summer_diff(varname="Temperature")
-    #plot_summer_diff(varname="d18op")
-    #plot_summer_diff(varname="Precipitation")
+    plot_summer_diff(varname="Temperature")
+    plot_summer_diff(varname="d18op")
+    plot_summer_diff(varname="Precipitation")
     
     # annual plots 
     plot_annual_diff()

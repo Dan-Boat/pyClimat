@@ -164,11 +164,11 @@ path_to_store = os.path.join(module_output_main_path, "plots")
 plt.style.use("bmh")
 plt.rcParams['text.latex.preamble'] = [r"\usepackage{lmodern}"]
 mpl.rc('text', usetex=True)
-mpl.rc('font', size=20, family='serif')
-mpl.rc('xtick', labelsize=20)
-mpl.rc('ytick', labelsize=20)
-mpl.rc('legend', fontsize=20)
-mpl.rc('axes', labelsize=20)
+mpl.rc('font', size=22, family='serif')
+mpl.rc('xtick', labelsize=22)
+mpl.rc('ytick', labelsize=22)
+mpl.rc('legend', fontsize=22)
+mpl.rc('axes', labelsize=22)
 mpl.rc('lines', linewidth=3)
 
 
@@ -176,19 +176,19 @@ mpl.rc('lines', linewidth=3)
 
 fig, ((ax1,ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 13),sharey=False, sharex=False)
 
-plot_iso_profiles(df_iso=aw100e100_d18op_lon , df_geosp=aw100e100_geosp_lon , dim="lon", iso_color=black, iso_label="AW100E100",
+plot_iso_profiles(df_iso=aw100e100_d18op_lon , df_geosp=aw100e100_geosp_lon , dim="lon", iso_color=black, iso_label="CTL",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1, title="[A]", 
                   right_labels =False, bottom_labels=False, )#shade_color=black, shade_alpha=0.2)
 
-plot_iso_profiles(df_iso=aw100e0_d18op_lon , df_geosp=aw100e0_geosp_lon , dim="lon", iso_color=blue, iso_label="AW100E0",
+plot_iso_profiles(df_iso=aw100e0_d18op_lon , df_geosp=aw100e0_geosp_lon , dim="lon", iso_color=blue, iso_label="W1E0",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1,
                   right_labels =False, bottom_labels=False,)# shade_color=blue, shade_alpha=0.3)
 
-plot_iso_profiles(df_iso=aw100e200_d18op_lon , df_geosp=aw100e200_geosp_lon , dim="lon", iso_color=red, iso_label="AW100E200",
+plot_iso_profiles(df_iso=aw100e200_d18op_lon , df_geosp=aw100e200_geosp_lon , dim="lon", iso_color=red, iso_label="W1E2",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1,
                   right_labels =False, bottom_labels=False,)# shade_color=red, shade_alpha=0.1)
 
-plot_iso_profiles(df_iso=aw100e150_d18op_lon , df_geosp=aw100e150_geosp_lon , dim="lon", iso_color=green, iso_label="AW100E150",
+plot_iso_profiles(df_iso=aw100e150_d18op_lon , df_geosp=aw100e150_geosp_lon , dim="lon", iso_color=green, iso_label="W1E1.5",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1,
                   right_labels =False, bottom_labels=False, )#shade_color= green, shade_alpha=0.15)
 
@@ -198,11 +198,11 @@ plot_iso_profiles(df_iso=aw100e100_d18op_lon , df_geosp=aw100e100_geosp_lon , di
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=0, isomin=-16, ax=ax3, title="[C]", 
                   right_labels =False, bottom_labels=True, )#shade_alpha=0.15, shade_color=black)
 
-plot_iso_profiles(df_iso=aw200e100_d18op_lon , df_geosp=aw200e100_geosp_lon , dim="lon", iso_color=golden, iso_label="AW200E100",
+plot_iso_profiles(df_iso=aw200e100_d18op_lon , df_geosp=aw200e100_geosp_lon , dim="lon", iso_color=golden, iso_label="W2E1",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=0, isomin=-16, ax=ax3, 
                   right_labels =False, bottom_labels=True, )#shade_alpha=0.1, shade_color=golden)
 
-plot_iso_profiles(df_iso=aw200e0_d18op_lon , df_geosp=aw200e0_geosp_lon , dim="lon", iso_color=purple, iso_label="AW200E0",
+plot_iso_profiles(df_iso=aw200e0_d18op_lon , df_geosp=aw200e0_geosp_lon , dim="lon", iso_color=purple, iso_label="W2E0",
                   season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=0, isomin=-16, ax=ax3,  
                   right_labels =False, bottom_labels=True, )#shade_alpha=0.05, shade_color=purple)
 

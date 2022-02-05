@@ -246,13 +246,13 @@ def plot_vertical_vars(first=True, second=False):
         
         plot_vertical_section(variable="Omega", data=df_omega_AW100E100 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.10, vmin=-0.20, levels=22,
                               level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.72, 0.02, 0.23], geosp_data=df_elev_AW100E100, dim="lon", ax=ax1, fig=fig, 
-                              bottom_labels=False, right_labels=False, left_labels=True, title= "[A]            AW100E100", use_norm=True)
+                              bottom_labels=False, right_labels=False, left_labels=True, title= "[A]            CTL", use_norm=True)
         plot_vertical_section(variable="Omega", data=df_omega_AW100E0 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.10, vmin=-0.20, levels=22,
                               level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW100E0 , dim="lon", ax=ax2, fig=fig,
-                              bottom_labels=False, right_labels=False, left_labels=False, title="[B]             AW100E0", use_norm=True)
+                              bottom_labels=False, right_labels=False, left_labels=False, title="[B]             W1E0", use_norm=True)
         plot_vertical_section(variable="Omega", data=df_omega_AW100E200 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.10, vmin=-0.20, levels=22,
                               level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW100E200, dim="lon", ax=ax3, fig=fig,
-                              bottom_labels=False, right_labels=True, left_labels=False, title="[C]             AW100E200", use_norm=True)
+                              bottom_labels=False, right_labels=True, left_labels=False, title="[C]             W1E2", use_norm=True)
         
         plot_vertical_section(variable="Clouds", data=df_aclcac_AW100E100 , cmap=PuBu, units="-", season="JJA", vmax=0.3, vmin=0, levels=22,
                               level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.39, 0.02, 0.23], geosp_data=df_elev_AW100E100, dim="lon", ax=ax4, fig=fig, 
@@ -286,13 +286,13 @@ def plot_vertical_vars(first=True, second=False):
         
         plot_vertical_section(variable="Omega", data=df_omega_AW200E100 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.10, vmin=-0.20, levels=22,
                               level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.72, 0.02, 0.23], geosp_data=df_elev_AW200E100 , dim="lon", ax=ax1, fig=fig, 
-                              bottom_labels=False, right_labels=False, left_labels=True, title= "[A]            AW200E100", use_norm=True)
+                              bottom_labels=False, right_labels=False, left_labels=True, title= "[A]            W2E1", use_norm=True)
         plot_vertical_section(variable="Omega", data=df_omega_AW200E0 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.10, vmin=-0.20, levels=22,
                               level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW200E0 , dim="lon", ax=ax2, fig=fig,
-                              bottom_labels=False, right_labels=False, left_labels=False, title="[B]             AW200E0", use_norm=True)
+                              bottom_labels=False, right_labels=False, left_labels=False, title="[B]             W2E0", use_norm=True)
         plot_vertical_section(variable="Omega", data=df_omega_AW200E200 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.10, vmin=-0.20, levels=22,
                               level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW200E200, dim="lon", ax=ax3, fig=fig,
-                              bottom_labels=False, right_labels=True, left_labels=False, title="[C]             AW200E200")
+                              bottom_labels=False, right_labels=True, left_labels=False, title="[C]             W2E2)
         
         plot_vertical_section(variable="Clouds", data=df_aclcac_AW200E100 , cmap=PuBu, units="-", season="JJA", vmax=0.3, vmin=0, levels=22,
                               level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.39, 0.02, 0.23], geosp_data=df_elev_AW200E100 , dim="lon", ax=ax4, fig=fig, 

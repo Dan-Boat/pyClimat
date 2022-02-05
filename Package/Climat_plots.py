@@ -742,15 +742,15 @@ def plot_iso_profiles(df_iso, df_geosp, dim, iso_color, iso_label, ax=None, seas
         
     if bottom_labels == True:
         if dim == "lon":
-             ax.set_xlabel("Longitude [E°]", fontsize=20)
+             ax.set_xlabel("Longitude [E°]", fontsize=22)
         elif dim == "lat":
-             ax.set_xlabel("Latitude [N°]", fontsize=20)
+             ax.set_xlabel("Latitude [N°]", fontsize=22)
         else:
             raise ValueError("Define dim as lat or lon")
             
             
     if left_labels == True:
-        ax.set_ylabel("Elevation [m]", fontsize=20)
+        ax.set_ylabel("Elevation [m]", fontsize=22)
             
     
     if left_labels ==False:
@@ -778,7 +778,7 @@ def plot_iso_profiles(df_iso, df_geosp, dim, iso_color, iso_label, ax=None, seas
         ax2.set_ylim(isomin, isomax)
     if right_labels == True:
     
-        ax2.set_ylabel(u'$\delta^{18}$O ‰ vs SMOW', fontsize=20)
+        ax2.set_ylabel(u'$\delta^{18}$O ‰ vs SMOW', fontsize=22)
         
     else:
         ax2.set_yticklabels([])
@@ -787,7 +787,7 @@ def plot_iso_profiles(df_iso, df_geosp, dim, iso_color, iso_label, ax=None, seas
     ax2.tick_params(axis= "x")
     
     if ax_legend == True:
-        ax2.legend(frameon=True, fontsize=15, loc="upper left")
+        ax2.legend(frameon=True, fontsize=20, loc="upper left")
     
     if title is not None:
         ax.set_title(title, fontdict= {"fontsize": 20, "fontweight":"bold"}, loc="left")
@@ -857,7 +857,7 @@ def scatter_plot_laspe_rate(reg_params, df_x_y_yhat, color, marker, label, ylabe
     #ax.set_aspect("equal", "box")
     
     if bottom_labels ==True:
-        ax.set_xlabel("Elevation [m]", fontsize=20)
+        ax.set_xlabel("Elevation [m]", fontsize=22, fontweight="bold")
         
     elif bottom_labels ==False:
         ax.grid(True)
@@ -867,7 +867,7 @@ def scatter_plot_laspe_rate(reg_params, df_x_y_yhat, color, marker, label, ylabe
     
     
     if left_labels ==True:
-        ax.set_ylabel(u'$\delta^{18}$O ‰ vs SMOW', fontsize=20)
+        ax.set_ylabel(u'$\delta^{18}$O ‰ vs SMOW', fontsize=22, fontweight="bold")
         
     elif left_labels ==False:
         ax.grid(True)
@@ -886,10 +886,10 @@ def scatter_plot_laspe_rate(reg_params, df_x_y_yhat, color, marker, label, ylabe
         ax.set_ylim(ymin, ymax)
     
     if ax_legend =="True":
-        ax.legend(frameon=True, fontsize=18, loc="upper right")
+        ax.legend(frameon=True, fontsize=20, loc="upper right")
        
     if title is not None:
-        ax.set_title(title, fontdict= {"fontsize": 20, "fontweight":"bold"}, loc="left")
+        ax.set_title(title, fontdict= {"fontsize": 22, "fontweight":"bold"}, loc="left")
         
     plt.tight_layout()
     
@@ -1186,16 +1186,16 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
     
     if bottom_labels == True:
         if dim == "lon":
-             ax.set_xlabel("Longitude [E°]", fontsize=20, fontweight="bold")
+             ax.set_xlabel("Longitude [E°]", fontsize=22, fontweight="bold")
         elif dim == "lat":
-             ax.set_xlabel("Latitude [N°]", fontsize=20, fontweight="bold")
+             ax.set_xlabel("Latitude [N°]", fontsize=22, fontweight="bold")
         else:
             raise ValueError("Define dim as lat or lon")
 
         
             
     if left_labels == True:
-        ax.set_ylabel("Pressure [hPa]", fontsize=20, fontweight="bold")
+        ax.set_ylabel("Pressure [hPa]", fontsize=22, fontweight="bold")
             
     
     if left_labels ==False:
@@ -1211,14 +1211,14 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
         
     if right_labels == True:
     
-        ax2.set_ylabel("Height [km]", fontsize=20, fontweight="bold")
+        ax2.set_ylabel("Height [km]", fontsize=22, fontweight="bold")
         
     else:
         ax2.set_yticklabels([])
     
     
     if title is not None:
-        ax.set_title(title, fontdict= {"fontsize": 20, "fontweight":"bold"}, loc="left")
+        ax.set_title(title, fontdict= {"fontsize": 22, "fontweight":"bold"}, loc="left")
         
     plt.tight_layout()
     

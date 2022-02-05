@@ -164,27 +164,27 @@ def plot_summer_mean(varname =None):
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e100_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
                            axes=[ax1], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, add_colorbar=False, title=True, 
-                           season_label= ["[A]  AW100E100"], bottom_labels=False, left_labels=True)
+                           season_label= ["[A]  CTL"], bottom_labels=False, left_labels=True)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e100_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
                            axes=[ax2], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.35, 0.02, 0.25], title=True, 
-                           season_label= ["[B]  AW200E100"], bottom_labels=False, left_labels=False,)
+                           season_label= ["[B]  W2E1"], bottom_labels=False, left_labels=False,)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e0_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
                            axes=[ax3], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[C]  AW100E0"], bottom_labels=False, left_labels=True,)
+                           season_label= ["[C]  W1E0"], bottom_labels=False, left_labels=True,)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e0_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
                            axes=[ax4], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[D]  AW200E0"], bottom_labels=False, left_labels=False,)
+                           season_label= ["[D]  W2E0"], bottom_labels=False, left_labels=False,)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e200_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
                            axes=[ax5], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[E]  AW100E200"], bottom_labels=True, left_labels=True)
+                           season_label= ["[E]  W1E2"], bottom_labels=True, left_labels=True)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e200_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
                            axes=[ax6], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[F]  AW200E200"], bottom_labels=True, left_labels=False)
+                           season_label= ["[F]  W2E2"], bottom_labels=True, left_labels=False)
         
         
         fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
@@ -200,27 +200,27 @@ def plot_summer_mean(varname =None):
         
         plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw100e100_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
                            axes=[ax1], fig=fig, vmax=30, vmin=-10, levels=22, domain="Europe", level_ticks=11, add_colorbar=False , title=True, 
-                           season_label= ["[A]  AW100E100"], bottom_labels=False, left_labels=True)
+                           season_label= ["[A]  CTL"], bottom_labels=False, left_labels=True)
         
         plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw200e100_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
                            axes=[ax2], fig=fig, vmax=30, vmin=-10, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.35, 0.02, 0.25], title=True, 
-                           season_label= ["[B]  AW200E100"], bottom_labels=False, left_labels=False,)
+                           season_label= ["[B]  W2E1"], bottom_labels=False, left_labels=False,)
         
         plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw100e0_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
                            axes=[ax3], fig=fig, vmax=30, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[C]  AW100E0"], bottom_labels=False, left_labels=True,)
+                           season_label= ["[C]  W1E0"], bottom_labels=False, left_labels=True,)
         
         plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw200e0_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
                            axes=[ax4], fig=fig, vmax=30, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[D]  AW200E0"], bottom_labels=False, left_labels=False,)
+                           season_label= ["[D]  W2E0"], bottom_labels=False, left_labels=False,)
         
         plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw100e200_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
                            axes=[ax5], fig=fig, vmax=30, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[E]  AW100E200"], bottom_labels=True, left_labels=True,)
+                           season_label= ["[E]  W1E2"], bottom_labels=True, left_labels=True,)
         
         plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw200e200_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
                            axes=[ax6], fig=fig, vmax=30, vmin=-10, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[F]  AW200E200"], bottom_labels=True, left_labels=False,)
+                           season_label= ["[F]  W2E2"], bottom_labels=True, left_labels=False,)
     
     
         fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
@@ -235,32 +235,32 @@ def plot_summer_mean(varname =None):
         
         plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw100e100_slt , cmap=Blues, units="mm/month", seasons=["JJA"], 
                            axes=[ax1], fig=fig, vmax=300, vmin=0, levels=22, domain="Europe", level_ticks=11, add_colorbar=False, title=True, 
-                           season_label= ["[A]  AW100E100"], bottom_labels=False, left_labels=True, plot_winds_pattern=True, data_v= v10_aw100e100_slt,
+                           season_label= ["[A]  W1E1"], bottom_labels=False, left_labels=True, plot_winds_pattern=True, data_v= v10_aw100e100_slt,
                            data_u=u10_aw100e100_slt, show_arrow_scale=False)
         
         plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw200e100_slt , cmap=Blues, units="mm/month", seasons=["JJA"], 
                            axes=[ax2], fig=fig, vmax=300, vmin=0, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.35, 0.02, 0.25], title=True, 
-                           season_label= ["[B]  AW200E100"], bottom_labels=False, left_labels=False, plot_winds_pattern=True, data_v= v10_aw200e100_slt,
+                           season_label= ["[B]  W2E1"], bottom_labels=False, left_labels=False, plot_winds_pattern=True, data_v= v10_aw200e100_slt,
                            data_u=u10_aw200e100_slt, show_arrow_scale=False)
         
         plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw100e0_slt , cmap=Blues, units="mm/month", seasons=["JJA"], 
                            axes=[ax3], fig=fig, vmax=300, vmin=0, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[C]  AW100E0"], bottom_labels=False, left_labels=True, plot_winds_pattern=True, data_v= v10_aw100e0_slt,
+                           season_label= ["[C]  W1E0"], bottom_labels=False, left_labels=True, plot_winds_pattern=True, data_v= v10_aw100e0_slt,
                            data_u=u10_aw100e0_slt, show_arrow_scale=False)
         
         plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw200e0_slt , cmap=Blues, units="mm/month", seasons=["JJA"], 
                            axes=[ax4], fig=fig, vmax=300, vmin=0, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[D]  AW200E0"], bottom_labels=False, left_labels=False, plot_winds_pattern=True, data_v= v10_aw200e0_slt,
+                           season_label= ["[D]  W2E0"], bottom_labels=False, left_labels=False, plot_winds_pattern=True, data_v= v10_aw200e0_slt,
                            data_u=u10_aw200e0_slt)
         
         plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw100e200_slt , cmap=Blues, units="mm/month", seasons=["JJA"], 
                            axes=[ax5], fig=fig, vmax=300, vmin=0, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[E]  AW100E200"], bottom_labels=True, left_labels=True, plot_winds_pattern=True, data_v= v10_aw100e200_slt,
+                           season_label= ["[E]  W1E2"], bottom_labels=True, left_labels=True, plot_winds_pattern=True, data_v= v10_aw100e200_slt,
                            data_u=u10_aw100e200_slt, show_arrow_scale=False)
         
         plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw200e200_slt , cmap=Blues, units="mm/month", seasons=["JJA"], 
                            axes=[ax6], fig=fig, vmax=300, vmin=0, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[F]  AW200E200"], bottom_labels=True, left_labels=False, plot_winds_pattern=True, data_v= v10_aw200e200_slt,
+                           season_label= ["[F]  W2E2"], bottom_labels=True, left_labels=False, plot_winds_pattern=True, data_v= v10_aw200e200_slt,
                            data_u=u10_aw200e200_slt, show_arrow_scale=False)
         
         
