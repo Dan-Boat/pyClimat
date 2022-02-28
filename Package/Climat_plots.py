@@ -886,7 +886,7 @@ def scatter_plot_laspe_rate(reg_params, df_x_y_yhat, color, marker, label, ylabe
         ax.set_ylim(ymin, ymax)
     
     if ax_legend =="True":
-        ax.legend(frameon=True, fontsize=20, loc="upper right")
+        ax.legend(frameon=True, fontsize=22, loc="upper right")
        
     if title is not None:
         ax.set_title(title, fontdict= {"fontsize": 22, "fontweight":"bold"}, loc="left")
@@ -1119,7 +1119,7 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
 def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig=None, vmax=None, vmin=None, levels=None, output_name=None, 
                      output_format=None, level_ticks=None, title=None, path_to_store=None, plot_colorbar=True,
                      cbar_pos=None, fig_title=None, season_label=None, geosp_data=None, dim=None, left_labels=True, bottom_labels=True,
-                     right_labels=True, use_norm=False):
+                     right_labels=True, use_norm=False, use_cbar_norm=False):
     
     # extracting coords from data
     x = data.index.values
@@ -1148,6 +1148,11 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
     ax.invert_yaxis()
     
     if plot_colorbar == True:
+        if use_cbar_norm == True:
+            norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+        else:
+            norm = None 
+            
         if cbar_pos is None:
             cbar_pos = [0.90, 0.30, 0.03, 0.45]
         
@@ -1162,10 +1167,10 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
         
         if level_ticks is not None:
             cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
-                     format="%.2f", ticks = ticks, extend = "neither", pad = 0.05)
+                     format="%.2f", ticks = ticks, extend = "neither", pad = 0.05, norm=norm)
         else:
             cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
-                     format="%.2f", extend = "neither", pad=0.05)
+                     format="%.2f", extend = "neither", pad=0.05, norm=norm)
             
         cb.set_label(label=variable + " [" + units + "]", size= 20, fontweight="bold")
         cb.ax.tick_params(labelsize=20, size=0,)

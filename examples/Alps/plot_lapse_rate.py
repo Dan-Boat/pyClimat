@@ -272,6 +272,7 @@ mpl.rc('ytick', labelsize=22)
 mpl.rc('legend', fontsize=22)
 mpl.rc('axes', labelsize=22)
 mpl.rc('lines', linewidth=3)
+mpl.rc('legend', fontsize=22)
 
 
 

@@ -296,6 +296,21 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
         if lev is not None:
             var_data = var_data.sel(lev=lev)
             
+    # relativehumidity at vertical levels (pressure)      
+    elif varname == "rh":
+        var_data = Dataset["relhum"]
+        
+        if units is not None:
+            if units =="%":
+                var_data = var_data * 100 #---%
+                
+        if lev_units is not None:
+            var_data = vert_coord_convertion(data=var_data, units=lev_units)
+                 
+        if lev is not None:
+            var_data = var_data.sel(lev=lev)
+            
+            
     elif varname == "latent heat":
         var_data = Dataset["ahfl"] * -1 #positive values
         
