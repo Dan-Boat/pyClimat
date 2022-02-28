@@ -70,6 +70,7 @@ RdYlBu = plt.cm.RdYlBu
 RdYlBu_r = plt.cm.RdYlBu_r
 RdYlGn = plt.cm.RdYlGn
 Spectral = plt.cm.Spectral
+Spectral_r = plt.cm.Spectral_r
 YlGnBu = plt.cm.YlGnBu
 winter = plt.cm.winter
 PuBu = plt.cm.PuBu

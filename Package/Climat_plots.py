@@ -1121,10 +1121,11 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
                      cbar_pos=None, fig_title=None, season_label=None, geosp_data=None, dim=None, left_labels=True, bottom_labels=True,
                      right_labels=True, use_norm=False, use_cbar_norm=False):
     
-    # extracting coords from data
+    # extracting coords from data (select up to 200 hPa)
     x = data.index.values
-    y = data.columns.values
-     
+    y = data.columns.values[:10]
+    
+    data = data.iloc[:, :10]
     # applying meshgrid 
     X,Y = np.meshgrid(x,y)
     Z = data.values.T
@@ -1150,8 +1151,6 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
     if plot_colorbar == True:
         if use_cbar_norm == True:
             norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
-        else:
-            norm = None 
             
         if cbar_pos is None:
             cbar_pos = [0.90, 0.30, 0.03, 0.45]
@@ -1166,8 +1165,12 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
             cbar_ax.tick_params(size=0)
         
         if level_ticks is not None:
-            cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
-                     format="%.2f", ticks = ticks, extend = "neither", pad = 0.05, norm=norm)
+            if use_cbar_norm == True:
+                cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
+                         format="%.2f", ticks = ticks, extend = "neither", pad = 0.05, norm=norm)
+            else:
+                cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
+                         format="%.2f", ticks = ticks, extend = "neither", pad = 0.05,)
         else:
             cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
                      format="%.2f", extend = "neither", pad=0.05, norm=norm)
@@ -1187,7 +1190,7 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
         ax2.fill_between(df.index, df/1000, 0, color=black, edgecolor=black, linestyle="-", linewidth=2.5)
         
         # setting limit to match pressure levels (Try with the cdo converted height levels later)
-        ax2.set_ylim(0, 16)
+        ax2.set_ylim(0, 11.5)
     
     if bottom_labels == True:
         if dim == "lon":

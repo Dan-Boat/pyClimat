@@ -264,33 +264,33 @@ def plot_vertical_vars(first=True, second=False):
                               level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW100E200, dim="lon", ax=ax6, fig=fig,
                               bottom_labels=False, right_labels=True, left_labels=False, title="[F]")
         
-        plot_vertical_section(variable="relhum", data=df_q_AW100E100 , cmap=RdYlBu, units="-", season="JJA", vmax=1, vmin=0, levels=22,
+        plot_vertical_section(variable="relhum", data=df_q_AW100E100 , cmap=RdYlBu, units="-", season="JJA", vmax=0.9, vmin=0.3, levels=22,
                               level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.04, 0.02, 0.23], geosp_data=df_elev_AW100E100, dim="lon", ax=ax7, fig=fig, 
-                              bottom_labels=True, right_labels=False, left_labels=True, title="[G]", use_cbar_norm=True)
-        plot_vertical_section(variable="relhum", data=df_q_AW100E0, cmap=RdYlBu, units="-", season="JJA", vmax=1, vmin=0, levels=22,
+                              bottom_labels=True, right_labels=False, left_labels=True, title="[G]")
+        plot_vertical_section(variable="relhum", data=df_q_AW100E0, cmap=RdYlBu, units="-", season="JJA", vmax=0.9, vmin=0.3, levels=22,
                               level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW100E0 , dim="lon", ax=ax8, fig=fig,
-                              bottom_labels=True, right_labels=False, left_labels=False, title="[H]", use_cbar_norm=True)
-        plot_vertical_section(variable="relhum", data=df_q_AW100E200 , cmap=RdYlBu, units="-", season="JJA", vmax=1, vmin=0, levels=22,
+                              bottom_labels=True, right_labels=False, left_labels=False, title="[H]",)
+        plot_vertical_section(variable="relhum", data=df_q_AW100E200 , cmap=RdYlBu, units="-", season="JJA", vmax=0.9, vmin=0.3, levels=22,
                               level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW100E200, dim="lon", ax=ax9, fig=fig,
-                              bottom_labels=True, right_labels=True, left_labels=False, title="[I]", use_cbar_norm=True)
+                              bottom_labels=True, right_labels=True, left_labels=False, title="[I]",)
         
         
         
         plt.tight_layout() 
         plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
-        #plt.savefig(os.path.join(path_to_store, "fig10.svg"), format= "svg", bbox_inches="tight", dpi=600)
+        plt.savefig(os.path.join(path_to_store, "fig10.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
     
     if second == True:
         fig, ((ax1,ax2,ax3),(ax4,ax5,ax6),(ax7,ax8,ax9))= plt.subplots(nrows = 3, ncols = 3, sharey=False, sharex=False, figsize=(25, 20))
         
-        plot_vertical_section(variable="Omega", data=df_omega_AW200E100 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.10, vmin=-0.20, levels=22,
+        plot_vertical_section(variable="Omega", data=df_omega_AW200E100 , cmap=YlGnBu, units="Pa/s", season="JJA", levels=22,
                               level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.72, 0.02, 0.23], geosp_data=df_elev_AW200E100 , dim="lon", ax=ax1, fig=fig, 
                               bottom_labels=False, right_labels=False, left_labels=True, title= "[A]            W2E1", use_norm=True)
-        plot_vertical_section(variable="Omega", data=df_omega_AW200E0 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.10, vmin=-0.20, levels=22,
+        plot_vertical_section(variable="Omega", data=df_omega_AW200E0 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.3, vmin=-0.3, levels=22,
                               level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW200E0 , dim="lon", ax=ax2, fig=fig,
                               bottom_labels=False, right_labels=False, left_labels=False, title="[B]             W2E0", use_norm=True)
-        plot_vertical_section(variable="Omega", data=df_omega_AW200E200 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.10, vmin=-0.20, levels=22,
+        plot_vertical_section(variable="Omega", data=df_omega_AW200E200 , cmap=YlGnBu, units="Pa/s", season="JJA", vmax=0.3, vmin=-0.3, levels=22,
                               level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW200E200, dim="lon", ax=ax3, fig=fig,
                               bottom_labels=False, right_labels=True, left_labels=False, title="[C]             W2E2")
         
@@ -304,13 +304,13 @@ def plot_vertical_vars(first=True, second=False):
                               level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW200E200, dim="lon", ax=ax6, fig=fig,
                               bottom_labels=False, right_labels=True, left_labels=False, title="[F]")
         
-        plot_vertical_section(variable="q", data=df_q_AW200E100 , cmap=RdYlBu, units="g/kg", season="JJA", vmax=1, vmin=0.2, levels=22,
+        plot_vertical_section(variable="relhum", data=df_q_AW200E100 , cmap=RdYlBu, units="-", season="JJA", vmax=0.9, vmin=0.3, levels=22,
                               level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.04, 0.02, 0.23], geosp_data=df_elev_AW200E100 , dim="lon", ax=ax7, fig=fig, 
                               bottom_labels=True, right_labels=False, left_labels=True, title="[G]")
-        plot_vertical_section(variable="q", data=df_q_AW200E0, cmap=RdYlBu, units="g/kg", season="JJA", vmax=1, vmin=0.2, levels=22,
+        plot_vertical_section(variable="relhum", data=df_q_AW200E0, cmap=RdYlBu, units="-", season="JJA", vmax=0.9, vmin=0.3, levels=22,
                               level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW200E0 , dim="lon", ax=ax8, fig=fig,
                               bottom_labels=True, right_labels=False, left_labels=False, title="[H]")
-        plot_vertical_section(variable="q", data=df_q_AW200E200 , cmap=RdYlBu, units="g/kg", season="JJA", vmax=1, vmin=0.2, levels=22,
+        plot_vertical_section(variable="relhum", data=df_q_AW200E200 , cmap=RdYlBu, units="-", season="JJA", vmax=0.9, vmin=0.3, levels=22,
                               level_ticks=6, plot_colorbar=False, geosp_data=df_elev_AW200E200, dim="lon", ax=ax9, fig=fig,
                               bottom_labels=True, right_labels=True, left_labels=False, title="[I]")
         
@@ -318,10 +318,10 @@ def plot_vertical_vars(first=True, second=False):
         
         plt.tight_layout() 
         plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
-        #plt.savefig(os.path.join(path_to_store, "fig11.svg"), format= "svg", bbox_inches="tight", dpi=600)
+        plt.savefig(os.path.join(path_to_store, "fig11.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
 
 if __name__ == '__main__':
-    #plot_vertical_vars(first=False, second=True)
-    plot_vertical_vars(first=True, second=False)
+    plot_vertical_vars(first=False, second=True)
+    #plot_vertical_vars(first=True, second=False)
