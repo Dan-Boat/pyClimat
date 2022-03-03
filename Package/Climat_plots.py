@@ -1167,10 +1167,10 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
         if level_ticks is not None:
             if use_cbar_norm == True:
                 cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
-                         format="%.2f", ticks = ticks, extend = "neither", pad = 0.05, norm=norm)
+                         format="%.2f", ticks = ticks, extend = "both", pad = 0.05, norm=norm)
             else:
                 cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
-                         format="%.2f", ticks = ticks, extend = "neither", pad = 0.05,)
+                         format="%.2f", ticks = ticks, extend = "both", pad = 0.05,)
         else:
             cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
                      format="%.2f", extend = "neither", pad=0.05, norm=norm)

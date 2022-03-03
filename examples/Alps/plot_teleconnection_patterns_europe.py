@@ -91,25 +91,24 @@ eofs_ERA, pcs_ERA, var_frac_ERA = EOF_analysis(data=slp_ERA, maxlon=60, minlon=-
 projection = ccrs.PlateCarree()
 path_to_store = os.path.join(module_output_main_path, "plots")
 
-#projection = ccrs.AlbersEqualArea(central_latitude=40, central_longitude=-35, standard_parallels=(0, 80))
-
-# NAO
-fig, ((ax1,ax2), (ax3,ax4), (ax5, ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20,15), subplot_kw={"projection":projection})
+#plotting teleconnections for ERA5 in Summer
+fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols=2, figsize=(15, 8), subplot_kw={"projection": projection})
 
 plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[0]*-1), mode_var=var_frac_ERA[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal",use_AlberEqualArea=False,
-                      ax=ax1, fig=fig, title="[A] ERA5", bottom_labels=False)
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E100[0]*-1), mode_var=var_frac_AW100E100[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] CTL", bottom_labels=False, left_labels=False)
-plot_eofsAsCovariance(variable= "mslp", data=(eofs_AW100E0[0]*1), mode_var=var_frac_AW100E0[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] W1E0", bottom_labels=False)
-plot_eofsAsCovariance(variable= "mslp", data=(eofs_AW100E200[0]*-1), mode_var=var_frac_AW100E200[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] W1E2", bottom_labels=False, left_labels=False)
+                      level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal", use_AlberEqualArea=False,
+                      ax=ax1, fig=fig, title="[A]", bottom_labels=False)
 
-plot_eofsAsCovariance(variable= "mslp", data=(eofs_AW200E0[0]*1), mode_var=var_frac_AW200E0[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax5, fig=fig, title="[C] W2E0")
-plot_eofsAsCovariance(variable= "mslp", data=(eofs_AW200E100[0]*1), mode_var=var_frac_AW200E100[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax6, fig=fig, title="[D] W2E1", left_labels=False)
+plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[1]*-1), mode_var=var_frac_ERA[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, use_AlberEqualArea=False,
+                      ax=ax2, fig=fig, title="[B]", bottom_labels=False, left_labels=False)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[2]), mode_var=var_frac_ERA[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, use_AlberEqualArea=False,
+                      ax=ax3, fig=fig, title="[C]", )
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[3]), mode_var=var_frac_ERA[3], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, use_AlberEqualArea=False,
+                      ax=ax4, fig=fig, title="[D]", left_labels=False)
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
@@ -117,23 +116,29 @@ plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
 plt.savefig(os.path.join(path_to_store, "fig12.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
-# SCAN
-fig, ((ax1,ax2), (ax3,ax4), (ax5, ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20,15), subplot_kw={"projection":projection})
 
-plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[3]*1), mode_var=var_frac_ERA[3], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal",use_AlberEqualArea=False,
-                      ax=ax1, fig=fig, title="[A] ERA5", bottom_labels=False)
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E100[2]*1), mode_var=var_frac_AW100E100[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] CTL", bottom_labels=False, left_labels=False)
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E0[1]*1), mode_var=var_frac_AW100E0[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] W1E0", bottom_labels=False)
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E200[3]*-1), mode_var=var_frac_AW100E200[3], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] W1E2", bottom_labels=False, left_labels=False)
 
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E0[2]*1), mode_var=var_frac_AW200E0[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax5, fig=fig, title="[E] W2E0")
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E100[1]*-1), mode_var=var_frac_AW200E100[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax6, fig=fig, title="[F] W2E1", left_labels=False)
+# NAO
+fig, ((ax1,ax2), (ax3,ax4), (ax5, ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20,16), subplot_kw={"projection":projection})
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E100[0]*-1), mode_var=var_frac_AW100E100[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal", 
+                      ax=ax1, fig=fig, title="[A] CTL", bottom_labels=False)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E0[0]), mode_var=var_frac_AW100E0[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] W1E0", left_labels=False, bottom_labels=False)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E200[0]*-1), mode_var=var_frac_AW100E200[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] W1E2", bottom_labels=False, )
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E0[0]), mode_var=var_frac_AW200E0[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] W2E0", left_labels=False, bottom_labels=False)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E100[0]), mode_var=var_frac_AW200E100[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax5, fig=fig, title="[E] W2E1",)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E200[0]), mode_var=var_frac_AW200E200[0], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax6, fig=fig, title="[F] W2E2", left_labels=False)
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
@@ -141,46 +146,89 @@ plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
 plt.savefig(os.path.join(path_to_store, "fig13.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
-# EAWR
-fig, ((ax1,ax2), (ax3,ax4), (ax5, ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20,15), subplot_kw={"projection":projection})
+# SCAN
 
-plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[2]*1), mode_var=var_frac_ERA[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal",use_AlberEqualArea=False,
-                      ax=ax1, fig=fig, title="[A] ERA5", bottom_labels=False)
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E100[3]*1), mode_var=var_frac_AW100E100[3], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] CTL", left_labels=False, bottom_labels=False)
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E0[2]*1), mode_var=var_frac_AW100E0[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] W1E0", bottom_labels=False)
+fig, ((ax1,ax2), (ax3,ax4), (ax5, ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20,16), subplot_kw={"projection":projection})
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E100[1]*-1), mode_var=var_frac_AW100E100[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal", 
+                      ax=ax1, fig=fig, title="[A] CTL", bottom_labels=False)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E0[1]*-1), mode_var=var_frac_AW100E0[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] W1E0", left_labels=False, bottom_labels=False)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E200[1]), mode_var=var_frac_AW100E200[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] W1E2", bottom_labels=False, )
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E0[1]), mode_var=var_frac_AW200E0[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] W2E0", left_labels=False, bottom_labels=False)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E100[2]*-1), mode_var=var_frac_AW200E100[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax5, fig=fig, title="[E] W2E1",)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E200[2]*-1), mode_var=var_frac_AW200E200[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax6, fig=fig, title="[F] W2E2", left_labels=False)
+
+fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+plt.tight_layout() 
+plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
+plt.savefig(os.path.join(path_to_store, "fig14.svg"), format= "svg", bbox_inches="tight", dpi=600)
+
+
+
+# EAWR
+
+fig, ((ax1,ax2), (ax3,ax4), (ax5, ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20,16), subplot_kw={"projection":projection})
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E100[2]), mode_var=var_frac_AW100E100[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal", 
+                      ax=ax1, fig=fig, title="[A] CTL", bottom_labels=False)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E0[2]), mode_var=var_frac_AW100E0[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] W1E0", left_labels=False, bottom_labels=False)
+
 plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E200[2]*-1), mode_var=var_frac_AW100E200[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] W1E2", left_labels=False, bottom_labels=False)
+                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] W1E2", bottom_labels=False, )
 
 plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E0[3]*-1), mode_var=var_frac_AW200E0[3], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax5, fig=fig, title="[E] W2E0")
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E100[3]*-1), mode_var=var_frac_AW200E100[3], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax6, fig=fig, title="[F] W2E1", left_labels=False)
+                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] W2E0", left_labels=False, bottom_labels=False)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E100[3]), mode_var=var_frac_AW200E100[3], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax5, fig=fig, title="[E] W2E1",)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E200[1]), mode_var=var_frac_AW200E200[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax6, fig=fig, title="[F] W2E2", left_labels=False)
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
 plt.savefig(os.path.join(path_to_store, "figS13.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
+
+
+
 #EA
-fig, ((ax1,ax2), (ax3,ax4), (ax5, ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20,15), subplot_kw={"projection":projection})
 
-plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[1]*1), mode_var=var_frac_ERA[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal",use_AlberEqualArea=False,
-                      ax=ax1, fig=fig, title="[A] ERA5", bottom_labels=False)
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E100[1]*1), mode_var=var_frac_AW100E100[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] CTL", left_labels=False, bottom_labels=False)
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E0[3]*-1), mode_var=var_frac_AW100E0[3], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] W1E0", bottom_labels=False)
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E200[1]*-1), mode_var=var_frac_AW100E200[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] W1E2", left_labels=False, bottom_labels=False)
+fig, ((ax1,ax2), (ax3,ax4), (ax5, ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20,16), subplot_kw={"projection":projection})
 
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E0[1]*-1), mode_var=var_frac_AW200E0[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax5, fig=fig, title="[E] W2E0")
-plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E100[2]*1), mode_var=var_frac_AW200E100[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax6, fig=fig, title="[F] W2E1", left_labels=False)
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E100[3]*-1), mode_var=var_frac_AW100E100[3], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal", 
+                      ax=ax1, fig=fig, title="[A] CTL", bottom_labels=False)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E0[3]), mode_var=var_frac_AW100E0[3], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B] W1E0", left_labels=False, bottom_labels=False)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW100E200[3]*-1), mode_var=var_frac_AW100E200[3], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C] W1E2", bottom_labels=False, )
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E0[2]), mode_var=var_frac_AW200E0[2], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D] W2E0", left_labels=False, bottom_labels=False)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E100[1]*-1), mode_var=var_frac_AW200E100[1], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax5, fig=fig, title="[E] W2E1",)
+
+plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E200[3]*-1), mode_var=var_frac_AW200E200[3], units="hPa", vmax=5, vmin=-5, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax6, fig=fig, title="[F] W2E2", left_labels=False)
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
