@@ -232,7 +232,7 @@ def plot_lape_rate_per_section():
     
     scatter_plot_laspe_rate(ax=ax1, reg_params= aw100e100_west_reg_alt , df_x_y_yhat=aw100e100_west_df_alt , color=black, marker= "*", label= "CTL",
                            title="[A] West", xmax=3500, xmin=0,
-                            ymax=0, ymin= -18, bottom_labels=True)
+                            ymax=-2, ymin= -20, bottom_labels=True)
     scatter_plot_laspe_rate(ax=ax1, reg_params= aw100e0_west_reg_alt , df_x_y_yhat=aw100e0_west_df_alt , color=red, marker= "D", label= "W1E0",
                            bottom_labels=True)
     scatter_plot_laspe_rate(ax=ax1, reg_params= aw100e200_west_reg_alt , df_x_y_yhat=aw100e200_west_df_alt , color=green, marker= "^", label= "W1E2",
@@ -240,13 +240,13 @@ def plot_lape_rate_per_section():
     
     
     
-    ax1.legend(frameon=True, fontsize=15, loc="upper right", framealpha=0.5, ncol=1)
+    ax1.legend(frameon=True, fontsize=18, loc="upper right", framealpha=0.5, ncol=1)
     
     
     #ax2 (north)
-    scatter_plot_laspe_rate(ax=ax2, reg_params= aw100e100_north_reg_alt , df_x_y_yhat=aw100e100_north_df_alt , color=black, marker= "*", label= "W1E1",
+    scatter_plot_laspe_rate(ax=ax2, reg_params= aw100e100_north_reg_alt , df_x_y_yhat=aw100e100_north_df_alt , color=black, marker= "*", label= "CTL",
                             left_labels=False, xmax=3500, xmin=0, title= "[B] North",
-                             ymax=0, ymin= -18,)
+                             ymax=-2, ymin= -20,)
     scatter_plot_laspe_rate(ax=ax2, reg_params= aw100e0_north_reg_alt , df_x_y_yhat=aw100e0_north_df_alt , color=red, marker= "D", label= "W1E0",
                             left_labels=False)
     
@@ -254,19 +254,19 @@ def plot_lape_rate_per_section():
                             left_labels=False)
     
     
-    ax2.legend(frameon=True, fontsize=15, loc="upper right", framealpha=0.5, ncol=1)
+    ax2.legend(frameon=True, fontsize=18, loc="upper right", framealpha=0.5, ncol=1)
     
     #ax3 (south)
-    scatter_plot_laspe_rate(ax=ax3, reg_params= aw100e100_south_reg_alt , df_x_y_yhat=aw100e100_south_df_alt , color=black, marker= "*", label= "W1E1",
+    scatter_plot_laspe_rate(ax=ax3, reg_params= aw100e100_south_reg_alt , df_x_y_yhat=aw100e100_south_df_alt , color=black, marker= "*", label= "CTL",
                             left_labels=False, xmax=3500, xmin=0, title= "[C] South",
-                             ymax=0, ymin= -18,)
+                             ymax=-2, ymin= -20,)
     scatter_plot_laspe_rate(ax=ax3, reg_params= aw100e0_south_reg_alt , df_x_y_yhat=aw100e0_south_df_alt , color=red, marker= "^", label= "W1E0",
                            left_labels=False)
     scatter_plot_laspe_rate(ax=ax3, reg_params= aw100e200_south_reg_alt , df_x_y_yhat=aw100e200_south_df_alt , color=green, marker= "D", label= "W1E2",
                            left_labels=False)
     
     
-    ax3.legend(frameon=True, fontsize=15, loc="upper right", framealpha=0.5, ncol=1)
+    ax3.legend(frameon=True, fontsize=18, loc="upper right", framealpha=0.5, ncol=1)
     
     plt.tight_layout()
     plt.subplots_adjust(left=0.15, right=0.88, top=0.97, bottom=0.05)
@@ -276,41 +276,47 @@ def plot_lape_rate_per_section():
     fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(25, 8), )
     
     #ax1 (west)
-    scatter_plot_laspe_rate(ax=ax1, reg_params= aw200e200_west_reg_alt , df_x_y_yhat=aw200e200_west_df_alt , color=black, marker= "*", label= "W2E2",
+    scatter_plot_laspe_rate(ax=ax1, reg_params= aw200e200_west_reg_alt , df_x_y_yhat=aw200e200_west_df_alt , color=olive, marker= "h", label= "W2E2",
                            title="[A] West", xmax=3500, xmin=0,
-                            ymax=0, ymin= -18, )
+                            ymax=-2, ymin= -20, )
     
     scatter_plot_laspe_rate(ax=ax1, reg_params= aw200e0_west_reg_alt , df_x_y_yhat=aw200e0_west_df_alt , color=purple, marker= "p", label= "W2E0",
                            )
     scatter_plot_laspe_rate(ax=ax1, reg_params= aw200e100_west_reg_alt , df_x_y_yhat=aw200e100_west_df_alt , color=golden, marker= "s", label= "W2E1",
                            )
+    scatter_plot_laspe_rate(ax=ax1, reg_params= aw100e100_west_reg_alt , df_x_y_yhat=aw100e100_west_df_alt , color=black, marker= "*", label= "CTL",
+                           )
     
-    ax1.legend(frameon=True, fontsize=15, loc="upper right", framealpha=0.5, ncol=1)
+    ax1.legend(frameon=True, fontsize=18, loc="upper right", framealpha=0.5, ncol=1)
     
     
     #ax2 (north)
-    scatter_plot_laspe_rate(ax=ax2, reg_params= aw200e200_north_reg_alt , df_x_y_yhat=aw200e200_north_df_alt , color=black, marker= "*", label= "W2E2",
+    scatter_plot_laspe_rate(ax=ax2, reg_params= aw200e200_north_reg_alt , df_x_y_yhat=aw200e200_north_df_alt , color=olive, marker= "h", label= "W2E2",
                             left_labels=False, xmax=3500, xmin=0, title= "[B] North",
-                             ymax=0, ymin= -18,)
+                             ymax=-2, ymin= -20,)
     scatter_plot_laspe_rate(ax=ax2, reg_params= aw200e0_north_reg_alt , df_x_y_yhat=aw200e0_north_df_alt , color=purple, marker= "p", label= "W2E0",
                             left_labels=False)
     scatter_plot_laspe_rate(ax=ax2, reg_params= aw200e100_north_reg_alt , df_x_y_yhat=aw200e100_north_df_alt , color=golden, marker= "s", label= "W2E1",
                             left_labels=False)
+    scatter_plot_laspe_rate(ax=ax2, reg_params= aw100e100_north_reg_alt , df_x_y_yhat=aw100e100_north_df_alt , color=black, marker= "*", label= "CTL",
+                            left_labels=False, )
     
-    ax2.legend(frameon=True, fontsize=15, loc="upper right", framealpha=0.5, ncol=1)
+    ax2.legend(frameon=True, fontsize=18, loc="upper right", framealpha=0.5, ncol=1)
     
     
     #ax3 (south)
-    scatter_plot_laspe_rate(ax=ax3, reg_params= aw200e200_south_reg_alt , df_x_y_yhat=aw200e200_south_df_alt , color=black, marker= "*", label= "W2E2",
+    scatter_plot_laspe_rate(ax=ax3, reg_params= aw200e200_south_reg_alt , df_x_y_yhat=aw200e200_south_df_alt , color=olive, marker= "h", label= "W2E2",
                             left_labels=False, xmax=3500, xmin=0, title= "[C] South",
-                             ymax=0, ymin= -18,)
+                             ymax=-2, ymin= -20,)
     
     scatter_plot_laspe_rate(ax=ax3, reg_params= aw200e0_south_reg_alt , df_x_y_yhat=aw200e0_south_df_alt , color=purple, marker= "p", label= "W2E0",
                            left_labels=False)
     scatter_plot_laspe_rate(ax=ax3, reg_params= aw200e100_south_reg_alt , df_x_y_yhat=aw200e100_south_df_alt , color=golden, marker= "s", label= "W2E1",
                            left_labels=False)
+    scatter_plot_laspe_rate(ax=ax3, reg_params= aw100e100_south_reg_alt , df_x_y_yhat=aw100e100_south_df_alt , color=black, marker= "*", label= "CTL",
+                            left_labels=False,)
     
-    ax3.legend(frameon=True, fontsize=15, loc="upper right", framealpha=0.5, ncol=1)
+    ax3.legend(frameon=True, fontsize=18, loc="upper right", framealpha=0.5, ncol=1)
     
     plt.tight_layout()
     plt.subplots_adjust(left=0.15, right=0.88, top=0.97, bottom=0.05)

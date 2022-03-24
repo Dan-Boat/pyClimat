@@ -313,7 +313,7 @@ def plot_lape_rate_per_section():
     
     
     #ax3 (south)
-    scatter_plot_laspe_rate(ax=ax3, reg_params= aw200e200_south_reg_slt , df_x_y_yhat=aw200e200_south_df_slt , color=olive, marker= "*", label= "W2E2",
+    scatter_plot_laspe_rate(ax=ax3, reg_params= aw200e200_south_reg_slt , df_x_y_yhat=aw200e200_south_df_slt , color=olive, marker= "h", label= "W2E2",
                             left_labels=False, xmax=3500, xmin=0, title= "[C] South",
                              ymax=0, ymin= -16,)
     
