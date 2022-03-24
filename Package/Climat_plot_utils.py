@@ -49,6 +49,8 @@ magenta = "magenta"
 black = "black"
 grey = "grey"
 golden = "darkgoldenrod"
+cyan = "cyan"
+olive = "olive"
 
 #divergence colors 
 RdBu_r = plt.cm.RdBu_r
