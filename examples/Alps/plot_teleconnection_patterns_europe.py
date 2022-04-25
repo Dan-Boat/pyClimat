@@ -91,6 +91,10 @@ eofs_ERA, pcs_ERA, var_frac_ERA = EOF_analysis(data=slp_ERA, maxlon=60, minlon=-
 projection = ccrs.PlateCarree()
 path_to_store = os.path.join(module_output_main_path, "plots")
 
+#apply font and style 
+
+apply_style(fontsize=22, style=None, linewidth=2)
+
 #plotting teleconnections for ERA5 in Summer
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols=2, figsize=(15, 8), subplot_kw={"projection": projection})
 

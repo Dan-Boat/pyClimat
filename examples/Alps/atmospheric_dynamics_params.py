@@ -238,8 +238,8 @@ def plot_vertical_vars(first=True, second=False):
     path_to_store = os.path.join(module_output_main_path, "plots")
     
     #visualization 
-    plt.rcParams.update({'font.size': 22, "font.weight":"bold"})
-    
+   
+    apply_style(fontsize=22, style=None, linewidth=2)    
     if first == True:
     
         fig, ((ax1,ax2,ax3),(ax4,ax5,ax6),(ax7,ax8,ax9))= plt.subplots(nrows = 3, ncols = 3, sharey=False, sharex=False, figsize=(25, 20))
@@ -278,7 +278,7 @@ def plot_vertical_vars(first=True, second=False):
         
         plt.tight_layout()
         plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
-        plt.savefig(os.path.join(path_to_store, "fig10.svg"), format= "svg", bbox_inches="tight", dpi=600)
+        plt.savefig(os.path.join(path_to_store, "fig10.svg"), format= "svg", bbox_inches="tight", dpi=300)
     
     
     if second == True:
@@ -318,7 +318,7 @@ def plot_vertical_vars(first=True, second=False):
         
         plt.tight_layout() 
         plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
-        plt.savefig(os.path.join(path_to_store, "fig11.svg"), format= "svg", bbox_inches="tight", dpi=600)
+        plt.savefig(os.path.join(path_to_store, "fig11.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 
