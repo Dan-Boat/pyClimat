@@ -36,7 +36,7 @@ except:
 def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=None, levels=None, domain=None, center= True, output_name=None, 
                      output_format=None, level_ticks=None, title=None, path_to_store=None, data_v10=None, data_u10=None, GNIP_data=None,
                      left_labels= True, bottom_labels=True, add_colorbar=True, plot_stats= False, compare_data1=None, compare_data2=None, max_pvalue=None,
-                     hatches=None, fig=None, cbar_pos=None):
+                     hatches=None, fig=None, cbar_pos=None, use_colorbar_default=False):
     """
     
 
@@ -100,13 +100,15 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
     if add_colorbar == True:    
         if cbar_pos is None:
             cbar_pos = [0.90, 0.30, 0.03, 0.45]
-    
-        cbar_ax = fig.add_axes(cbar_pos)   # axis for subplot colorbar # left, bottom, width, height
-        cbar_ax.get_xaxis().set_visible(False)
-        cbar_ax.yaxis.set_ticks_position('right')
-        cbar_ax.set_yticklabels([])
-        cbar_ax.tick_params(size=0)
-    
+        
+        if use_colorbar_default == False:
+            
+            cbar_ax = fig.add_axes(cbar_pos)   # axis for subplot colorbar # left, bottom, width, height
+            cbar_ax.get_xaxis().set_visible(False)
+            cbar_ax.yaxis.set_ticks_position('right')
+            cbar_ax.set_yticklabels([])
+            cbar_ax.tick_params(size=0)
+        
     
     
     if all(parameter is not None for parameter in [vmin, vmax, levels, level_ticks]):
@@ -115,12 +117,22 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
             
             if center==True:
                 if add_colorbar ==True:
+                    
+                    if use_colorbar_default == True:
+                        
+                        p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
+                                        levels=levels, transform = projection, norm=norm, 
+                                        cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
+                                                      "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither",
+                                        add_colorbar=True, add_labels=False)
+                    else:
+                        
             
-                     p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
-                                     levels=levels, transform = projection, norm=norm, 
-                                     cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": "vertical", 
-                                                   "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "neither",
-                                     add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
+                         p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
+                                         levels=levels, transform = projection, norm=norm, 
+                                         cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": "vertical", 
+                                                       "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "neither",
+                                         add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
                 else:
                     p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
                                     levels=levels, transform = projection, norm=norm, add_colorbar=False, add_labels=False) 
@@ -140,11 +152,21 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
         else:
             if add_colorbar == True:
                 
-                p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
-                                     levels=levels, transform = projection, 
-                                     cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "vertical", 
-                                                   "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither",
-                                     add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
+                if use_colorbar_default == True:
+                    p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
+                                         levels=levels, transform = projection, 
+                                         cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
+                                                       "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither",
+                                         add_colorbar=True, add_labels=False)
+                else:
+                    
+                    
+                
+                    p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
+                                         levels=levels, transform = projection, 
+                                         cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "vertical", 
+                                                       "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither",
+                                         add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
             else:
                 p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
                                      levels=levels, transform = projection, add_colorbar=False, add_labels=False)
@@ -204,9 +226,9 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
         
     if GNIP_data is not None:
         if center == True:
-            ax.scatter(x=GNIP_data["lon"], y=GNIP_data["lat"], c=GNIP_data["d18op"], cmap=cmap, vmax=vmax, vmin=vmin, norm=norm, edgecolor="k", s= 70)
+            ax.scatter(x=GNIP_data["lon"], y=GNIP_data["lat"], c=GNIP_data["d18op"], cmap=cmap, vmax=vmax, vmin=vmin, norm=norm, edgecolor="k", s= 90)
         else:
-            ax.scatter(x=GNIP_data["lon"], y=GNIP_data["lat"], c=GNIP_data["d18op"], cmap=cmap, vmax=vmax, vmin=vmin, edgecolor="k", s= 70)
+            ax.scatter(x=GNIP_data["lon"], y=GNIP_data["lat"], c=GNIP_data["d18op"], cmap=cmap, vmax=vmax, vmin=vmin, edgecolor="k", s= 90)
     
     if title is not None:
         ax.set_title(title, fontsize=20, weight="bold", loc="left")
@@ -354,9 +376,9 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                                  cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": "vertical", 
                                                "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "neither", add_labels=False)
             if add_colorbar == True:
-                p.colorbar.set_label(label=variable + " [" + units + "]", size= 15, fontweight= "bold")
+                p.colorbar.set_label(label=variable + " [" + units + "]", size= 22, fontweight= "bold")
                 
-                p.colorbar.ax.tick_params(labelsize=18, size=0)
+                p.colorbar.ax.tick_params(labelsize=20, size=0)
     
             # ploting background extent
             plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels)
@@ -379,8 +401,8 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                                   headwidth=3, headlength=5, headaxislength=4.5)
                     
                     if show_arrow_scale==True:
-                        qk = axes[i].quiverkey(q, 1.02, -0.02, 2, r'$1 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
-                                               {"size": 20, "weight":"bold"})
+                        qk = axes[i].quiverkey(q, 1.0, -0.02, 2, r'$1 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
+                                               {"size": 22, "weight":"bold"})
             
         else:
             if all(parameter is not None for parameter in [vmin, vmax, levels, level_ticks]):
@@ -457,9 +479,9 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
 
             
         if title ==True:
-            axes[i].set_title(season_label[i], fontdict= {"fontsize": 20, "fontweight":"bold"}, loc="left")
+            axes[i].set_title(season_label[i], fontdict= {"fontsize": 22, "fontweight":"bold"}, loc="left")
         elif title ==False:
-            axes[i].set_title("", fontdict= {"fontsize": 20, "fontweight":"bold"})
+            axes[i].set_title("", fontdict= {"fontsize": 22, "fontweight":"bold"})
             
     if fig_title is not None:
         fig.suptitle(fig_title, fontsize= 20, weight = "bold")

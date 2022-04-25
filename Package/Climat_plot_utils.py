@@ -22,6 +22,8 @@ import cartopy.feature as cfeature
 from cartopy.mpl.ticker import (LongitudeFormatter, LatitudeFormatter,
                                 LatitudeLocator)
 from cartopy.util import add_cyclic_point
+from matplotlib import rc
+
 
 # defining image sizes and colors 
 # A4 paper size: 210 mm X 297 mm
@@ -79,38 +81,34 @@ PuBu = plt.cm.PuBu
 PuBu_r = plt.cm.PuBu_r
 
 # defining plot styles (which contains fonts and backgrouds)
-# plt.style.use (can be seaborn, dark_background, fivethirtyeight, bmh)
-def apply_style(fontsize=21):
-    font = {'family':'serif','size':20, 'serif': ['computer modern roman']}
-    plt.rc('font',**font)
-    plt.rc('legend',**{'fontsize':20})
-    small_size=fontsize-1
-    
-    plt.style.use("seaborn-colorblind")    
-    plt.rcParams['text.latex.preamble'] = [r"\usepackage{lmodern}"]
-    mpl.rc('text', usetex=True)
-    #mpl.rc('font', size=20, family='serif')
-    mpl.rc('xtick', labelsize=small_size)
-    mpl.rc('ytick', labelsize=small_size)
-    #mpl.rc('legend', fontsize=small_size)
-    mpl.rc('axes', labelsize=fontsize)
-    mpl.rc('lines', linewidth=2.5)
-    #mpl.rc("font", weight="bold")
-   
+# plt.style.use (can be seaborn, dark_background, fivethirtyeight, bmh
 
-def apply_style_2(fontsize=21):
-    small_size=fontsize-1
-    plt.style.use('fivethirtyeight')  
-    plt.rcParams['text.latex.preamble'] = [r"\usepackage{lmodern}"]
-    # plt.rcParams.update({"text.usetex": True, "font.family": "sans-serif",
-    # "font.sans-serif": ["Helvetica"]})
+
+
+def apply_style(fontsize=20, style=None, linewidth=2):
+    """
+    
+    Parameters
+    ----------
+    fontsize : TYPE, optional
+        DESCRIPTION. The default is 10.
+    style : TYPE, optional
+        DESCRIPTION. The default is "bmh". ["seaborn", "fivethirtyeight",]
+    Returns
+    -------
+    None.
+    """
+    if style is not None:
+        plt.style.use(style)  
+        
+    rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
     mpl.rc('text', usetex=True)
-    mpl.rc('font', size=fontsize, family='serif')
-    mpl.rc('xtick', labelsize=small_size)
-    mpl.rc('ytick', labelsize=small_size)
-    mpl.rc('legend', fontsize=small_size)
+    mpl.rc('xtick', labelsize=fontsize)
+    mpl.rc('ytick', labelsize=fontsize)
+    mpl.rc('legend', fontsize=fontsize)
     mpl.rc('axes', labelsize=fontsize)
-    mpl.rc('lines', linewidth=3)
+    mpl.rc('lines', linewidth=linewidth)
+    mpl.rc("font", weight="bold")
 
 # defining function for selecting background domain for cartopy
 

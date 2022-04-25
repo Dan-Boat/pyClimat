@@ -217,20 +217,11 @@ aw200e0_south_reg_slt, aw200e0_south_df_slt = linregression(data_x=elev_aw200e0_
 
 
 # plotting 
-import matplotlib as mpl
+
 path_to_store = os.path.join(module_output_main_path, "plots")
-plt.style.use("bmh")
-plt.rcParams['text.latex.preamble'] = [r"\usepackage{lmodern}"]
-mpl.rc('text', usetex=True)
-mpl.rc('font', size=22, family='serif')
-mpl.rc('xtick', labelsize=22)
-mpl.rc('ytick', labelsize=22)
-mpl.rc('legend', fontsize=22)
-mpl.rc('axes', labelsize=22)
-mpl.rc('lines', linewidth=3)
-mpl.rc('legend', fontsize=22)
 
 
+apply_style(fontsize=22, style=None, linewidth=2)
 
 def plot_lape_rate_per_section():
 
@@ -248,8 +239,8 @@ def plot_lape_rate_per_section():
     
     
     
-    ax1.legend(frameon=True, fontsize=18, loc="upper right", framealpha=0.5, ncol=1)
-    
+    ax1.legend(frameon=True, fontsize=20, loc="upper right", framealpha=0.5, ncol=1)
+    ax1.grid(visible=False)
     
     #ax2 (north)
     scatter_plot_laspe_rate(ax=ax2, reg_params= aw100e100_north_reg_slt , df_x_y_yhat=aw100e100_north_df_slt , color=black, marker= "*", label= "CTL",
@@ -262,7 +253,8 @@ def plot_lape_rate_per_section():
                             left_labels=False)
     
     
-    ax2.legend(frameon=True, fontsize=18, loc="upper right", framealpha=0.5, ncol=1)
+    ax2.legend(frameon=True, fontsize=20, loc="upper right", framealpha=0.5, ncol=1)
+    ax2.grid(visible=False)
     
     #ax3 (south)
     scatter_plot_laspe_rate(ax=ax3, reg_params= aw100e100_south_reg_slt , df_x_y_yhat=aw100e100_south_df_slt , color=black, marker= "*", label= "CTL",
@@ -274,11 +266,12 @@ def plot_lape_rate_per_section():
                            left_labels=False)
     
     
-    ax3.legend(frameon=True, fontsize=18, loc="upper right", framealpha=0.5, ncol=1)
+    ax3.legend(frameon=True, fontsize=20, loc="upper right", framealpha=0.5, ncol=1)
+    ax3.grid(visible=False)
     
     plt.tight_layout()
     plt.subplots_adjust(left=0.15, right=0.88, top=0.97, bottom=0.05)
-    plt.savefig(os.path.join(path_to_store, "fig6.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    plt.savefig(os.path.join(path_to_store, "fig6.svg"), format= "svg", bbox_inches="tight", dpi=300)
     
     
     fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(25, 10), )
@@ -295,7 +288,8 @@ def plot_lape_rate_per_section():
     scatter_plot_laspe_rate(ax=ax1, reg_params= aw100e100_west_reg_slt , df_x_y_yhat=aw100e100_west_df_slt , color=black, marker= "*", label= "CTL",
                            )
     
-    ax1.legend(frameon=True, fontsize=18, loc="upper right", framealpha=0.5, ncol=1)
+    ax1.legend(frameon=True, fontsize=20, loc="upper right", framealpha=0.5, ncol=1)
+    ax1.grid(visible=False)
     
     
     #ax2 (north)
@@ -309,7 +303,8 @@ def plot_lape_rate_per_section():
     scatter_plot_laspe_rate(ax=ax2, reg_params= aw100e100_north_reg_slt , df_x_y_yhat=aw100e100_north_df_slt , color=black, marker= "*", label= "CTL",
                             left_labels=False,)
     
-    ax2.legend(frameon=True, fontsize=18, loc="upper right", framealpha=0.5, ncol=1)
+    ax2.legend(frameon=True, fontsize=20, loc="upper right", framealpha=0.5, ncol=1)
+    ax2.grid(visible=False)
     
     
     #ax3 (south)
@@ -324,11 +319,12 @@ def plot_lape_rate_per_section():
     scatter_plot_laspe_rate(ax=ax3, reg_params= aw100e100_south_reg_slt , df_x_y_yhat=aw100e100_south_df_slt , color=black, marker= "*", label= "CTL",
                             left_labels=False,)
     
-    ax3.legend(frameon=True, fontsize=18, loc="upper right", framealpha=0.5, ncol=1)
+    ax3.legend(frameon=True, fontsize=20, loc="upper right", framealpha=0.5, ncol=1)
+    ax3.grid(visible=False)
     
     plt.tight_layout()
     plt.subplots_adjust(left=0.15, right=0.88, top=0.97, bottom=0.05)
-    plt.savefig(os.path.join(path_to_store, "fig7.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    plt.savefig(os.path.join(path_to_store, "fig7.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 

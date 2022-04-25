@@ -193,5 +193,5 @@ plot_iso_profiles(df_iso=east_0_d18op_lat_alt , df_geosp=east_0_geosp_lat_alt, d
 fig.legend(frameon=True, fontsize=18, loc="upper right",)
 plt.tight_layout() 
 plt.subplots_adjust(left=0.15, right=0.95, top=0.98, bottom=0.05)
-plt.savefig(os.path.join(path_to_store, "figS7.png"), format= "png", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_store, "figS7.png"), format= "png", bbox_inches="tight", dpi=300)
 
