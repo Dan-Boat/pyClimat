@@ -116,4 +116,4 @@ fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and carto
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.06)
 
-plt.savefig(os.path.join(path_to_store, "fig1.svg"), format= "svg", bbox_inches="tight", dpi=300)
+plt.savefig(os.path.join(path_to_store, "fig1.png"), format= "png", bbox_inches="tight", dpi=300)

@@ -44,6 +44,8 @@ a010_data = read_ECHAM_input(main_path=module_output_main_path , exp_name = a010
 projection = ccrs.PlateCarree()
 path_to_store = os.path.join(module_output_main_path, "plots")
 
+apply_style(fontsize=22, style=None, linewidth=2)
+
 fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15), subplot_kw={"projection":projection})
 
 plot_echam_topo(variable="Elevation", data=a001_data, cmap=Greys, units="m", ax=ax1, vmax=3500, vmin=0, levels=12, level_ticks=6,

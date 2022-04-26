@@ -460,9 +460,9 @@ def plot_annual_diff():
 
     
 if __name__ == '__main__':
-    plot_summer_diff(varname="Temperature")
-    plot_summer_diff(varname="d18op")
-    plot_summer_diff(varname="Precipitation")
+    # plot_summer_diff(varname="Temperature")
+    # plot_summer_diff(varname="d18op")
+    # plot_summer_diff(varname="Precipitation")
     
     # # annual plots 
     plot_annual_diff()

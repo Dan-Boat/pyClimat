@@ -201,7 +201,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
         # ploting winds using quiver 
         q = ax.quiver(X[skip], Y[skip], u[skip], v[skip], transform=projection,  pivot= "mid", scale= 50,
                       headwidth=3, headlength=5, headaxislength=4.5)
-        qk = ax.quiverkey(q, 0.95, -0.1, 2, r'$1 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
+        qk = ax.quiverkey(q, 1.0, -0.02, 2, r'$1 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
                           {"size": 20, "weight":"bold"})
         
     if plot_stats == True:
@@ -1107,8 +1107,8 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
                                  add_labels=False)
             
             
-            p.colorbar.set_label(label=variable + " [" + units + "]", size= 20, fontweight="bold")
-            p.colorbar.ax.tick_params(labelsize=20, size=0,)
+            p.colorbar.set_label(label=variable + " [" + units + "]", size= 22, fontweight="bold")
+            p.colorbar.ax.tick_params(labelsize=22, size=0,)
             
         elif cbar == False:
             p = data.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, transform = projection, add_colorbar=False, add_labels=False)
@@ -1129,9 +1129,9 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
     
     if title is not None:
         if mode_var is not None:
-            ax.set_title(title + " ({:.2f} %)".format(mode_var*100), fontsize=20, weight="bold", loc="left")
+            ax.set_title(title + " ({:.2f}   )".format(mode_var*100) , fontsize=22, weight="bold", loc="left")
         else:
-            ax.set_title(title, fontsize=20, weight="bold", loc="left")
+            ax.set_title(title, fontsize=22, weight="bold", loc="left")
         
     #optional if one plot is required, alternatively save from the control script
     if all(parameter is not None for parameter in [output_format, output_name, path_to_store]):

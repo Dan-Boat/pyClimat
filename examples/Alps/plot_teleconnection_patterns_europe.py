@@ -117,7 +117,7 @@ plot_eofsAsCovariance(variable= "slp", data=(eofs_ERA[3]), mode_var=var_frac_ERA
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
-plt.savefig(os.path.join(path_to_store, "fig12.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_store, "figS13.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 
@@ -147,7 +147,7 @@ plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E200[0]), mode_var=var_fr
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
-plt.savefig(os.path.join(path_to_store, "fig13.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_store, "fig12.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 # SCAN
@@ -176,7 +176,7 @@ plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E200[2]*-1), mode_var=var
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
-plt.savefig(os.path.join(path_to_store, "fig14.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_store, "fig13.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 
@@ -206,7 +206,7 @@ plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E200[1]), mode_var=var_fr
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
-plt.savefig(os.path.join(path_to_store, "figS13.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_store, "figS14.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 
@@ -237,6 +237,6 @@ plot_eofsAsCovariance(variable= "slp", data=(eofs_AW200E200[3]*-1), mode_var=var
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
-plt.savefig(os.path.join(path_to_store, "figS14.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_store, "figS15.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 plt.show()

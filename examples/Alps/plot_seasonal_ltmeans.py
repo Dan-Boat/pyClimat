@@ -156,6 +156,9 @@ v10_aw200e200_slt = compute_lterm_mean(data=v10_aw200e200, time="season", season
 projection = ccrs.PlateCarree()
 path_to_store = os.path.join(module_output_main_path, "plots")
 
+#apply fonts 
+apply_style(fontsize=22, style=None, linewidth=2)
+
 def plot_summer_mean(varname =None):
     if varname == "d18op":
         # d18op
@@ -190,7 +193,7 @@ def plot_summer_mean(varname =None):
         fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
         plt.tight_layout()
         plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
-        plt.savefig(os.path.join(path_to_store, "figS2.svg"), format= "svg", bbox_inches="tight", dpi=600)
+        plt.savefig(os.path.join(path_to_store, "figS2.svg"), format= "svg", bbox_inches="tight", dpi=300)
     
     
     if varname == "Temperature":
@@ -226,7 +229,7 @@ def plot_summer_mean(varname =None):
         fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
         plt.tight_layout()
         plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
-        plt.savefig(os.path.join(path_to_store, "figS3.svg"), format= "svg", bbox_inches="tight", dpi=600)
+        plt.savefig(os.path.join(path_to_store, "figS3.svg"), format= "svg", bbox_inches="tight", dpi=300)
     
     if varname == "Precipitation":
         #prec
@@ -267,7 +270,7 @@ def plot_summer_mean(varname =None):
         fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
         plt.tight_layout()
         plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
-        plt.savefig(os.path.join(path_to_store, "figS4.svg"), format= "svg", bbox_inches="tight", dpi=600)
+        plt.savefig(os.path.join(path_to_store, "figS4.svg"), format= "svg", bbox_inches="tight", dpi=300)
         
 if __name__ == '__main__':
     plot_summer_mean(varname="Precipitation")
