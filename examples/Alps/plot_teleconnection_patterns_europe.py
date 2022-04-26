@@ -94,6 +94,7 @@ path_to_store = os.path.join(module_output_main_path, "plots")
 #apply font and style 
 
 apply_style(fontsize=22, style=None, linewidth=2)
+#plt.rcParams.update({'font.family':'Helvitica'})
 
 #plotting teleconnections for ERA5 in Summer
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols=2, figsize=(15, 8), subplot_kw={"projection": projection})
@@ -118,6 +119,7 @@ fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and carto
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
 plt.savefig(os.path.join(path_to_store, "figS13.svg"), format= "svg", bbox_inches="tight", dpi=300)
+plt.savefig(os.path.join(path_to_store, "figS13.png"), format= "png", bbox_inches="tight", dpi=300)
 
 
 
@@ -148,6 +150,7 @@ fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and carto
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
 plt.savefig(os.path.join(path_to_store, "fig12.svg"), format= "svg", bbox_inches="tight", dpi=300)
+plt.savefig(os.path.join(path_to_store, "fig12.png"), format= "png", bbox_inches="tight", dpi=300)
 
 
 # SCAN
@@ -177,6 +180,7 @@ fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and carto
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
 plt.savefig(os.path.join(path_to_store, "fig13.svg"), format= "svg", bbox_inches="tight", dpi=300)
+plt.savefig(os.path.join(path_to_store, "fig13.png"), format= "png", bbox_inches="tight", dpi=300)
 
 
 
@@ -207,6 +211,7 @@ fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and carto
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
 plt.savefig(os.path.join(path_to_store, "figS14.svg"), format= "svg", bbox_inches="tight", dpi=300)
+plt.savefig(os.path.join(path_to_store, "figS14.png"), format= "png", bbox_inches="tight", dpi=300)
 
 
 
@@ -238,5 +243,6 @@ fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and carto
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.94, top=0.94, bottom=0.10)
 plt.savefig(os.path.join(path_to_store, "figS15.svg"), format= "svg", bbox_inches="tight", dpi=300)
+plt.savefig(os.path.join(path_to_store, "figS15.png"), format= "png", bbox_inches="tight", dpi=300)
 
 plt.show()

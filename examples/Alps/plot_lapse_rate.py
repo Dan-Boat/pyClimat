@@ -272,6 +272,7 @@ def plot_lape_rate_per_section():
     plt.tight_layout()
     plt.subplots_adjust(left=0.15, right=0.88, top=0.97, bottom=0.05)
     plt.savefig(os.path.join(path_to_store, "fig6.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "fig6.png"), format= "png", bbox_inches="tight", dpi=300)
     
     
     fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(25, 10), )
@@ -325,6 +326,7 @@ def plot_lape_rate_per_section():
     plt.tight_layout()
     plt.subplots_adjust(left=0.15, right=0.88, top=0.97, bottom=0.05)
     plt.savefig(os.path.join(path_to_store, "fig7.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "fig7.png"), format= "png", bbox_inches="tight", dpi=300)
 
 
 

@@ -194,6 +194,7 @@ def plot_summer_mean(varname =None):
         plt.tight_layout()
         plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
         plt.savefig(os.path.join(path_to_store, "figS2.svg"), format= "svg", bbox_inches="tight", dpi=300)
+        plt.savefig(os.path.join(path_to_store, "figS2.png"), format= "png", bbox_inches="tight", dpi=300)
     
     
     if varname == "Temperature":
@@ -230,6 +231,7 @@ def plot_summer_mean(varname =None):
         plt.tight_layout()
         plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
         plt.savefig(os.path.join(path_to_store, "figS3.svg"), format= "svg", bbox_inches="tight", dpi=300)
+        plt.savefig(os.path.join(path_to_store, "figS3.png"), format= "png", bbox_inches="tight", dpi=300)
     
     if varname == "Precipitation":
         #prec
@@ -271,6 +273,7 @@ def plot_summer_mean(varname =None):
         plt.tight_layout()
         plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
         plt.savefig(os.path.join(path_to_store, "figS4.svg"), format= "svg", bbox_inches="tight", dpi=300)
+        plt.savefig(os.path.join(path_to_store, "figS4.png"), format= "png", bbox_inches="tight", dpi=300)
         
 if __name__ == '__main__':
     plot_summer_mean(varname="Precipitation")

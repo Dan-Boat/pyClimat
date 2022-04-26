@@ -260,6 +260,7 @@ def main_text():
     plt.tight_layout() 
     plt.subplots_adjust(left=0.04, right=0.84, top=0.94, bottom=0.04)
     plt.savefig(os.path.join(path_to_store, "fig5.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "fig5.png"), format= "png", bbox_inches="tight", dpi=300)
     
     
 def supplementary():
@@ -303,10 +304,11 @@ def supplementary():
     plt.tight_layout() 
     plt.subplots_adjust(left=0.04, right=0.86, top=0.94, bottom=0.04)
     plt.savefig(os.path.join(path_to_store, "figS8.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "figS8.png"), format= "png", bbox_inches="tight", dpi=300)
     
 if __name__ == '__main__':
-    #supplementary()
-    main_text()
+    supplementary()
+    #main_text()
     
     
     

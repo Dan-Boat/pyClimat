@@ -279,6 +279,7 @@ def plot_vertical_vars(first=True, second=False):
         plt.tight_layout()
         plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
         plt.savefig(os.path.join(path_to_store, "fig10.svg"), format= "svg", bbox_inches="tight", dpi=300)
+        plt.savefig(os.path.join(path_to_store, "fig10.png"), format= "png", bbox_inches="tight", dpi=300)
     
     
     if second == True:
@@ -319,6 +320,7 @@ def plot_vertical_vars(first=True, second=False):
         plt.tight_layout() 
         plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
         plt.savefig(os.path.join(path_to_store, "fig11.svg"), format= "svg", bbox_inches="tight", dpi=300)
+        plt.savefig(os.path.join(path_to_store, "fig11.png"), format= "png", bbox_inches="tight", dpi=300)
 
 
 

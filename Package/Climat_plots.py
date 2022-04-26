@@ -1129,7 +1129,8 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
     
     if title is not None:
         if mode_var is not None:
-            ax.set_title(title + " ({:.2f}   )".format(mode_var*100) , fontsize=22, weight="bold", loc="left")
+            
+            ax.set_title(title + " ({:.2f})".format(mode_var) , fontsize=22, weight="bold", loc="left")
         else:
             ax.set_title(title, fontsize=22, weight="bold", loc="left")
         

@@ -250,6 +250,7 @@ def plot_summer_diff(varname =None):
         plt.tight_layout()
         plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
         plt.savefig(os.path.join(path_to_store, "fig2.svg"), format= "svg", bbox_inches="tight", dpi=300)
+        plt.savefig(os.path.join(path_to_store, "fig2.png"), format= "png", bbox_inches="tight", dpi=300)
     
     
     if varname == "Temperature":
@@ -291,6 +292,7 @@ def plot_summer_diff(varname =None):
         plt.tight_layout()
         plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
         plt.savefig(os.path.join(path_to_store, "fig3.svg"), format= "svg", bbox_inches="tight", dpi=300)
+        plt.savefig(os.path.join(path_to_store, "fig3.png"), format= "png", bbox_inches="tight", dpi=300)
     
     if varname == "Precipitation":
         #prec
@@ -332,6 +334,7 @@ def plot_summer_diff(varname =None):
         plt.tight_layout()
         plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
         plt.savefig(os.path.join(path_to_store, "fig4.svg"), format= "svg", bbox_inches="tight", dpi=300)
+        plt.savefig(os.path.join(path_to_store, "fig4.png"), format= "png", bbox_inches="tight", dpi=300)
 
 
 # supplementary for annual difference
@@ -375,6 +378,7 @@ def plot_annual_diff():
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
     plt.savefig(os.path.join(path_to_store, "figS5.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "figS5.png"), format= "png", bbox_inches="tight", dpi=300)
     
     
     
@@ -416,6 +420,7 @@ def plot_annual_diff():
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
     plt.savefig(os.path.join(path_to_store, "figS6.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "figS6.png"), format= "png", bbox_inches="tight", dpi=300)
     
     
     #prec
@@ -457,12 +462,13 @@ def plot_annual_diff():
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
     plt.savefig(os.path.join(path_to_store, "figS7.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "figS7.png"), format= "png", bbox_inches="tight", dpi=300)
 
     
 if __name__ == '__main__':
-    # plot_summer_diff(varname="Temperature")
-    # plot_summer_diff(varname="d18op")
-    # plot_summer_diff(varname="Precipitation")
+    plot_summer_diff(varname="Temperature")
+    plot_summer_diff(varname="d18op")
+    plot_summer_diff(varname="Precipitation")
     
     # # annual plots 
-    plot_annual_diff()
+    #plot_annual_diff()
