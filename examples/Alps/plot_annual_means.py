@@ -88,7 +88,7 @@ fig, ((ax1,ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 1
 
 # elevation
 plot_annual_mean(ax=ax1, variable="Elevation", data_alt=elev_alt, cmap=Greys, units="m", vmax=3000, vmin=0, domain="Europe", 
-                 levels=22, level_ticks=6, title="[A]", left_labels=True, bottom_labels=False, use_colorbar_default=True)
+                  levels=22, level_ticks=6, title="[A]", left_labels=True, bottom_labels=False, use_colorbar_default=True)
 # adding transects 
 
 ax1.add_patch(patches.Rectangle(xy =(lon_w, lat_w), width= w_w, height=h_w, ls= "--", color= red, transform = projection, 
@@ -102,15 +102,15 @@ ax1.add_patch(patches.Rectangle(xy =(lon_s, lat_s), width= w_s, height=h_s, ls= 
 
 # d18Op
 plot_annual_mean(ax=ax2, variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_alt, cmap=YlGnBu, units="‰", vmax=2, vmin=-16, domain="Europe", 
-                 levels=22, level_ticks=10, GNIP_data=df_gnip , title="[B]", left_labels=False, bottom_labels=False, use_colorbar_default=True)
+                  levels=22, level_ticks=10, GNIP_data=df_gnip , title="[B]", left_labels=False, bottom_labels=False, use_colorbar_default=True)
 
 
 plot_annual_mean(ax=ax3, variable="Temperature", data_alt=temp2_alt, cmap=RdBu_r, units="°C", vmax=25, vmin=-10, domain="Europe", 
-                 levels=22, level_ticks=11, title="[C]", left_labels=True, bottom_labels=True, use_colorbar_default=True)
+                  levels=22, level_ticks=11, title="[C]", left_labels=True, bottom_labels=True, use_colorbar_default=True)
 
 plot_annual_mean(ax=ax4, variable="Precipitation", data_alt=prec_alt, cmap=Blues, units="mm/month", vmax=250, vmin=0, domain="Europe", 
-                 levels=22, level_ticks=6, data_u10=u10_alt, data_v10=v10_alt, title="[D]", left_labels=False,
-                 bottom_labels=True, use_colorbar_default=True)
+                  levels=22, level_ticks=6, data_u10=u10_alt, data_v10=v10_alt, title="[D]", left_labels=False,
+                  bottom_labels=True, use_colorbar_default=True)
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas first 
 plt.tight_layout() 
@@ -118,3 +118,17 @@ plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.06)
 
 plt.savefig(os.path.join(path_to_store, "fig1.svg"), format= "svg", bbox_inches="tight", dpi=300)
 plt.savefig(os.path.join(path_to_store, "fig1.png"), format= "png", bbox_inches="tight", dpi=300)
+
+
+fig, ax1 = plt.subplots(nrows=1, ncols=1, figsize=(13, 13), subplot_kw={"projection":  projection})
+
+# d18Op
+plot_annual_mean(ax=ax1, variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_alt, cmap=YlGnBu, units="‰", vmax=2, vmin=-16, domain="Europe", 
+                 levels=22, level_ticks=10, GNIP_data=df_gnip , title=None, left_labels=True, bottom_labels=True, use_colorbar_default=True)
+
+fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas first 
+plt.tight_layout() 
+plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.06)
+
+plt.savefig(os.path.join(path_to_store, "egu3.svg"), format= "svg", bbox_inches="tight", dpi=300)
+plt.savefig(os.path.join(path_to_store, "egu3.png"), format= "png", bbox_inches="tight", dpi=300)

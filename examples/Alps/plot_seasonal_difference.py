@@ -463,12 +463,35 @@ def plot_annual_diff():
     plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
     plt.savefig(os.path.join(path_to_store, "figS7.svg"), format= "svg", bbox_inches="tight", dpi=300)
     plt.savefig(os.path.join(path_to_store, "figS7.png"), format= "png", bbox_inches="tight", dpi=300)
+    
+def plot_egu_talk():
+    fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, figsize=(13, 19), sharey=False, sharex=False, subplot_kw={"projection": projection})
+    
+    plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw200e100_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
+                       axes=[ax1], fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.55, 0.02, 0.25], title=True, 
+                       season_label= [" W2E1 - CTL"], bottom_labels=True, left_labels=True, compare_data1=temp2_aw100e100,
+                       compare_data2=temp2_aw200e100, max_pvalue=0.05, plot_stats=True)
+    
+    plot_seasonal_mean(variable="Precipitation", data_slt=prec_aw200e100_slt , cmap=BrBG, units="mm/month", seasons=["JJA"], 
+                       axes=[ax2], fig=fig, vmax=125, vmin=-125, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.20, 0.02, 0.25], title=True, 
+                       season_label= [" W2E1 - CTL"], bottom_labels=True, left_labels=True, compare_data1=prec_aw100e100,
+                       compare_data2=prec_aw200e100, max_pvalue=0.05, plot_stats=True)
+    
+    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
+    plt.savefig(os.path.join(path_to_store, "egu2.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "egu2.png"), format= "png", bbox_inches="tight", dpi=300)
+    
+    
 
     
 if __name__ == '__main__':
-    plot_summer_diff(varname="Temperature")
-    plot_summer_diff(varname="d18op")
-    plot_summer_diff(varname="Precipitation")
+    #plot_summer_diff(varname="Temperature")
+    #plot_summer_diff(varname="d18op")
+    #plot_summer_diff(varname="Precipitation")
     
     # # annual plots 
     #plot_annual_diff()
+    plot_egu_talk()
+    
