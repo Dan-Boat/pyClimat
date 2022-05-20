@@ -312,42 +312,42 @@ def fig_for_egu_talk():
     fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(19, 13), sharey=False, sharex=False)
     
     plot_iso_profiles(df_iso=aw100e100_d18op_lon , df_geosp=aw100e100_geosp_lon , dim="lon", iso_color=black, iso_label="CTL",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1, title=None, 
+                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=0, isomin=-16, ax=ax2, title=None, 
                       right_labels =True, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.15)
     
     plot_iso_profiles(df_iso=aw100e0_d18op_lon , df_geosp=aw100e0_geosp_lon , dim="lon", iso_color=blue, iso_label="W1E0",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1,
+                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=0, isomin=-16, ax=ax2,
                       right_labels =True, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.2)
     
     plot_iso_profiles(df_iso=aw100e200_d18op_lon , df_geosp=aw100e200_geosp_lon , dim="lon", iso_color=red, iso_label="W1E2",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1,
+                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=0, isomin=-16, ax=ax2,
                       right_labels =True, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.3)
     
     plot_iso_profiles(df_iso=aw100e150_d18op_lon , df_geosp=aw100e150_geosp_lon , dim="lon", iso_color=green, iso_label="W1E1.5",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3000, isomax=0, isomin=-12, ax=ax1,
+                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=0, isomin=-16, ax=ax2,
                       right_labels =True, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.25)
     
     ax1.grid(visible=True, linestyle="--", linewidth=0.8, color=grey)
     ax1.grid(visible=True, linestyle="--", linewidth=0.8, color=grey)
-    ax1.text(-5, -250, "W", fontsize=20)
-    ax1.text(20, -250, "E", fontsize=20)
+    ax1.text(-5, -250, "W", fontsize=24)
+    ax1.text(20, -250, "E", fontsize=24)
     
     
     plot_iso_profiles(df_iso=aw100e100_d18op_lon , df_geosp=aw100e100_geosp_lon , dim="lon", iso_color=black, iso_label=None,
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax2, title=None, 
+                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax1, title=None, 
                       right_labels =True, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.2)
     
     plot_iso_profiles(df_iso=aw200e100_d18op_lon , df_geosp=aw200e100_geosp_lon , dim="lon", iso_color=golden, iso_label="W2E1",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax2, 
+                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax1, 
                       right_labels =True, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.3)
     
     plot_iso_profiles(df_iso=aw200e0_d18op_lon , df_geosp=aw200e0_geosp_lon , dim="lon", iso_color=purple, iso_label="W2E0",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax2,  
+                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax1,  
                       right_labels =True, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.1)
     
     ax2.grid(visible=True, linestyle="--", linewidth=0.8, color=grey)
-    ax2.text(-5, -350, "W", fontsize=20)
-    ax2.text(20, -350, "E", fontsize=20)
+    ax2.text(-5, -350, "W", fontsize=24)
+    ax2.text(20, -350, "E", fontsize=24)
     
     fig.legend(frameon=True, fontsize=22, loc="upper right",)
     plt.tight_layout() 
