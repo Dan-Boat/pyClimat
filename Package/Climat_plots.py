@@ -675,7 +675,7 @@ def plot_monthly_mean(variable, data_mlt, cmap, units, months, axes=None, fig=No
 def plot_iso_profiles(df_iso, df_geosp, dim, iso_color, iso_label, ax=None, season=None, month=None,  
                       xmax=None, xmin=None, ymax=None, ymin=None, ax_legend=None, isomax=None, isomin=None,
                        output_name=None, output_format=None, title=None, path_to_store=None, left_labels=True,
-                       bottom_labels=True, right_labels=True, shade_color=None, shade_alpha=None):
+                       bottom_labels=True, right_labels=True, shade_color=None, shade_alpha=None, edgecolor= "dimgrey"):
     """
     
 
@@ -750,12 +750,12 @@ def plot_iso_profiles(df_iso, df_geosp, dim, iso_color, iso_label, ax=None, seas
     
     if shade_color is not None: 
         if shade_alpha is None:
-            ax.fill_between(df_geosp.index, df_geosp,  0, color=shade_color, alpha=0.05, edgecolor = shade_color, linestyle="-")
+            ax.fill_between(df_geosp.index, df_geosp,  0, color=shade_color, alpha=0.05, edgecolor = edgecolor, linestyle="-", linewidth=3)
         else:
-            ax.fill_between(df_geosp.index, df_geosp,  0, color=shade_color, alpha=shade_alpha, edgecolor = shade_color, linestyle="-")
+            ax.fill_between(df_geosp.index, df_geosp,  0, color=shade_color, alpha=shade_alpha, edgecolor = edgecolor, linestyle="-", linewidth=3)
     else:
         
-        ax.fill_between(df_geosp.index, df_geosp,  0, color="dimgrey", alpha=0.1, edgecolor = "dimgrey", linestyle="-")
+        ax.fill_between(df_geosp.index, df_geosp,  0, color="dimgrey", alpha=0.1, edgecolor = edgecolor, linestyle="-", linewidth=3)
     
     if all(parameter is not None for parameter in [xmax, xmin, ymax, ymin]):
         ax.set_xlim(xmin, xmax)

@@ -27,6 +27,7 @@ exp_name_aw200e100 = "a009_hpc-bw_e5w2.3_t159_PI_AW200E100_t159l31.6h"
 exp_name_aw200e0 = "a010_hpc-bw_e5w2.3_t159_PI_AW200E0_t159l31.6h"
 exp_name_aw200e200 = "t017_hpc-bw_e5w2.3_PI_Alps150_t159l31.6h"
 
+
 # for supplementary (same but for annual)
 years= "1003_1017"
 period = "1m"
@@ -399,7 +400,7 @@ def plot_annual_diff():
                        ax=ax3, fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
                        title= "[C]  W1E0 - CTL", bottom_labels=False, left_labels=True, compare_data1=temp2_aw100e100,
                        compare_data2=temp2_aw100e0, max_pvalue=0.05, plot_stats=True)
-    
+
     plot_annual_mean(variable="Temperature", data_alt=temp2_aw200e0_alt , cmap=RdBu_r, units="°C",  
                        ax=ax4, fig=fig, vmax=14, vmin=-14, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
                        title= "[D]  W2E0 - CTL", bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
