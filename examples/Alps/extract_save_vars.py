@@ -77,26 +77,26 @@ exp_name_W1E1_5 = "a008_hpc-bw_e5w2.3_t159_PI_Alps_east_150_t159l31.6h"
 exp_name_W0E0 = "t015_dkrz-mistral_e5w2.3_PI_Alps0_t159l31.6h"
 
 
-# extract_and_save(main_path=main_path, exp_name=exp_name_CTL, path_to_save=path_to_save, 
-#                  filename_surf="CTL_surf.nc", filename_lev="CTL_plev.nc")
+extract_and_save(main_path=main_path, exp_name=exp_name_CTL, path_to_save=path_to_save, 
+                  filename_surf="CTL_surf.nc", filename_lev="CTL_plev.nc")
 
-# extract_and_save(main_path=main_path, exp_name=exp_name_W1E0, path_to_save=path_to_save, 
-#                  filename_surf="W1E0_surf.nc", filename_lev="W1E0_plev.nc")
+extract_and_save(main_path=main_path, exp_name=exp_name_W1E0, path_to_save=path_to_save, 
+                  filename_surf="W1E0_surf.nc", filename_lev="W1E0_plev.nc")
 
-# extract_and_save(main_path=main_path, exp_name=exp_name_W1E2, path_to_save=path_to_save, 
-#                  filename_surf="W1E2_surf.nc", filename_lev="W1E2_plev.nc")
+extract_and_save(main_path=main_path, exp_name=exp_name_W1E2, path_to_save=path_to_save, 
+                  filename_surf="W1E2_surf.nc", filename_lev="W1E2_plev.nc")
 
-# extract_and_save(main_path=main_path, exp_name=exp_name_W2E1, path_to_save=path_to_save, 
-#                  filename_surf="W2E1_surf.nc", filename_lev="W2E1_plev.nc")
+extract_and_save(main_path=main_path, exp_name=exp_name_W2E1, path_to_save=path_to_save, 
+                  filename_surf="W2E1_surf.nc", filename_lev="W2E1_plev.nc")
 
-# extract_and_save(main_path=main_path, exp_name=exp_name_W2E0, path_to_save=path_to_save, 
-#                  filename_surf="W2E0_surf.nc", filename_lev="W2E0_plev.nc")
+extract_and_save(main_path=main_path, exp_name=exp_name_W2E0, path_to_save=path_to_save, 
+                  filename_surf="W2E0_surf.nc", filename_lev="W2E0_plev.nc")
 
-# extract_and_save(main_path=main_path, exp_name=exp_name_W2E2, path_to_save=path_to_save, 
-#                  filename_surf="W2E2_surf.nc", filename_lev="W2E2_plev.nc")
+extract_and_save(main_path=main_path, exp_name=exp_name_W2E2, path_to_save=path_to_save, 
+                  filename_surf="W2E2_surf.nc", filename_lev="W2E2_plev.nc")
 
 # extract_and_save(main_path=main_path, exp_name=exp_name_W1E1_5, path_to_save=path_to_save, 
 #                  filename_surf="W1E1_5_surf.nc", filename_lev="W1E1_5_plev.nc")
 
-extract_and_save(main_path=main_path, exp_name=exp_name_W0E0, path_to_save=path_to_save, 
-                 filename_surf="W0E0_surf.nc", filename_lev="W0E0_plev.nc")
+# extract_and_save(main_path=main_path, exp_name=exp_name_W0E0, path_to_save=path_to_save, 
+#                  filename_surf="W0E0_surf.nc", filename_lev="W0E0_plev.nc")

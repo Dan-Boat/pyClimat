@@ -23,6 +23,7 @@ from cartopy.mpl.ticker import (LongitudeFormatter, LatitudeFormatter,
                                 LatitudeLocator)
 from cartopy.util import add_cyclic_point
 from matplotlib import rc
+import matplotlib.colors
 
 
 # defining image sizes and colors 
@@ -243,4 +244,28 @@ class MidpointNormalize(colors.Normalize):
         # simple example...
         x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
         return np.ma.masked_array(np.interp(value, x, y))      
+
+
+class FixedPointNormalized(matplotlib.colors.Normalize):
     
+    def __init__(self, vmin=None, vmax=None, sealevel=0, color_val=0.21875,
+                 clip=False):
+        
+        self.sealevel = sealevel
+        self.color_val = color_val
+        matplotlib.colors.Normalize.__init__(self, vmin, vmax, clip)
+        
+    def __call__(self, value, clip=None):
+        
+        x,y = [self.vmin, self.sealevel, self.vmax], [0, self.color_val, 1]
+        
+        return np.ma.masked_array(np.interp(value, x, y))
+    
+colors_ocean = plt.cm.terrain(np.linspace(0, 0.17, 56))   
+colors_land =  plt.cm.terrain(np.linspace(0.25, 1, 200))
+colors_combined = np.vstack((colors_ocean, colors_land))
+
+cut_terrain_map = matplotlib.colors.LinearSegmentedColormap.from_list('cut_terrain', 
+                                                                      colors_combined)
+
+
