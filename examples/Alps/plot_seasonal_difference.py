@@ -219,7 +219,7 @@ def plot_summer_diff(varname =None):
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e100_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
                            axes=[ax1], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], title=True, 
-                           season_label= ["[A]  CTL"], bottom_labels=False, left_labels=True)
+                           season_label= ["[A]  CTL"], bottom_labels=False, left_labels=True, center=True)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e100_slt , cmap=RdBu, units="‰", seasons=["JJA"], 
                            axes=[ax2], fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25], title=True, 
@@ -251,7 +251,7 @@ def plot_summer_diff(varname =None):
         plt.tight_layout()
         plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
         plt.savefig(os.path.join(path_to_store, "fig2.svg"), format= "svg", bbox_inches="tight", dpi=300)
-        plt.savefig(os.path.join(path_to_store, "fig2.png"), format= "png", bbox_inches="tight", dpi=300)
+        #plt.savefig(os.path.join(path_to_store, "fig2.png"), format= "png", bbox_inches="tight", dpi=300)
     
     
     if varname == "Temperature":
@@ -340,130 +340,132 @@ def plot_summer_diff(varname =None):
 
 # supplementary for annual difference
 
-def plot_annual_diff():
+def plot_annual_diff(varname=None):
+    
+    if varname == "d18op":
 
-    # d18op
-    fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15), subplot_kw={"projection": projection})
-    
-    plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw100e100_alt, cmap=YlGnBu, units="‰", 
-                       ax=ax1, fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25],  
-                       title= "[A]  CTL", bottom_labels=False, left_labels=True)
-    
-    plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw200e100_alt , cmap=RdBu, units="‰",  
-                       ax=ax2, fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25],  
-                       title= "[B]  W2E1 - CTL", bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
-                       compare_data2=d18op_aw200e100, max_pvalue=0.05, plot_stats=True)
-    
-    plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw100e0_alt , cmap=RdBu, units="‰", 
-                       ax=ax3, fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, add_colorbar=False,
-                       title= "[C]  W1E0 - CTL", bottom_labels=False, left_labels=True, compare_data1=d18op_aw100e100,
-                       compare_data2=d18op_aw100e0, max_pvalue=0.05, plot_stats=True)
-    
-    plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw200e0_alt , cmap=RdBu, units="‰",  
-                       ax=ax4, fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, add_colorbar=False,
-                       title= "[D]  W2E0 - CTL", bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
-                       compare_data2=d18op_aw200e0, max_pvalue=0.05, plot_stats=True)
-    
-    plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw100e200_alt , cmap=RdBu, units="‰",
-                       ax=ax5, fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, add_colorbar=False,
-                       title= "[E]  W1E2 - CTL", bottom_labels=True, left_labels=True, compare_data1=d18op_aw100e100,
-                       compare_data2=d18op_aw100e200, max_pvalue=0.05, plot_stats=True)
-    
-    plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw200e200_alt , cmap=RdBu, units="‰",
-                       ax=ax6, fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, add_colorbar=False,
-                       title= "[F]  W2E2 - CTL", bottom_labels=True, left_labels=False, compare_data1=d18op_aw100e100,
-                       compare_data2=d18op_aw200e200, max_pvalue=0.05, plot_stats=True)
-    
-    
-    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
-    plt.tight_layout()
-    plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
-    plt.savefig(os.path.join(path_to_store, "figS5.svg"), format= "svg", bbox_inches="tight", dpi=300)
-    plt.savefig(os.path.join(path_to_store, "figS5.png"), format= "png", bbox_inches="tight", dpi=300)
-    
-    
-    
-    # Temperature 
-    fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15), subplot_kw={"projection": projection})
+        # d18op
+        fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15), subplot_kw={"projection": projection})
+        
+        plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw100e100_alt, cmap=YlGnBu, units="‰", 
+                           ax=ax1, fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25],  
+                           title= "[A]  CTL", bottom_labels=False, left_labels=True, center= False)
+        
+        plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw200e100_alt , cmap=RdBu, units="‰",  
+                           ax=ax2, fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25],  
+                           title= "[B]  W2E1 - CTL", bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
+                           compare_data2=d18op_aw200e100, max_pvalue=0.05, plot_stats=True, )
+        
+        plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw100e0_alt , cmap=RdBu, units="‰", 
+                           ax=ax3, fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, add_colorbar=False,
+                           title= "[C]  W1E0 - CTL", bottom_labels=False, left_labels=True, compare_data1=d18op_aw100e100,
+                           compare_data2=d18op_aw100e0, max_pvalue=0.05, plot_stats=True, )
+        
+        plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw200e0_alt , cmap=RdBu, units="‰",  
+                           ax=ax4, fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, add_colorbar=False,
+                           title= "[D]  W2E0 - CTL", bottom_labels=False, left_labels=False, compare_data1=d18op_aw100e100,
+                           compare_data2=d18op_aw200e0, max_pvalue=0.05, plot_stats=True, )
+        
+        plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw100e200_alt , cmap=RdBu, units="‰",
+                           ax=ax5, fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, add_colorbar=False,
+                           title= "[E]  W1E2 - CTL", bottom_labels=True, left_labels=True, compare_data1=d18op_aw100e100,
+                           compare_data2=d18op_aw100e200, max_pvalue=0.05, plot_stats=True, )
+        
+        plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_aw200e200_alt , cmap=RdBu, units="‰",
+                           ax=ax6, fig=fig, vmax=10, vmin=-10, levels=22, domain="Europe", level_ticks=11, add_colorbar=False,
+                           title= "[F]  W2E2 - CTL", bottom_labels=True, left_labels=False, compare_data1=d18op_aw100e100,
+                           compare_data2=d18op_aw200e200, max_pvalue=0.05, plot_stats=True, )
+        
+        
+        fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+        plt.tight_layout()
+        plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
+        plt.savefig(os.path.join(path_to_store, "figS5.svg"), format= "svg", bbox_inches="tight", dpi=300)
+        #plt.savefig(os.path.join(path_to_store, "figS5.png"), format= "png", bbox_inches="tight", dpi=300)
     
     
-    plot_annual_mean(variable="Temperature", data_alt=temp2_aw100e100_alt , cmap=RdBu_r, units="°C",  
-                       ax=ax1, fig=fig, vmax=30, vmin=-10, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], 
-                       title= "[A]  CTL", bottom_labels=False, left_labels=True)
+    if varname == "Temperature":
+        # Temperature 
+        fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15), subplot_kw={"projection": projection})
+        
+        
+        plot_annual_mean(variable="Temperature", data_alt=temp2_aw100e100_alt , cmap=RdBu_r, units="°C",  
+                           ax=ax1, fig=fig, vmax=30, vmin=-10, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], 
+                           title= "[A]  CTL", bottom_labels=False, left_labels=True)
+        
+        plot_annual_mean(variable="Temperature", data_alt=temp2_aw200e100_alt , cmap=RdBu_r, units="°C",  
+                           ax=ax2, fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25],  
+                           title= "[B]  W2E1 - CTL", bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
+                           compare_data2=temp2_aw200e100, max_pvalue=0.05, plot_stats=True)
+        
+        plot_annual_mean(variable="Temperature", data_alt=temp2_aw100e0_alt , cmap=RdBu_r, units="°C",  
+                           ax=ax3, fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
+                           title= "[C]  W1E0 - CTL", bottom_labels=False, left_labels=True, compare_data1=temp2_aw100e100,
+                           compare_data2=temp2_aw100e0, max_pvalue=0.05, plot_stats=True)
     
-    plot_annual_mean(variable="Temperature", data_alt=temp2_aw200e100_alt , cmap=RdBu_r, units="°C",  
-                       ax=ax2, fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25],  
-                       title= "[B]  W2E1 - CTL", bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
-                       compare_data2=temp2_aw200e100, max_pvalue=0.05, plot_stats=True)
+        plot_annual_mean(variable="Temperature", data_alt=temp2_aw200e0_alt , cmap=RdBu_r, units="°C",  
+                           ax=ax4, fig=fig, vmax=14, vmin=-14, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
+                           title= "[D]  W2E0 - CTL", bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
+                           compare_data2=temp2_aw200e0, max_pvalue=0.05, plot_stats=True)
+        
+        plot_annual_mean(variable="Temperature", data_alt=temp2_aw100e200_alt , cmap=RdBu_r, units="°C", 
+                           ax=ax5, fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
+                           title= "[E]  W1E2 - CTL", bottom_labels=True, left_labels=True, compare_data1=temp2_aw100e100,
+                           compare_data2=temp2_aw100e200, max_pvalue=0.05, plot_stats=True)
+        
+        plot_annual_mean(variable="Temperature", data_alt=temp2_aw200e200_alt , cmap=RdBu_r, units="°C", 
+                           ax=ax6, fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
+                           title= "[F]  W2E2 - CTL", bottom_labels=True, left_labels=False, compare_data1=temp2_aw100e100,
+                           compare_data2=temp2_aw200e200, max_pvalue=0.05, plot_stats=True)
+        
+        
+        fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+        plt.tight_layout()
+        plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
+        plt.savefig(os.path.join(path_to_store, "figS6.svg"), format= "svg", bbox_inches="tight", dpi=300)
+        #plt.savefig(os.path.join(path_to_store, "figS6.png"), format= "png", bbox_inches="tight", dpi=300)
     
-    plot_annual_mean(variable="Temperature", data_alt=temp2_aw100e0_alt , cmap=RdBu_r, units="°C",  
-                       ax=ax3, fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[C]  W1E0 - CTL", bottom_labels=False, left_labels=True, compare_data1=temp2_aw100e100,
-                       compare_data2=temp2_aw100e0, max_pvalue=0.05, plot_stats=True)
-
-    plot_annual_mean(variable="Temperature", data_alt=temp2_aw200e0_alt , cmap=RdBu_r, units="°C",  
-                       ax=ax4, fig=fig, vmax=14, vmin=-14, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[D]  W2E0 - CTL", bottom_labels=False, left_labels=False, compare_data1=temp2_aw100e100,
-                       compare_data2=temp2_aw200e0, max_pvalue=0.05, plot_stats=True)
-    
-    plot_annual_mean(variable="Temperature", data_alt=temp2_aw100e200_alt , cmap=RdBu_r, units="°C", 
-                       ax=ax5, fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[E]  W1E2 - CTL", bottom_labels=True, left_labels=True, compare_data1=temp2_aw100e100,
-                       compare_data2=temp2_aw100e200, max_pvalue=0.05, plot_stats=True)
-    
-    plot_annual_mean(variable="Temperature", data_alt=temp2_aw200e200_alt , cmap=RdBu_r, units="°C", 
-                       ax=ax6, fig=fig, vmax=12, vmin=-12, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[F]  W2E2 - CTL", bottom_labels=True, left_labels=False, compare_data1=temp2_aw100e100,
-                       compare_data2=temp2_aw200e200, max_pvalue=0.05, plot_stats=True)
-    
-    
-    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
-    plt.tight_layout()
-    plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
-    plt.savefig(os.path.join(path_to_store, "figS6.svg"), format= "svg", bbox_inches="tight", dpi=300)
-    plt.savefig(os.path.join(path_to_store, "figS6.png"), format= "png", bbox_inches="tight", dpi=300)
-    
-    
-    #prec
-    fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15), subplot_kw={"projection": projection})
-    
-    
-    plot_annual_mean(variable="Precipitation", data_alt=prec_aw100e100_alt , cmap=Blues, units="mm/month",
-                       ax=ax1, fig=fig, vmax=300, vmin=0, levels=22, domain="Europe", level_ticks=6, cbar_pos = [0.90, 0.68, 0.02, 0.25], 
-                       title= "[A]  CTL", bottom_labels=False, left_labels=True, data_v10= v10_aw100e100_alt,
-                       data_u10=u10_aw100e100_alt)
-    
-    plot_annual_mean(variable="Precipitation", data_alt=prec_aw200e100_alt , cmap=BrBG, units="mm/month",  
-                       ax=ax2, fig=fig, vmax=100, vmin=-100, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25], 
-                       title= "[B]  W2E1 - CTL", bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
-                       compare_data2=prec_aw200e100, max_pvalue=0.05, plot_stats=True)
-    
-    plot_annual_mean(variable="Precipitation", data_alt=prec_aw100e0_alt , cmap=BrBG, units="mm/month",  
-                       ax=ax3, fig=fig, vmax=100, vmin=-100, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[C]  W1E0 - CTL", bottom_labels=False, left_labels=True, compare_data1=prec_aw100e100,
-                       compare_data2=prec_aw100e0, max_pvalue=0.05, plot_stats=True)
-    
-    plot_annual_mean(variable="Precipitation", data_alt=prec_aw200e0_alt , cmap=BrBG, units="mm/month",
-                       ax=ax4, fig=fig, vmax=100, vmin=-100, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[D]  W2E0 - CTL", bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
-                       compare_data2=prec_aw200e0, max_pvalue=0.05, plot_stats=True)
-    
-    plot_annual_mean(variable="Precipitation", data_alt=prec_aw100e200_alt , cmap=BrBG, units="mm/month", 
-                       ax=ax5, fig=fig, vmax=100, vmin=-100, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[E]  W1E2 - CTL", bottom_labels=True, left_labels=True, compare_data1=prec_aw100e100,
-                       compare_data2=prec_aw100e200, max_pvalue=0.05, plot_stats=True)
-    
-    plot_annual_mean(variable="Precipitation", data_alt=prec_aw200e200_alt , cmap=BrBG, units="mm/month",  
-                       ax=ax6, fig=fig, vmax=100, vmin=-100, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
-                       title= "[F]  W2E2 - CTL", bottom_labels=True, left_labels=False, compare_data1=prec_aw100e100,
-                       compare_data2=prec_aw200e200, max_pvalue=0.05, plot_stats=True)
-    
-    
-    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
-    plt.tight_layout()
-    plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
-    plt.savefig(os.path.join(path_to_store, "figS7.svg"), format= "svg", bbox_inches="tight", dpi=300)
-    plt.savefig(os.path.join(path_to_store, "figS7.png"), format= "png", bbox_inches="tight", dpi=300)
+    if varname == "precipitation":
+        #prec
+        fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15), subplot_kw={"projection": projection})
+        
+        
+        plot_annual_mean(variable="Precipitation", data_alt=prec_aw100e100_alt , cmap=Blues, units="mm/month",
+                           ax=ax1, fig=fig, vmax=300, vmin=0, levels=22, domain="Europe", level_ticks=6, cbar_pos = [0.90, 0.68, 0.02, 0.25], 
+                           title= "[A]  CTL", bottom_labels=False, left_labels=True, data_v10= v10_aw100e100_alt,
+                           data_u10=u10_aw100e100_alt)
+        
+        plot_annual_mean(variable="Precipitation", data_alt=prec_aw200e100_alt , cmap=BrBG, units="mm/month",  
+                           ax=ax2, fig=fig, vmax=100, vmin=-100, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.25, 0.02, 0.25], 
+                           title= "[B]  W2E1 - CTL", bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
+                           compare_data2=prec_aw200e100, max_pvalue=0.05, plot_stats=True)
+        
+        plot_annual_mean(variable="Precipitation", data_alt=prec_aw100e0_alt , cmap=BrBG, units="mm/month",  
+                           ax=ax3, fig=fig, vmax=100, vmin=-100, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
+                           title= "[C]  W1E0 - CTL", bottom_labels=False, left_labels=True, compare_data1=prec_aw100e100,
+                           compare_data2=prec_aw100e0, max_pvalue=0.05, plot_stats=True)
+        
+        plot_annual_mean(variable="Precipitation", data_alt=prec_aw200e0_alt , cmap=BrBG, units="mm/month",
+                           ax=ax4, fig=fig, vmax=100, vmin=-100, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
+                           title= "[D]  W2E0 - CTL", bottom_labels=False, left_labels=False, compare_data1=prec_aw100e100,
+                           compare_data2=prec_aw200e0, max_pvalue=0.05, plot_stats=True)
+        
+        plot_annual_mean(variable="Precipitation", data_alt=prec_aw100e200_alt , cmap=BrBG, units="mm/month", 
+                           ax=ax5, fig=fig, vmax=100, vmin=-100, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
+                           title= "[E]  W1E2 - CTL", bottom_labels=True, left_labels=True, compare_data1=prec_aw100e100,
+                           compare_data2=prec_aw100e200, max_pvalue=0.05, plot_stats=True)
+        
+        plot_annual_mean(variable="Precipitation", data_alt=prec_aw200e200_alt , cmap=BrBG, units="mm/month",  
+                           ax=ax6, fig=fig, vmax=100, vmin=-100, levels=22, domain="Europe", level_ticks=11,  add_colorbar=False,
+                           title= "[F]  W2E2 - CTL", bottom_labels=True, left_labels=False, compare_data1=prec_aw100e100,
+                           compare_data2=prec_aw200e200, max_pvalue=0.05, plot_stats=True)
+        
+        
+        fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+        plt.tight_layout()
+        plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
+        plt.savefig(os.path.join(path_to_store, "figS7.svg"), format= "svg", bbox_inches="tight", dpi=300)
+        #plt.savefig(os.path.join(path_to_store, "figS7.png"), format= "png", bbox_inches="tight", dpi=300)
     
 def plot_egu_talk():
     fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, figsize=(13, 19), sharey=False, sharex=False, subplot_kw={"projection": projection})
@@ -490,10 +492,10 @@ def plot_egu_talk():
     
 if __name__ == '__main__':
     #plot_summer_diff(varname="Temperature")
-    #plot_summer_diff(varname="d18op")
+    plot_summer_diff(varname="d18op")
     #plot_summer_diff(varname="Precipitation")
     
     # # annual plots 
-    #plot_annual_diff()
-    plot_egu_talk()
+    plot_annual_diff(varname="d18op")
+    #plot_egu_talk()
     

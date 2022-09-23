@@ -167,34 +167,34 @@ def plot_summer_mean(varname =None):
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e100_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
                            axes=[ax1], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, add_colorbar=False, title=True, 
-                           season_label= ["[A]  CTL"], bottom_labels=False, left_labels=True)
+                           season_label= ["[A]  CTL"], bottom_labels=False, left_labels=True, center= False)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e100_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
                            axes=[ax2], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.35, 0.02, 0.25], title=True, 
-                           season_label= ["[B]  W2E1"], bottom_labels=False, left_labels=False,)
+                           season_label= ["[B]  W2E1"], bottom_labels=False, left_labels=False, center= False)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e0_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
                            axes=[ax3], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[C]  W1E0"], bottom_labels=False, left_labels=True,)
+                           season_label= ["[C]  W1E0"], bottom_labels=False, left_labels=True, center= False)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e0_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
                            axes=[ax4], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[D]  W2E0"], bottom_labels=False, left_labels=False,)
+                           season_label= ["[D]  W2E0"], bottom_labels=False, left_labels=False, center= False)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw100e200_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
                            axes=[ax5], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[E]  W1E2"], bottom_labels=True, left_labels=True)
+                           season_label= ["[E]  W1E2"], bottom_labels=True, left_labels=True, center= False)
         
         plot_seasonal_mean(variable='$\delta^{18}$Op vs SMOW', data_slt=d18op_aw200e200_slt , cmap=YlGnBu, units="‰", seasons=["JJA"], 
                            axes=[ax6], fig=fig, vmax=2, vmin=-16, levels=22, domain="Europe", level_ticks=11, title=True, add_colorbar=False,
-                           season_label= ["[F]  W2E2"], bottom_labels=True, left_labels=False)
+                           season_label= ["[F]  W2E2"], bottom_labels=True, left_labels=False, center= False)
         
         
         fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
         plt.tight_layout()
         plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
         plt.savefig(os.path.join(path_to_store, "figS2.svg"), format= "svg", bbox_inches="tight", dpi=300)
-        plt.savefig(os.path.join(path_to_store, "figS2.png"), format= "png", bbox_inches="tight", dpi=300)
+        #plt.savefig(os.path.join(path_to_store, "figS2.png"), format= "png", bbox_inches="tight", dpi=300)
     
     
     if varname == "Temperature":
@@ -276,7 +276,7 @@ def plot_summer_mean(varname =None):
         plt.savefig(os.path.join(path_to_store, "figS4.png"), format= "png", bbox_inches="tight", dpi=300)
         
 if __name__ == '__main__':
-    plot_summer_mean(varname="Precipitation")
+    # plot_summer_mean(varname="Precipitation")
     plot_summer_mean(varname="d18op")
-    plot_summer_mean(varname="Temperature")
+    # plot_summer_mean(varname="Temperature")
     

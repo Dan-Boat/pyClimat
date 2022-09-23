@@ -26,6 +26,9 @@ def extract_and_save(main_path, exp_name, path_to_save, filename_surf, filename_
     data_plev = read_ECHAM_processed(main_path=main_path , exp_name= exp_name, years=years,
                                                       period=period, add_name="plev", read_wiso=False)
     
+    data_slp= read_ECHAM_processed(main_path=main_path , exp_name= exp_name, years=years,
+                                                      period=period, add_name="slp", read_wiso=False)
+    
     
     temp = extract_var(Dataset=data , varname="temp2", units="°C")
     prec = extract_var(Dataset= data , varname="prec", units="mm/month")
@@ -36,14 +39,16 @@ def extract_and_save(main_path, exp_name, path_to_save, filename_surf, filename_
     
     omega = extract_var(Dataset=data_omega, varname="omega", units="Pa/s", lev_units="hPa")
     cloud = extract_var(Dataset=data_plev, varname="aclcac", lev_units="hPa")
+    relhum = extract_var(Dataset= data_plev, varname= "rh", lev_units="hPa")
+    slp = extract_var(Dataset= data_slp, varname= "slp", lev_units="hPa")
     
     
     surf_varnames = ["temp", "prec", "d18Op", "u10", "v10", "elev"]
     surf_vardata = [temp, prec, d18Op, u10, v10, elev]
     
     
-    plev_varnames = ["omega", "cloud"]
-    plev_vardata = [omega, cloud]
+    plev_varnames = ["omega", "cloud", "relhum"]
+    plev_vardata = [omega, cloud, relhum]
     
     data_surf = xr.Dataset()
     data_lev = xr.Dataset()
