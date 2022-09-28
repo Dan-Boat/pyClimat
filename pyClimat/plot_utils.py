@@ -260,7 +260,9 @@ class FixedPointNormalized(matplotlib.colors.Normalize):
         x,y = [self.vmin, self.sealevel, self.vmax], [0, self.color_val, 1]
         
         return np.ma.masked_array(np.interp(value, x, y))
-    
+
+
+
 colors_ocean = plt.cm.terrain(np.linspace(0, 0.17, 56))   
 colors_land =  plt.cm.terrain(np.linspace(0.25, 1, 200))
 colors_combined = np.vstack((colors_ocean, colors_land))

@@ -25,11 +25,11 @@ import calendar
 
 #Import related package modules
 try:
-    from .Climat_plot_utils import *
-    from .Climat_analysis import *
+    from .plot_utils import *
+    from .analysis import *
 except:
-    from Climat_plot_utils import *
-    from Climat_analysis import *
+    from plot_utils import *
+    from analysis import *
 
 # annual plots 
 
@@ -72,7 +72,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
         DESCRIPTION. The default is None. Directory to store data
         
     data_v10 = datarray (required for ploting winds)
-    data_v10 = datarray (required for ploting winds)
+    data_u10 = datarray (required for ploting winds)
     
     GNIP_data = DataFrame with lon, lat and d18Op for plotting a scatter circles with filled colormap 
     left_labels: TYPE: Boolean, Default is True
@@ -81,9 +81,22 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
         DESCRIPTION. To add lon coordinates on the bottom of the plots, optioanl 
     add_colorbar: TYPE: Boolean, Default is True
         DESCRIPTION. To add colormap to the plot
-        
+
+    plot_stats: TYPE: Boolean, Default
+        DESCRIPTION: plot the statiscal difference between two varied datasets
+
+    compare_data1: TYPE: datarray
+        DESCRIPTION: dataset 1 if plot_stats == true
     
+    compare_data2: TYPE: datarray
+        DESCRIPTION: dataset 2 if plot_stats == true
     center: TYPE: Boolean, True to apply norm for centering zero
+
+    max_pvalue: TYPE: float, optional
+        DESCRIPTION: pvalue for the student t-test significance testing
+
+    hatches: TYPE: str, optional:
+        DESCRIPTION: hatches from matplotlib 
 
     Returns
     -------
@@ -314,10 +327,24 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
     plot_winds_streamline: TYPE: Boolean, optional 
         DESCRIPTION: It plots the wind streamlines on the plot
         
-    data_u
+    data_v = datarray (required for ploting winds)
+    data_u = datarray (required for ploting winds)
     
-    data_v
+    plot_stats: TYPE: Boolean, Default
+        DESCRIPTION: plot the statiscal difference between two varied datasets
+
+    compare_data1: TYPE: datarray
+        DESCRIPTION: dataset 1 if plot_stats == true
     
+    compare_data2: TYPE: datarray
+        DESCRIPTION: dataset 2 if plot_stats == true
+    center: TYPE: Boolean, True to apply norm for centering zero
+
+    max_pvalue: TYPE: float, optional
+        DESCRIPTION: pvalue for the student t-test significance testing
+
+    hatches: TYPE: str, optional:
+        DESCRIPTION: hatches from matplotlib 
 
 
     Returns
@@ -736,8 +763,14 @@ def plot_iso_profiles(df_iso, df_geosp, dim, iso_color, iso_label, ax=None, seas
     path_to_store : TYPE: str, optional
         DESCRIPTION. The default is None. Directory to store data
         
-    left labels : TYPE: Bol, optional
-        DESCRIPTION. To set the left axis label to None
+    left labels, right_labels, bottom_labels, : TYPE: Bol, optional
+        DESCRIPTION. To set the left, right, and bottom axis label to None
+
+    shade_color: TYPE: STR
+        DESCRIPTION: shade color for plotting fill_between
+    
+    shade_alpha: TYPE: float, optional
+        DESCRIPTION: shade factor for plotting fill_between
 
     Raises
     ------
@@ -873,6 +906,9 @@ def scatter_plot_laspe_rate(reg_params, df_x_y_yhat, color, marker, label, ylabe
         DESCRIPTION. The default is None. Title of plots
     path_to_store : TYPE: str, optional
         DESCRIPTION. The default is None. Directory to store data
+    
+    left labels, right_labels, bottom_labels, : TYPE: Bol, optional
+        DESCRIPTION. To set the left, right, and bottom axis label to None
 
     Returns
     -------
@@ -978,6 +1014,9 @@ def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, 
         DESCRIPTION. 
     cbar_position : TYPE: list, optional
         DESCRIPTION. The default is None. The default is None. the list defing the position of the color bar eg. [0.90, 0.30, 0.02, 0.40]
+    
+    left labels, right_labels, bottom_labels, : TYPE: Bol, optional
+        DESCRIPTION. To set the left, right, and bottom axis label to None
 
     Returns
     -------
@@ -1078,6 +1117,9 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
         DESCRIPTION. The default is None. The explained variance estimated from the EOF analysis
     use_AlberEqualArea : TYPE: Boolean, optional
         DESCRIPTION. The default is None. To use ccrs.AlberEqualArea() as geoaxis projection
+    
+    left labels, right_labels, bottom_labels, : TYPE: Bol, optional
+        DESCRIPTION. To set the left, right, and bottom axis label to None
 
     Returns
     -------

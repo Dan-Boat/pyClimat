@@ -4,7 +4,8 @@
 Created on Thu Jul 29 18:49:19 2021
 
 @author: dboateng
-Contains analysis routine required for calculation, extracting variables and domain, masking out areas and certian statistics. 
+Contains analysis routine required for calculation, extracting variables and domain, masking out areas 
+and certian statistics. 
 
 """
 
@@ -19,11 +20,11 @@ from eofs.xarray import Eof
 #importing other routines
 
 try:
-    from .Climat_data import *
-    from .Climat_utils import vert_coord_convertion
+    from .data import *
+    from .utils import vert_coord_convertion
 except:
-    from Climat_data import *
-    from Climat_utils import vert_coord_convertion
+    from data import *
+    from utils import vert_coord_convertion
     
 
 
@@ -960,10 +961,3 @@ def student_t_test_btn_datasets(dataA, dataB, max_pvalue=0.1, return_pvalue=Fals
     else:
         return stats_result
 
-
-
-def PCA_analysis(*args):
-    pass
-
-def remove_lapse_rate_effect(*arg):
-    pass

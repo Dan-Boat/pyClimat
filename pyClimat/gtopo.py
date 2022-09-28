@@ -18,9 +18,9 @@ import cartopy.feature as cfeature
 from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
 
 try:
-    from .Climat_data import read_Gtopo
+    from .data import read_Gtopo
 except:
-    from Climat_data import read_Gtopo
+    from data import read_Gtopo
 
 
 def extract_alps(path, tile_name, minelev, extract_var=None, east_alps=None, west_alps=None, west_buffer=None, central_buffer=None,

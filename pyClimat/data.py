@@ -190,7 +190,3 @@ def read_GNIP_data(path, filename):
     df["lon"] = data[1]
     
     return df
-
-
-def read_DWD_processed(*args):
-    pass
