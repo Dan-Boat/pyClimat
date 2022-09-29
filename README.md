@@ -2,10 +2,10 @@
 <h1 align="center">Welcome to REAME pyClimat 👋</h1>
 
 <p align="center">
-<a href="https://pypi.python.org/pypi/py" target="_blank">
+<a href="https://pypi.org/project/pyClimat/" target="_blank">
   <img src="https://img.shields.io/pypi/v/pyClimat.svg" alt="PyPi">
 </a>
-<a href="https://pypi.org/project/pyClimat" target="_blank">
+<a href="https://pypi.org/project/pyClimat/" target="_blank">
   <img src="https://img.shields.io/pypi/pyversions/pyClimat" alt="PyPI - Python Version">
 </a>
 </h1>
