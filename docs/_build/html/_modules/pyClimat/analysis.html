@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyClimat.analysis &mdash; pyClimat 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> pyClimat
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pyClimat.html">pyClimat package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pyClimat</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>pyClimat.analysis</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyClimat.analysis</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jul 29 18:49:19 2021</span>
+
+<span class="sd">@author: dboateng</span>
+<span class="sd">Contains analysis routine required for calculation, extracting variables and domain, masking out areas </span>
+<span class="sd">and certian statistics. </span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># importing packages </span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">from</span> <span class="nn">eofs.xarray</span> <span class="kn">import</span> <span class="n">Eof</span>
+
+<span class="c1">#importing other routines</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="o">*</span>
+    <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">vert_coord_convertion</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">data</span> <span class="kn">import</span> <span class="o">*</span>
+    <span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">vert_coord_convertion</span>
+    
+
+
+
+<div class="viewcode-block" id="extract_var"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.analysis.extract_var">[docs]</a><span class="k">def</span> <span class="nf">extract_var</span><span class="p">(</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Dataset_wiso</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">other_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lev_units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function extracts some defined variables from a netCDF file. Moreover, if the variable require calculation </span>
+<span class="sd">    or unit conversion, the user speficication can be pass to such task. For example, echam out put the differrent </span>
+<span class="sd">    component of precipitation (convective, large scale, etc). Therefore extraction of total precipitation would require</span>
+<span class="sd">    the calculation of the total precipitation. Example of the defined variables: </span>
+
+<span class="sd">    &quot;temp2&quot; --  near surface temperature</span>
+<span class="sd">    &quot;prec&quot; -- total precipitation </span>
+<span class="sd">    &quot;d18op&quot; -- O^18 isotopic composition in precipitation </span>
+<span class="sd">    &quot;d18ov&quot; -- O^18 isotopic composition in vapour</span>
+<span class="sd">    &quot;relhum&quot; -- relative humidity</span>
+<span class="sd">    &quot;elev&quot;  -- topography or elevation</span>
+<span class="sd">    &quot;slm&quot; -- mean sea level pressure</span>
+<span class="sd">    &quot;evap&quot; -- evaporation</span>
+<span class="sd">    &quot;u, v, omega&quot; -- zonal, meridoinal, and vertical velocity</span>
+<span class="sd">    </span>
+<span class="sd">    and others </span>
+
+<span class="sd">    example</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    data = xr.open_dataset(path_to_data)</span>
+<span class="sd">    temp = extract_var(data, varname= &quot;temp2&quot;, unit= &quot;°C&quot;,) ---&gt; extract the t2m variable and convert it from K to °C</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Dataset : TYPE: Dataset</span>
+<span class="sd">        DESCRIPTION. Processed output containing all variables or certain ones</span>
+<span class="sd">    varname : TYPE: STR</span>
+<span class="sd">        DESCRIPTION: Name of variable (eg. temp2:Tempeature, prec:Total precipitation, d18op: d18o in precipitation)</span>
+<span class="sd">    units : TYPE, optional </span>
+<span class="sd">        DESCRIPTION. The default is None. Units of the variable for eg. °C for temperature or mm/month for precipitation</span>
+<span class="sd">    Dataset_wiso : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. Wiso Dataset is required for calcullating d18op and d18ov   </span>
+<span class="sd">    other_data: TYPE: datarray, optional </span>
+<span class="sd">        DESCRIPTION: Additional data required for calculating units eg. Pa/s--&gt; m/s require temperature data on pressure levels (in K)</span>
+<span class="sd">    lev_units: TYPE: str, optional </span>
+<span class="sd">        DESCRIPTION: Units of vertical levels eg. hPa</span>
+<span class="sd">    lev: TYPE: int, optional </span>
+<span class="sd">        DESCRIPTION: The vertical height required for the variable, eg. 500 hPa for winds</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    var_data : TYPE: datarray</span>
+<span class="sd">        DESCRIPTION: returns the variable for etracted or calculated from the Dataset (notmally monthly long-term climatologies)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1">#Temperature</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Dataset</span><span class="p">,</span> <span class="s2">&quot;mlev&quot;</span><span class="p">):</span>
+        <span class="n">Dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s2">&quot;mlev&quot;</span><span class="p">:</span><span class="s2">&quot;lev&quot;</span><span class="p">})</span>
+        
+        <span class="k">if</span> <span class="n">Dataset_wiso</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Dataset_wiso</span> <span class="o">=</span> <span class="n">Dataset_wiso</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s2">&quot;mlev&quot;</span><span class="p">:</span><span class="s2">&quot;lev&quot;</span><span class="p">})</span>
+        
+    <span class="k">if</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;temp2&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;°C&quot;</span><span class="p">:</span>
+                <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span> <span class="o">-</span> <span class="mf">273.15</span> <span class="c1"># convert temperature to dec C</span>
+                <span class="n">var_data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Define unit well or the default is kelvin&quot;</span><span class="p">)</span>
+        
+    <span class="c1">#Total precipitation amount</span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;prec&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;aprl&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;aprc&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;mm/month&quot;</span><span class="p">:</span>
+                <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span> <span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">30</span> <span class="c1">#mm/month</span>
+                <span class="n">var_data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span>
+            <span class="k">elif</span> <span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;mm/a&quot;</span><span class="p">:</span>
+                <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span> <span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">365</span> <span class="c1">#mm/a</span>
+                <span class="n">var_data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Define unit well or the default is kg/m²s&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># d18o in Precipitation</span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;d18op&quot;</span><span class="p">:</span>
+        <span class="n">var_data_echam</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;aprl&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;aprc&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">Dataset_wiso</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+             <span class="n">var_data_wiso</span> <span class="o">=</span> <span class="n">Dataset_wiso</span><span class="p">[</span><span class="s2">&quot;wisoaprl&quot;</span><span class="p">][:,</span><span class="mi">1</span><span class="p">,:,:]</span> <span class="o">+</span> <span class="n">Dataset_wiso</span><span class="p">[</span><span class="s2">&quot;wisoaprc&quot;</span><span class="p">][:,</span><span class="mi">1</span><span class="p">,:,:]</span>
+        <span class="n">SMOW</span> <span class="o">=</span> <span class="mf">0.2228</span>
+        <span class="n">wiso_wtgs</span> <span class="o">=</span> <span class="n">var_data_wiso</span> <span class="o">/</span> <span class="n">var_data_echam</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="p">((</span><span class="n">wiso_wtgs</span><span class="o">/</span><span class="n">SMOW</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;per mil&quot;</span><span class="p">:</span>
+                <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span> <span class="o">*</span><span class="mi">1000</span> <span class="c1"># convert to permil</span>
+                <span class="n">var_data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Define unit well or the default is isotopic ratio&quot;</span><span class="p">)</span>
+                
+    <span class="c1"># d18o in water vapour</span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;d18ov&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data_echam</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;q&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">lev</span><span class="o">=</span><span class="n">lev</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">Dataset_wiso</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">var_data_wiso</span> <span class="o">=</span> <span class="n">Dataset_wiso</span><span class="p">[</span><span class="s2">&quot;q18o&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">lev</span><span class="o">=</span><span class="n">lev</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">var_data_echam</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;q&quot;</span><span class="p">][:,</span><span class="mi">30</span><span class="p">,:,:]</span>
+            <span class="k">if</span> <span class="n">Dataset_wiso</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                 <span class="n">var_data_wiso</span> <span class="o">=</span> <span class="n">Dataset_wiso</span><span class="p">[</span><span class="s2">&quot;q18o&quot;</span><span class="p">][:,</span><span class="mi">30</span><span class="p">,:,:]</span>
+                 
+        <span class="n">SMOW</span> <span class="o">=</span> <span class="mf">0.2228</span>
+        <span class="n">wiso_wtgs</span> <span class="o">=</span> <span class="n">var_data_wiso</span> <span class="o">/</span> <span class="n">var_data_echam</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="p">((</span><span class="n">wiso_wtgs</span><span class="o">/</span><span class="n">SMOW</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;per mil&quot;</span><span class="p">:</span>
+                <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span> <span class="o">*</span><span class="mi">1000</span> <span class="c1"># convert to permil</span>
+                <span class="n">var_data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Define unit well or the default is isotopic ratio&quot;</span><span class="p">)</span>
+   
+    <span class="c1"># Evaporation            </span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;evap&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;evap&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;mm/month&quot;</span><span class="p">:</span>
+                <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span> <span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">30</span> <span class="o">*-</span><span class="mi">1</span>  <span class="c1">#mm/month (positive values)</span>
+                <span class="n">var_data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Define unit well or the default is kg/m²s&quot;</span><span class="p">)</span>
+   
+    <span class="c1"># relative humidity near surface            </span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;relhum&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;relhum&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">lev</span><span class="o">=</span><span class="n">lev</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;relhum&quot;</span><span class="p">][:,</span><span class="mi">30</span><span class="p">,:,:]</span>
+        <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;%&quot;</span><span class="p">:</span>
+                <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span> <span class="o">*</span><span class="mi">100</span> <span class="c1">#%</span>
+                <span class="n">var_data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Define unit well or the default is ratio&quot;</span><span class="p">)</span>
+                
+    <span class="c1"># elevation from GEOSP</span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;elev&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;geosp&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">9.8</span>  <span class="c1"># convert to m**2/s**2 --&gt; m</span>
+        <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;km&quot;</span><span class="p">:</span>
+                <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span> <span class="o">/</span><span class="mi">1000</span>  <span class="c1">#km</span>
+                <span class="n">var_data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">var_data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The default units of elevation is used [m]&quot;</span><span class="p">)</span>
+                
+    <span class="c1"># sea land mask</span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;slm&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;slm&quot;</span><span class="p">]</span>
+        
+    <span class="c1"># Surface Wind velocity zonal</span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;u10&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;u10&quot;</span><span class="p">]</span>
+        
+    <span class="c1"># Surface wind velocity meridoinal</span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;v10&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;v10&quot;</span><span class="p">]</span>
+        
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;wind10&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;wind10&quot;</span><span class="p">]</span>
+    
+    <span class="c1"># geopotential height at pressure levels</span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;geopoth&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;geopoth&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">lev_units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lev_units</span> <span class="o">==</span> <span class="s2">&quot;hPa&quot;</span><span class="p">:</span>
+                <span class="n">var_data</span><span class="p">[</span><span class="s2">&quot;lev&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">var_data</span><span class="o">.</span><span class="n">lev</span> <span class="o">/</span> <span class="mi">100</span>  <span class="c1">#Pa --&gt; hPa</span>
+                <span class="n">var_data</span><span class="p">[</span><span class="s2">&quot;lev&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;hPa&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You have defined incorrect units or its not implemented&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># mean sea level pressure or surface pressure  </span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;slp&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Dataset</span><span class="p">,</span> <span class="s2">&quot;aps&quot;</span><span class="p">):</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;aps&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Dataset</span><span class="p">,</span> <span class="s2">&quot;psl&quot;</span><span class="p">):</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;psl&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>    
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;slp&quot;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;hPa&quot;</span><span class="p">:</span>
+                <span class="n">var_data</span> <span class="o">/=</span> <span class="mi">100</span>
+                <span class="n">var_data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span>
+            <span class="k">else</span><span class="p">:</span>
+                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You have defined incorrect units or its not implemented&quot;</span><span class="p">)</span>
+    <span class="c1"># Vertical verlocity    </span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span><span class="s2">&quot;omega&quot;</span><span class="p">:</span>  <span class="c1"># Pa/s</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">lev_units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">vert_coord_convertion</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">var_data</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">lev_units</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1">#Other data must be temperature on pressure levels with the same shape as omega</span>
+            <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;m/s&quot;</span><span class="p">:</span>
+                <span class="n">rgas</span><span class="o">=</span><span class="mf">287.058</span>  <span class="c1"># m²/s²K</span>
+                <span class="n">g</span><span class="o">=</span><span class="mf">9.80665</span>
+                <span class="n">pa</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;lev&quot;</span><span class="p">]</span> <span class="c1"># must be the same size and shape as omega and t</span>
+                <span class="n">rho</span> <span class="o">=</span> <span class="n">pa</span><span class="o">/</span><span class="p">(</span><span class="n">rgas</span><span class="o">*</span><span class="n">other_data</span><span class="p">)</span>
+                <span class="n">var_data</span> <span class="o">/=</span> <span class="p">(</span><span class="n">rho</span><span class="o">*</span><span class="n">g</span><span class="p">)</span>  <span class="c1">#Pa/s --&gt;m/s</span>
+            <span class="k">elif</span> <span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;Pa/s&quot;</span><span class="p">:</span>
+                <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span>
+                
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You have defined incorrect units or its not implemented&quot;</span><span class="p">)</span>
+                
+        <span class="k">if</span> <span class="n">lev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">lev</span><span class="o">=</span><span class="n">lev</span><span class="p">)</span>
+        
+        
+    <span class="c1"># meridional wind at vertical levels    </span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;v&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">lev_units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">vert_coord_convertion</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">var_data</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">lev_units</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">lev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">lev</span><span class="o">=</span><span class="n">lev</span><span class="p">)</span>
+            
+    <span class="c1"># zonal wind at vertical levels    </span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;u&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">lev_units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">vert_coord_convertion</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">var_data</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">lev_units</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">lev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">lev</span><span class="o">=</span><span class="n">lev</span><span class="p">)</span>
+            
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;e/p&quot;</span><span class="p">:</span>
+        <span class="n">var_prec</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;aprl&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;aprc&quot;</span><span class="p">]</span>
+        <span class="n">var_evap</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;evap&quot;</span><span class="p">]</span> 
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_evap</span><span class="o">/</span><span class="n">var_prec</span>
+        
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;E-P&quot;</span><span class="p">:</span>
+        <span class="n">var_prec</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;aprl&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;aprc&quot;</span><span class="p">]</span>
+        <span class="n">var_evap</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;evap&quot;</span><span class="p">]</span> 
+        
+        <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">units</span> <span class="o">==</span> <span class="s2">&quot;mm/month&quot;</span><span class="p">:</span>
+                <span class="n">var_prec</span> <span class="o">=</span> <span class="n">var_prec</span> <span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">30</span>  <span class="c1">#mm/month (positive values)</span>
+                <span class="n">var_evap</span> <span class="o">=</span> <span class="n">var_evap</span> <span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">30</span><span class="o">*-</span><span class="mi">1</span>  <span class="c1">#mm/month (positive values)</span>
+                
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Define unit well or the default is kg/m²s&quot;</span><span class="p">)</span>
+            
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_evap</span> <span class="o">-</span> <span class="n">var_prec</span>
+            <span class="n">var_data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">units</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_evap</span> <span class="o">-</span> <span class="n">var_prec</span>
+        
+            
+    <span class="c1"># temperature at vertical levels    </span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;st&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">lev_units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">vert_coord_convertion</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">var_data</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">lev_units</span><span class="p">)</span>
+            
+                 
+        <span class="k">if</span> <span class="n">lev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">lev</span><span class="o">=</span><span class="n">lev</span><span class="p">)</span>
+            
+    <span class="c1"># total cloud cover at vertical levels </span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;aclcac&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">lev_units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">vert_coord_convertion</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">var_data</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">lev_units</span><span class="p">)</span>
+                 
+        <span class="k">if</span> <span class="n">lev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">lev</span><span class="o">=</span><span class="n">lev</span><span class="p">)</span>
+            
+    <span class="c1"># specific humidity at vertical levels         </span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;q&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">units</span> <span class="o">==</span><span class="s2">&quot;g/kg&quot;</span><span class="p">:</span>
+                <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span> <span class="o">*</span> <span class="mi">1000</span> <span class="c1">#---&gt;g/kg</span>
+                
+        <span class="k">if</span> <span class="n">lev_units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">vert_coord_convertion</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">var_data</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">lev_units</span><span class="p">)</span>
+                 
+        <span class="k">if</span> <span class="n">lev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">lev</span><span class="o">=</span><span class="n">lev</span><span class="p">)</span>
+            
+    <span class="c1"># relativehumidity at vertical levels (pressure)      </span>
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;rh&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;relhum&quot;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">units</span> <span class="o">==</span><span class="s2">&quot;%&quot;</span><span class="p">:</span>
+                <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span> <span class="o">*</span> <span class="mi">100</span> <span class="c1">#---%</span>
+                
+        <span class="k">if</span> <span class="n">lev_units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">vert_coord_convertion</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">var_data</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">lev_units</span><span class="p">)</span>
+                 
+        <span class="k">if</span> <span class="n">lev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_data</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">lev</span><span class="o">=</span><span class="n">lev</span><span class="p">)</span>
+            
+            
+    <span class="k">elif</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;latent heat&quot;</span><span class="p">:</span>
+        <span class="n">var_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;ahfl&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span> <span class="c1">#positive values</span>
+        
+        
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Check the Varname or it has not been implemeted&quot;</span><span class="p">)</span>
+            
+    <span class="k">return</span> <span class="n">var_data</span></div>
+
+
+
+<div class="viewcode-block" id="compute_lterm_mean"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.analysis.compute_lterm_mean">[docs]</a><span class="k">def</span> <span class="nf">compute_lterm_mean</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">season</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">season_calendar</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : TYPE: datarray</span>
+<span class="sd">        DESCRIPTION. The var_data extracted from dataset </span>
+<span class="sd">    time : TYPE: str, optional</span>
+<span class="sd">        DESCRIPTION. The default is &quot;annual&quot;. or season, month can be used for long-term estimates</span>
+<span class="sd">    month : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is None.</span>
+<span class="sd">    season : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is None.</span>
+<span class="sd">    season_calendar : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. Use standard if you want to consider the days of the month into consideration</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data_ltmean : TYPE: datarray</span>
+<span class="sd">        DESCRIPTION. Long-term means </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">data_ltmean</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">time</span> <span class="o">==</span><span class="s2">&quot;season&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">season_calendar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">season_calendar</span> <span class="o">==</span> <span class="s2">&quot;standard&quot;</span><span class="p">:</span>
+                <span class="c1"># Make a DataArray with the number of days in each month, size = len(time)</span>
+                <span class="n">month_length</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">days_in_month</span>
+
+                <span class="c1"># Calculate the weights by grouping by &#39;time.season&#39;</span>
+                <span class="n">weights</span> <span class="o">=</span> <span class="n">month_length</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;time.season&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="n">month_length</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;time.season&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+                <span class="c1"># Test that the sum of the weights for each season is 1.0</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;time.season&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+
+                <span class="c1"># Calculate the weighted average</span>
+                <span class="n">data_ltmean</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span> <span class="o">*</span> <span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;time.season&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Define the season calendar well eg. standard&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calculating the seasonal mean without considering the number of days in a month&quot;</span><span class="p">)</span>
+
+            <span class="n">data_ltmean</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;time.season&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">season</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calculating the seasonal long-term mean for:&quot;</span><span class="p">,</span> <span class="n">season</span><span class="p">)</span>
+            <span class="n">data_ltmean</span> <span class="o">=</span> <span class="n">data_ltmean</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">season</span> <span class="o">=</span> <span class="n">season</span><span class="p">)</span>
+        
+            
+    <span class="k">elif</span> <span class="n">time</span> <span class="o">==</span> <span class="s2">&quot;month&quot;</span><span class="p">:</span>
+        <span class="n">data_ltmean</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;time.month&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">month</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calculating the monthly long-term mean for the month number:&quot;</span><span class="p">,</span> <span class="n">month</span><span class="p">)</span>
+            <span class="n">data_ltmean</span> <span class="o">=</span> <span class="n">data_ltmean</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">month</span><span class="o">=</span><span class="n">month</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Define the time period for long-term mean or the annual mean is computed&quot;</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">data_ltmean</span></div>
+    
+
+
+
+
+<div class="viewcode-block" id="compute_lterm_diff"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.analysis.compute_lterm_diff">[docs]</a><span class="k">def</span> <span class="nf">compute_lterm_diff</span><span class="p">(</span><span class="n">data_control</span><span class="p">,</span> <span class="n">data_main</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">season</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">season_calendar</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_control : TYPE: datarray</span>
+<span class="sd">        DESCRIPTION. Reference or control data</span>
+<span class="sd">    data_main : TYPE: dataarray</span>
+<span class="sd">        DESCRIPTION. : Main module run data</span>
+<span class="sd">    time : TYPE: STR, optional</span>
+<span class="sd">        DESCRIPTION. The default is &quot;annual&quot;. But can be changed to season or month</span>
+<span class="sd">    month : TYPE:INT, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. Define the specific month number to be computed or all will be eatimated </span>
+<span class="sd">    season : TYPE: STR, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. Define the specific season (eg. DJF, JJA, MAM, SON) number to be computed or all will be eatimated </span>
+<span class="sd">    season_calendar : TYPE:STR, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. Or Standard to consider the number of days in a month</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data_ltmean_diff : TYPE: datarray</span>
+<span class="sd">        DESCRIPTION. Long-tem difference</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Use compute_lterm_diff to calculate the long-term mean before the the difference</span>
+    
+    <span class="n">data_ltmean_control</span> <span class="o">=</span> <span class="n">compute_lterm_mean</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_control</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="n">month</span><span class="p">,</span> <span class="n">season</span><span class="o">=</span><span class="n">season</span><span class="p">,</span> <span class="n">season_calendar</span> <span class="o">=</span> <span class="n">season_calendar</span><span class="p">)</span>
+    <span class="n">data_ltmean_main</span> <span class="o">=</span> <span class="n">compute_lterm_mean</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_main</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="n">month</span><span class="p">,</span> <span class="n">season</span><span class="o">=</span><span class="n">season</span><span class="p">,</span> <span class="n">season_calendar</span> <span class="o">=</span> <span class="n">season_calendar</span><span class="p">)</span>
+    
+    <span class="n">data_ltmean_diff</span> <span class="o">=</span> <span class="n">data_ltmean_main</span> <span class="o">-</span> <span class="n">data_ltmean_control</span>
+    
+    <span class="k">return</span> <span class="n">data_ltmean_diff</span></div>
+    
+
+<div class="viewcode-block" id="extract_transect"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.analysis.extract_transect">[docs]</a><span class="k">def</span> <span class="nf">extract_transect</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">maxlon</span><span class="p">,</span> <span class="n">minlon</span><span class="p">,</span> <span class="n">maxlat</span><span class="p">,</span> <span class="n">minlat</span><span class="p">,</span> <span class="n">sea_land_mask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">minelev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxelev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function extract grid points base on coordinate extents or land sea masks or max, min elevations: it can be used to estimate </span>
+<span class="sd">    the statistics of a selected domain like the Alps or Andes!</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : TYPE: dataarray</span>
+<span class="sd">        DESCRIPTION: Data to extract transect from base on coordinates, elevation or land sea masks</span>
+<span class="sd">    maxlon : TYPE: float</span>
+<span class="sd">        DESCRIPTION.: Maximum longitude</span>
+<span class="sd">    minlon : TYPE: float</span>
+<span class="sd">        DESCRIPTION: Minimum longitude</span>
+<span class="sd">    maxlat : TYPE: float</span>
+<span class="sd">        DESCRIPTION:Maximum latitude</span>
+<span class="sd">    minlat : TYPE: float</span>
+<span class="sd">        DESCRIPTION: Minimum latitude</span>
+<span class="sd">    sea_land_mask : TYPE: str, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. Yes, means that the land mask will be selected and No means the sea nask points </span>
+<span class="sd">        will be selected</span>
+<span class="sd">    minelev : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. To select data points base on the minimum elevation value</span>
+<span class="sd">    maxelev : TYPE. float, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. To select data points base on the maximum elevation value</span>
+<span class="sd">    Dataset : TYPE: float, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. Dataset containing geosp and slm for masking out elevation condition and continental values</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data_extract : TYPE</span>
+<span class="sd">        DESCRIPTION.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1">#convert lon to -180 to 180</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;longitude&quot;</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s2">&quot;longitude&quot;</span><span class="p">:</span> <span class="s2">&quot;lon&quot;</span><span class="p">,</span> <span class="s2">&quot;latitude&quot;</span><span class="p">:</span><span class="s2">&quot;lat&quot;</span><span class="p">})</span>
+    
+    <span class="k">if</span> <span class="n">Dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Dataset</span><span class="p">,</span> <span class="s2">&quot;longitude&quot;</span><span class="p">):</span>
+            <span class="n">Dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s2">&quot;longitude&quot;</span><span class="p">:</span> <span class="s2">&quot;lon&quot;</span><span class="p">,</span> <span class="s2">&quot;latitude&quot;</span><span class="p">:</span><span class="s2">&quot;lat&quot;</span><span class="p">})</span> 
+        <span class="c1"># add mask arrary (sea mask and elevation is the same for the time, therefore, extrating one index is fine)</span>
+        
+        <span class="k">if</span> <span class="n">sea_land_mask</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">slm</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;slm&quot;</span><span class="p">]</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;slm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span><span class="s2">&quot;lon&quot;</span><span class="p">),</span> <span class="n">slm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">minelev</span> <span class="ow">or</span> <span class="n">maxelev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            
+            <span class="n">geosp</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;geosp&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">9.8</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;geosp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span><span class="s2">&quot;lon&quot;</span><span class="p">),</span> <span class="n">geosp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="c1">#same for all time point</span>
+    
+    
+        
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="s2">&quot;lon&quot;</span><span class="p">:</span> <span class="p">(((</span><span class="n">data</span><span class="o">.</span><span class="n">lon</span> <span class="o">+</span> <span class="mi">180</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span><span class="p">)</span> <span class="o">-</span> <span class="mi">180</span><span class="p">)})</span>
+    
+    <span class="n">lat_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">lat</span> <span class="o">&gt;=</span> <span class="n">minlat</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">lat</span> <span class="o">&lt;=</span> <span class="n">maxlat</span><span class="p">)</span>
+    <span class="n">lon_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">lon</span> <span class="o">&gt;=</span> <span class="n">minlon</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">lon</span> <span class="o">&lt;=</span> <span class="n">maxlon</span><span class="p">)</span>
+    
+    <span class="n">data_extract</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">lat_range</span> <span class="o">&amp;</span> <span class="n">lon_range</span><span class="p">),</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="c1"># Caution! Since the mask can only be removed when both the lat and lon cordinates are satisfied, some points might </span>
+    <span class="c1"># still be there UNLESS the mean is calculated with dim(&quot;lat&quot;, &quot;lon&quot;)!!!</span>
+    
+    <span class="c1"># Alternative solution implemented!</span>
+    <span class="c1"># I have replace all the false conditions with np.nan values and must be removed when converted to DataFrame</span>
+    
+    <span class="k">if</span> <span class="n">sea_land_mask</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data_extract</span><span class="p">,</span> <span class="s2">&quot;slm&quot;</span><span class="p">):</span>
+            <span class="n">data_extract</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data_extract</span><span class="p">[</span><span class="s2">&quot;slm&quot;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">,</span> <span class="n">data_extract</span><span class="p">,</span> <span class="n">data_extract</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">minelev</span> <span class="ow">and</span> <span class="n">maxelev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data_extract</span><span class="p">,</span> <span class="s2">&quot;geosp&quot;</span><span class="p">):</span>
+            <span class="n">data_extract</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">data_extract</span><span class="o">.</span><span class="n">geosp</span> <span class="o">&gt;=</span> <span class="n">minelev</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data_extract</span><span class="o">.</span><span class="n">geosp</span> <span class="o">&lt;=</span> <span class="n">maxelev</span><span class="p">),</span> <span class="n">data_extract</span><span class="p">,</span> <span class="n">data_extract</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        
+    <span class="k">elif</span> <span class="n">minelev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data_extract</span><span class="p">,</span> <span class="s2">&quot;geosp&quot;</span><span class="p">):</span>
+            <span class="n">data_extract</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data_extract</span><span class="o">.</span><span class="n">geosp</span> <span class="o">&gt;=</span> <span class="n">minelev</span><span class="p">,</span> <span class="n">data_extract</span><span class="p">,</span> <span class="n">data_extract</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        
+    <span class="k">elif</span> <span class="n">maxelev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data_extract</span><span class="p">,</span> <span class="s2">&quot;geosp&quot;</span><span class="p">):</span>
+            <span class="n">data_extract</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data_extract</span><span class="o">.</span><span class="n">geosp</span> <span class="o">&lt;=</span> <span class="n">maxelev</span><span class="p">,</span> <span class="n">data_extract</span><span class="p">,</span> <span class="n">data_extract</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+          
+    <span class="k">return</span> <span class="n">data_extract</span></div>
+    
+
+<div class="viewcode-block" id="extract_profile"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.analysis.extract_profile">[docs]</a><span class="k">def</span> <span class="nf">extract_profile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">maxlon</span><span class="p">,</span> <span class="n">minlon</span><span class="p">,</span> <span class="n">maxlat</span><span class="p">,</span> <span class="n">minlat</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">to_pandas</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sea_land_mask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">minelev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxelev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                    <span class="n">Dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : TYPE: dataarray</span>
+<span class="sd">        DESCRIPTION: Data to extract transect from base on coordinates, elevation or land sea masks</span>
+<span class="sd">    maxlon : TYPE: float</span>
+<span class="sd">        DESCRIPTION.: Maximum longitude</span>
+<span class="sd">    minlon : TYPE: float</span>
+<span class="sd">        DESCRIPTION: Minimum longitude</span>
+<span class="sd">    maxlat : TYPE: float</span>
+<span class="sd">        DESCRIPTION:Maximum latitude</span>
+<span class="sd">    minlat : TYPE: float</span>
+<span class="sd">        DESCRIPTION: Minimum latitude</span>
+<span class="sd">    sea_land_mask : TYPE: str, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. Yes, means that the land mask will be selected and No means the sea nask points </span>
+<span class="sd">        will be selected</span>
+<span class="sd">    minelev : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. To select data points base on the minimum elevation value</span>
+<span class="sd">    maxelev : TYPE. float, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. To select data points base on the maximum elevation value</span>
+<span class="sd">    Dataset : TYPE: float, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. Dataset containing geosp and slm for masking out elevation condition and continental values</span>
+
+<span class="sd">    dim : TYPE: str</span>
+<span class="sd">        DESCRIPTION. lat ot lon depending on the axis of the profile</span>
+<span class="sd">    to_pandas : TYPE:str, optional (recommended for plotting)</span>
+<span class="sd">        DESCRIPTION. The default is None. yes if you want the data to be stored in DataFrame or Pandas Series</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data_prof : TYPE: datarray or DataFrame or Pandas Series</span>
+<span class="sd">        DESCRIPTION. Data extracted along a profile (lat or lon)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># use extract transect to get the domain or points </span>
+    <span class="n">data_extract</span> <span class="o">=</span> <span class="n">extract_transect</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">maxlon</span><span class="o">=</span><span class="n">maxlon</span><span class="p">,</span> <span class="n">minlon</span><span class="o">=</span><span class="n">minlon</span><span class="p">,</span> <span class="n">maxlat</span><span class="o">=</span><span class="n">maxlat</span><span class="p">,</span> <span class="n">minlat</span><span class="o">=</span><span class="n">minlat</span><span class="p">,</span> <span class="n">sea_land_mask</span><span class="o">=</span><span class="n">sea_land_mask</span><span class="p">,</span> 
+                                    <span class="n">minelev</span><span class="o">=</span><span class="n">minelev</span><span class="p">,</span> <span class="n">maxelev</span><span class="o">=</span><span class="n">maxelev</span><span class="p">,</span> <span class="n">Dataset</span><span class="o">=</span><span class="n">Dataset</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;latitude&quot;</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing the mean across longitude&quot;</span><span class="p">)</span>
+        <span class="n">data_prof</span> <span class="o">=</span> <span class="n">data_extract</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s2">&quot;lon&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">,</span> <span class="s2">&quot;longitude&quot;</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing the mean across latitude&quot;</span><span class="p">)</span>
+        <span class="n">data_prof</span> <span class="o">=</span> <span class="n">data_extract</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s2">&quot;lat&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Define the dimension to extract the profile&quot;</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="n">to_pandas</span> <span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+        <span class="n">data_prof</span> <span class="o">=</span> <span class="n">data_prof</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+        <span class="n">data_prof</span> <span class="o">=</span> <span class="n">data_prof</span><span class="o">.</span><span class="n">T</span>
+        
+        <span class="c1"># sort values base on the dim </span>
+            
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_prof</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="n">data_prof</span> <span class="o">=</span> <span class="n">data_prof</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_prof</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="n">data_prof</span> <span class="o">=</span> <span class="n">data_prof</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="n">dim</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Check the instance of the data to be sorted&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Profile data not stored in DataFrame&quot;</span><span class="p">)</span>
+    
+            
+    <span class="k">return</span> <span class="n">data_prof</span></div>
+
+<div class="viewcode-block" id="extract_vertical_section"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.analysis.extract_vertical_section">[docs]</a><span class="k">def</span> <span class="nf">extract_vertical_section</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">maxlon</span><span class="p">,</span> <span class="n">minlon</span><span class="p">,</span> <span class="n">maxlat</span><span class="p">,</span> <span class="n">minlat</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">sea_land_mask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">minelev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxelev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                    <span class="n">Dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">season</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    
+    <span class="n">data_extract</span> <span class="o">=</span> <span class="n">extract_transect</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">maxlon</span><span class="o">=</span><span class="n">maxlon</span><span class="p">,</span> <span class="n">minlon</span><span class="o">=</span><span class="n">minlon</span><span class="p">,</span> <span class="n">maxlat</span><span class="o">=</span><span class="n">maxlat</span><span class="p">,</span> <span class="n">minlat</span><span class="o">=</span><span class="n">minlat</span><span class="p">,</span> <span class="n">sea_land_mask</span><span class="o">=</span><span class="n">sea_land_mask</span><span class="p">,</span> 
+                                    <span class="n">minelev</span><span class="o">=</span><span class="n">minelev</span><span class="p">,</span> <span class="n">maxelev</span><span class="o">=</span><span class="n">maxelev</span><span class="p">,</span> <span class="n">Dataset</span><span class="o">=</span><span class="n">Dataset</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;latitude&quot;</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing the mean across longitude&quot;</span><span class="p">)</span>
+        <span class="n">data_sect</span> <span class="o">=</span> <span class="n">data_extract</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s2">&quot;lon&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">,</span> <span class="s2">&quot;longitude&quot;</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing the mean across latitude&quot;</span><span class="p">)</span>
+        <span class="n">data_sect</span> <span class="o">=</span> <span class="n">data_extract</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s2">&quot;lat&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Define the dimension to extract the profile&quot;</span><span class="p">)</span>
+        
+    <span class="c1"># select season if required</span>
+    <span class="k">if</span> <span class="n">season</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data_sect</span> <span class="o">=</span> <span class="n">data_sect</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">season</span><span class="o">=</span><span class="n">season</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="n">month</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="n">data_sect</span> <span class="o">=</span> <span class="n">data_sect</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">month</span><span class="o">=</span><span class="n">month</span><span class="p">)</span>
+    
+    <span class="c1"># convert to pandas </span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">data_sect</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># transpose axis</span>
+    
+    <span class="c1"># sortby using the columns </span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="n">dim</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1">#df = df.sort_values(by=[&quot;lev&quot;], axis=1)</span>
+    
+    <span class="k">return</span> <span class="n">df</span></div>
+        
+    
+    
+    
+    
+    
+<div class="viewcode-block" id="linregression"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.analysis.linregression">[docs]</a><span class="k">def</span> <span class="nf">linregression</span><span class="p">(</span><span class="n">data_x</span><span class="p">,</span> <span class="n">data_y</span><span class="p">,</span> <span class="n">season</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_yhat</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_x : TYPE: datarray</span>
+<span class="sd">        DESCRIPTION. The x-axis data for fitting </span>
+<span class="sd">    data_y : TYPE: datarray</span>
+<span class="sd">        DESCRIPTION. The y-axis data for fitting </span>
+<span class="sd">    season : TYPE, optional (of If specific season the data is required for fitting)</span>
+<span class="sd">        DESCRIPTION. The default is None. Date must be in seasonal coordinates for time</span>
+<span class="sd">    month : TYPE, optional (of If specific month the data is required for fitting)</span>
+<span class="sd">        DESCRIPTION. The default is None. Date must be in monthly coordinates for time</span>
+<span class="sd">    return_yhat : TYPE, optional or if DataFrame containing all the fitting data and predictions are required</span>
+<span class="sd">        DESCRIPTION. The default is None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    TYPE: Scipy.stats output or plus DataFrame</span>
+<span class="sd">        DESCRIPTION.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">season</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data_x</span> <span class="o">=</span> <span class="n">data_x</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">season</span> <span class="o">=</span> <span class="n">season</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">data_y</span> <span class="o">=</span> <span class="n">data_y</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">season</span> <span class="o">=</span> <span class="n">season</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        
+    <span class="k">elif</span> <span class="n">month</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="n">data_x</span> <span class="o">=</span> <span class="n">data_x</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">month</span> <span class="o">=</span> <span class="n">month</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">data_y</span> <span class="o">=</span> <span class="n">data_y</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">month</span> <span class="o">=</span> <span class="n">month</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data_x</span> <span class="o">=</span> <span class="n">data_x</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">data_y</span> <span class="o">=</span> <span class="n">data_y</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    
+    <span class="c1"># remove nan values before fitting</span>
+    
+    <span class="n">data_x</span> <span class="o">=</span> <span class="n">data_x</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data_x</span><span class="p">)]</span>
+    <span class="n">data_y</span> <span class="o">=</span> <span class="n">data_y</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data_y</span><span class="p">)]</span>
+    
+    <span class="n">regression_stats</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">linregress</span><span class="p">(</span><span class="n">data_x</span><span class="p">,</span> <span class="n">data_y</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;y = </span><span class="si">{:.5f}</span><span class="s2">x [‰/100m]+ </span><span class="si">{:.2f}</span><span class="s2">, r²=</span><span class="si">{:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">regression_stats</span><span class="o">.</span><span class="n">slope</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span> <span class="n">regression_stats</span><span class="o">.</span><span class="n">intercept</span><span class="p">,</span> 
+                                                           <span class="n">regression_stats</span><span class="o">.</span><span class="n">rvalue</span><span class="o">*-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">return_yhat</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        
+        <span class="n">yhat</span> <span class="o">=</span> <span class="n">regression_stats</span><span class="o">.</span><span class="n">slope</span> <span class="o">*</span> <span class="n">data_x</span>  <span class="o">+</span> <span class="n">regression_stats</span><span class="o">.</span><span class="n">intercept</span>
+        
+        <span class="n">df_x_y_yhat</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;yhat&quot;</span><span class="p">])</span>
+        
+        <span class="n">df_x_y_yhat</span><span class="p">[</span><span class="s2">&quot;yhat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yhat</span>
+        <span class="n">df_x_y_yhat</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_x</span>
+        <span class="n">df_x_y_yhat</span><span class="p">[</span><span class="s2">&quot;Y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_y</span>
+            
+        <span class="k">return</span> <span class="n">regression_stats</span><span class="p">,</span> <span class="n">df_x_y_yhat</span>
+            
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Only regression stats are return&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">regression_stats</span></div>
+
+
+<div class="viewcode-block" id="EOF_analysis"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.analysis.EOF_analysis">[docs]</a><span class="k">def</span> <span class="nf">EOF_analysis</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">maxlon</span><span class="p">,</span> <span class="n">minlon</span><span class="p">,</span> <span class="n">maxlat</span><span class="p">,</span> <span class="n">minlat</span><span class="p">,</span> <span class="n">return_variance</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_pcs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">season</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">standardized</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_coslat_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">neofs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pcscaling</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">neigs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">npcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    # the projectField function can be used to generate corresponding set of pseudo-PCs using different data field</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : TYPE: datarray</span>
+<span class="sd">        DESCRIPTION. Dataset required for EOF analysis (eg. slp or geopoth500)</span>
+<span class="sd">    maxlon : TYPE: float</span>
+<span class="sd">        DESCRIPTION.: Maximum longitude</span>
+<span class="sd">    minlon : TYPE: float</span>
+<span class="sd">        DESCRIPTION: Minimum longitude</span>
+<span class="sd">    maxlat : TYPE: float</span>
+<span class="sd">        DESCRIPTION:Maximum latitude</span>
+<span class="sd">    minlat : TYPE: float</span>
+<span class="sd">        DESCRIPTION: Minimum latitude</span>
+<span class="sd">    return_variance : TYPE: Boolean, optional</span>
+<span class="sd">        DESCRIPTION. The default is False. If estimated varainces of the eofs are required as ouput</span>
+<span class="sd">    return_pcs : TYPE: Boolean, optional</span>
+<span class="sd">        DESCRIPTION. The default is False. If the extracted pca series are required as ouput</span>
+<span class="sd">    season : TYPE:STR, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. Name of the season eg. DFJ, JJA</span>
+<span class="sd">    standardized : TYPE: Boolean, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. True to standardized anomalies before EOF analysis </span>
+<span class="sd">    apply_coslat_weights : TYPE: Boolean, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. True to apply coslat area weights before the EOF analysis</span>
+<span class="sd">    neofs : TYPE: Float, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. The no. of PCA to perform on the dataset </span>
+<span class="sd">    pcscaling : TYPE: Int, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. 0 : Unsclaed PCS, 1: Scaled to Unit variance, 2: PCs are </span>
+<span class="sd">        multiplied by the square-root of their eigen values </span>
+<span class="sd">    neigs : TYPE: Int, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. the no. of eigenvalues to return fraction variance</span>
+<span class="sd">    npcs : TYPE:Int, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. The no. of pcs retrieve </span>
+<span class="sd">    lev : TYPE: float, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. Vertical level if the dataset is on hybrid levels (eg. 500 for geopoth)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    TYPE</span>
+<span class="sd">        DESCRIPTION. eofs: covariance matrix between the npcs time series and eofs input time series</span>
+<span class="sd">        pcs: Principal Component time series</span>
+<span class="sd">        var_frac: variance fraction of the estimated eigen values </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">lev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">lev</span><span class="o">=</span><span class="n">lev</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">season</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;time.season&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">season</span><span class="p">]</span>
+    <span class="c1"># extracting transects for the analysis</span>
+    <span class="c1"># converting lon to -180 t0 180 </span>
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="s2">&quot;lon&quot;</span><span class="p">:</span> <span class="p">(((</span><span class="n">data</span><span class="o">.</span><span class="n">lon</span> <span class="o">+</span> <span class="mi">180</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span><span class="p">)</span> <span class="o">-</span> <span class="mi">180</span><span class="p">)})</span>
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">data</span><span class="o">.</span><span class="n">lat</span> <span class="o">&gt;=</span> <span class="n">minlat</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">lat</span> <span class="o">&lt;=</span> <span class="n">maxlat</span><span class="p">),</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">data</span><span class="o">.</span><span class="n">lon</span> <span class="o">&gt;=</span> <span class="n">minlon</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">lon</span> <span class="o">&lt;=</span> <span class="n">maxlon</span><span class="p">),</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="c1"># calculation of anomalies</span>
+    
+    <span class="n">data_mean</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+    
+    <span class="n">data_anomalies</span> <span class="o">=</span> <span class="n">data</span> <span class="o">-</span> <span class="n">data_mean</span>
+    
+    <span class="c1"># standardized data</span>
+    <span class="k">if</span> <span class="n">standardized</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">data_anomalies_std</span> <span class="o">=</span> <span class="n">data_anomalies</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+        
+        <span class="n">data_anomalies</span> <span class="o">/=</span> <span class="n">data_anomalies_std</span>
+        
+    <span class="c1"># apply weights if equal area using cosalt</span>
+    
+    <span class="k">if</span> <span class="n">apply_coslat_weights</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">wtgs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">data_anomalies</span><span class="o">.</span><span class="n">lat</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">)))</span>
+        
+        <span class="n">data_anomalies</span> <span class="o">=</span> <span class="n">data_anomalies</span> <span class="o">*</span> <span class="n">wtgs</span>
+        
+    <span class="c1"># applying the EOF function (ref: http://doi.org/10.5334/jors.122)</span>
+    
+    <span class="k">if</span> <span class="kc">True</span> <span class="ow">in</span> <span class="n">data_anomalies</span><span class="o">.</span><span class="n">isnull</span><span class="p">():</span>
+        <span class="n">data_anomalies</span> <span class="o">=</span> <span class="n">data_anomalies</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+        
+    <span class="n">Solver</span> <span class="o">=</span> <span class="n">Eof</span><span class="p">(</span><span class="n">data_anomalies</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">parameter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="p">[</span><span class="n">neofs</span><span class="p">,</span> <span class="n">pcscaling</span><span class="p">]):</span>
+        <span class="n">eofs_cov</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">eofsAsCovariance</span><span class="p">(</span><span class="n">neofs</span><span class="o">=</span><span class="n">neofs</span><span class="p">,</span> <span class="n">pcscaling</span><span class="o">=</span><span class="n">pcscaling</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">eofs_cov</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">eofsAsCovariance</span><span class="p">()</span>
+    <span class="c1">#sort with the right lon positoin --&gt; becuase of changing the lon to -+180</span>
+    
+    <span class="n">eofs_cov</span> <span class="o">=</span> <span class="n">eofs_cov</span><span class="o">.</span><span class="n">sortby</span><span class="p">(</span><span class="n">eofs_cov</span><span class="o">.</span><span class="n">lon</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">return_variance</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">neigs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_frac</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">varianceFraction</span><span class="p">(</span><span class="n">neigs</span> <span class="o">=</span> <span class="n">neigs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">var_frac</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">varianceFraction</span><span class="p">()</span>
+            
+        <span class="n">var_frac</span> <span class="o">=</span> <span class="n">var_frac</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+            
+            
+    <span class="k">if</span> <span class="n">return_pcs</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">parameter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="p">[</span><span class="n">npcs</span><span class="p">,</span> <span class="n">pcscaling</span><span class="p">]):</span>
+            <span class="n">pcs</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">pcs</span><span class="p">(</span><span class="n">pcscaling</span> <span class="o">=</span> <span class="n">pcscaling</span><span class="p">,</span> <span class="n">npcs</span> <span class="o">=</span> <span class="n">npcs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pcs</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">pcs</span><span class="p">()</span>
+        <span class="n">pcs</span> <span class="o">=</span> <span class="n">pcs</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">return_pcs</span> <span class="o">==</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">return_variance</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">eofs_cov</span><span class="p">,</span> <span class="n">pcs</span><span class="p">,</span> <span class="n">var_frac</span>
+    <span class="k">elif</span> <span class="n">return_pcs</span> <span class="o">==</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">return_variance</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">eofs_cov</span><span class="p">,</span> <span class="n">pcs</span>
+    <span class="k">elif</span> <span class="n">return_pcs</span> <span class="o">==</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">return_variance</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">eofs_cov</span><span class="p">,</span> <span class="n">var_frac</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">eofs_cov</span></div>
+
+
+
+<div class="viewcode-block" id="correlation"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.analysis.correlation">[docs]</a><span class="k">def</span> <span class="nf">correlation</span><span class="p">(</span><span class="n">dataA</span><span class="p">,</span> <span class="n">dataB</span><span class="p">,</span> <span class="n">max_pvalue</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">use_spearmanr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_pearsonr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                <span class="n">return_pvalue</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">maxlon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minlon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxlat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minlat</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataA : TYPE: Dataarray (3D)</span>
+<span class="sd">        DESCRIPTION. Comparison data 1</span>
+<span class="sd">    dataB : TYPE: Dataaray (3D)</span>
+<span class="sd">        DESCRIPTION. Comparison data 2</span>
+<span class="sd">    max_pvalue : TYPE: Float, optional</span>
+<span class="sd">        DESCRIPTION. The default is 0.1. The confidence interval for correlation estimation eg. 0.05 for 95%</span>
+<span class="sd">    use_spearmanr : TYPE: Boolean, optional</span>
+<span class="sd">        DESCRIPTION. The default is False. True to use spearman correlation</span>
+<span class="sd">    use_pearsonr : TYPE: Boolean, optional</span>
+<span class="sd">        DESCRIPTION. The default is False. True to use pearson correlation </span>
+<span class="sd">    return_pvalue : TYPE: Boolean, optional</span>
+<span class="sd">        DESCRIPTION. The default is False. True to retrieve pvalue as an ouput variable</span>
+<span class="sd">    maxlon : TYPE: float</span>
+<span class="sd">        DESCRIPTION.: Maximum longitude</span>
+<span class="sd">    minlon : TYPE: float</span>
+<span class="sd">        DESCRIPTION: Minimum longitude</span>
+<span class="sd">    maxlat : TYPE: float</span>
+<span class="sd">        DESCRIPTION:Maximum latitude</span>
+<span class="sd">    minlat : TYPE: float</span>
+<span class="sd">        DESCRIPTION: Minimum latitude</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        DESCRIPTION. If the required stats module for correlation analysis is not defined</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    stats_result : TYPE: datarray</span>
+<span class="sd">        DESCRIPTION. Contians correlation map distribution and corresponding pvalues</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#extract specific domain for correlation</span>
+    
+    <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="p">[</span><span class="n">maxlon</span><span class="p">,</span> <span class="n">minlon</span><span class="p">,</span> <span class="n">maxlat</span><span class="p">,</span> <span class="n">minlat</span><span class="p">]):</span>
+        <span class="n">dataA</span> <span class="o">=</span> <span class="n">dataA</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dataA</span><span class="o">.</span><span class="n">lat</span> <span class="o">&gt;=</span> <span class="n">minlat</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataA</span><span class="o">.</span><span class="n">lat</span> <span class="o">&lt;=</span> <span class="n">maxlat</span><span class="p">),</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dataA</span><span class="o">=</span> <span class="n">dataA</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dataA</span><span class="o">.</span><span class="n">lon</span> <span class="o">&gt;=</span> <span class="n">minlon</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataA</span><span class="o">.</span><span class="n">lon</span> <span class="o">&lt;=</span> <span class="n">maxlon</span><span class="p">),</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="n">dataB</span> <span class="o">=</span> <span class="n">dataB</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dataB</span><span class="o">.</span><span class="n">lat</span> <span class="o">&gt;=</span> <span class="n">minlat</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataB</span><span class="o">.</span><span class="n">lat</span> <span class="o">&lt;=</span> <span class="n">maxlat</span><span class="p">),</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dataB</span> <span class="o">=</span> <span class="n">dataB</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dataB</span><span class="o">.</span><span class="n">lon</span> <span class="o">&gt;=</span> <span class="n">minlon</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataB</span><span class="o">.</span><span class="n">lon</span> <span class="o">&lt;=</span> <span class="n">maxlon</span><span class="p">),</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+    <span class="c1"># define empty matrix to store r</span>
+    
+    <span class="n">corr_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dataA</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dataA</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    
+    <span class="n">pvalue_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dataA</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dataA</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    
+    <span class="c1">#looping over logitude and latitude </span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dataA</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>  <span class="c1"># lat</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dataB</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span> <span class="c1">#lon</span>
+            <span class="k">if</span> <span class="n">use_spearmanr</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+                <span class="n">r</span><span class="p">,</span><span class="n">p</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">spearmanr</span><span class="p">(</span><span class="n">dataA</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lon</span><span class="o">=</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">dataB</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lon</span><span class="o">=</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+                
+            <span class="k">elif</span> <span class="n">use_pearsonr</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">r</span><span class="p">,</span><span class="n">p</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">pearsonr</span><span class="p">(</span><span class="n">dataA</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lon</span><span class="o">=</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">dataB</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lon</span><span class="o">=</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Stats module not available, use_spearman or pearsonr&quot;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">p</span> <span class="o">&gt;=</span> <span class="n">max_pvalue</span><span class="p">:</span>
+                <span class="n">corr_data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">corr_data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+            
+            <span class="n">pvalue_data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
+            
+    <span class="c1">#creating dataset to store values </span>
+    
+    <span class="n">stats_result</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;lon&quot;</span><span class="p">:</span> <span class="p">([</span><span class="s2">&quot;lon&quot;</span><span class="p">],</span> <span class="n">dataA</span><span class="o">.</span><span class="n">lon</span><span class="p">),</span> <span class="s2">&quot;lat&quot;</span><span class="p">:</span> <span class="p">([</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">dataA</span><span class="o">.</span><span class="n">lat</span><span class="p">)})</span>
+    
+    <span class="n">stats_result</span><span class="p">[</span><span class="s2">&quot;correlation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">([</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">],</span> <span class="n">corr_data</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">return_pvalue</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">stats_result</span><span class="p">[</span><span class="s2">&quot;pvalue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">([</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">],</span> <span class="n">pvalue_data</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">stats_result</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">stats_result</span></div>
+                
+        
+
+<div class="viewcode-block" id="student_t_test_btn_datasets"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.analysis.student_t_test_btn_datasets">[docs]</a><span class="k">def</span> <span class="nf">student_t_test_btn_datasets</span><span class="p">(</span><span class="n">dataA</span><span class="p">,</span> <span class="n">dataB</span><span class="p">,</span> <span class="n">max_pvalue</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">return_pvalue</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">maxlon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                                <span class="n">minlon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxlat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minlat</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">   dataA : TYPE: Dataarray (3D)</span>
+<span class="sd">        DESCRIPTION. Comparison data 1</span>
+<span class="sd">    dataB : TYPE: Dataaray (3D)</span>
+<span class="sd">        DESCRIPTION. Comparison data 2</span>
+<span class="sd">    max_pvalue : TYPE: Float, optional</span>
+<span class="sd">        DESCRIPTION. The default is 0.1. The confidence interval for correlation estimation eg. 0.05 for 95%</span>
+<span class="sd">    return_pvalue : TYPE: Boolean, optional</span>
+<span class="sd">        DESCRIPTION. The default is False. True to retrieve pvalue as an ouput variable</span>
+<span class="sd">    maxlon : TYPE: float</span>
+<span class="sd">        DESCRIPTION.: Maximum longitude</span>
+<span class="sd">    minlon : TYPE: float</span>
+<span class="sd">        DESCRIPTION: Minimum longitude</span>
+<span class="sd">    maxlat : TYPE: float</span>
+<span class="sd">        DESCRIPTION:Maximum latitude</span>
+<span class="sd">    minlat : TYPE: float</span>
+<span class="sd">        DESCRIPTION: Minimum latitude</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    stats_result : TYPE</span>
+<span class="sd">        DESCRIPTION.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="p">[</span><span class="n">maxlon</span><span class="p">,</span> <span class="n">minlon</span><span class="p">,</span> <span class="n">maxlat</span><span class="p">,</span> <span class="n">minlat</span><span class="p">]):</span>
+        
+        <span class="n">dataA</span> <span class="o">=</span> <span class="n">dataA</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="s2">&quot;lon&quot;</span><span class="p">:</span> <span class="p">(((</span><span class="n">dataA</span><span class="o">.</span><span class="n">lon</span> <span class="o">+</span> <span class="mi">180</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span><span class="p">)</span> <span class="o">-</span> <span class="mi">180</span><span class="p">)})</span>
+        <span class="n">dataB</span> <span class="o">=</span> <span class="n">dataB</span><span class="o">.</span><span class="n">assign_coords</span><span class="p">({</span><span class="s2">&quot;lon&quot;</span><span class="p">:</span> <span class="p">(((</span><span class="n">dataB</span><span class="o">.</span><span class="n">lon</span> <span class="o">+</span> <span class="mi">180</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span><span class="p">)</span> <span class="o">-</span> <span class="mi">180</span><span class="p">)})</span>
+        
+        
+        <span class="n">dataA</span> <span class="o">=</span> <span class="n">dataA</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dataA</span><span class="o">.</span><span class="n">lat</span> <span class="o">&gt;=</span> <span class="n">minlat</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataA</span><span class="o">.</span><span class="n">lat</span> <span class="o">&lt;=</span> <span class="n">maxlat</span><span class="p">),</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dataA</span><span class="o">=</span> <span class="n">dataA</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dataA</span><span class="o">.</span><span class="n">lon</span> <span class="o">&gt;=</span> <span class="n">minlon</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataA</span><span class="o">.</span><span class="n">lon</span> <span class="o">&lt;=</span> <span class="n">maxlon</span><span class="p">),</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="n">dataB</span> <span class="o">=</span> <span class="n">dataB</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dataB</span><span class="o">.</span><span class="n">lat</span> <span class="o">&gt;=</span> <span class="n">minlat</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataB</span><span class="o">.</span><span class="n">lat</span> <span class="o">&lt;=</span> <span class="n">maxlat</span><span class="p">),</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dataB</span> <span class="o">=</span> <span class="n">dataB</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dataB</span><span class="o">.</span><span class="n">lon</span> <span class="o">&gt;=</span> <span class="n">minlon</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataB</span><span class="o">.</span><span class="n">lon</span> <span class="o">&lt;=</span> <span class="n">maxlon</span><span class="p">),</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+    <span class="c1"># define empty matrix to store r</span>
+    
+    <span class="n">stats_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dataA</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dataA</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    
+    <span class="n">pvalue_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dataA</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dataA</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    
+    <span class="c1">#looping over logitude and latitude </span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dataA</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>  <span class="c1"># lat</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dataB</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span> <span class="c1">#lon</span>
+            <span class="n">s</span><span class="p">,</span><span class="n">p</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">ttest_ind</span><span class="p">(</span><span class="n">dataA</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lon</span><span class="o">=</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">dataB</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lon</span><span class="o">=</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+            
+            <span class="k">if</span> <span class="n">p</span> <span class="o">&gt;=</span> <span class="n">max_pvalue</span><span class="p">:</span>
+                <span class="n">stats_data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">stats_data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+            
+            <span class="n">pvalue_data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
+            
+    <span class="c1">#creating dataset to store values </span>
+    
+    <span class="n">stats_result</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">coords</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;lon&quot;</span><span class="p">:</span> <span class="p">([</span><span class="s2">&quot;lon&quot;</span><span class="p">],</span> <span class="n">dataA</span><span class="o">.</span><span class="n">lon</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="s2">&quot;lat&quot;</span><span class="p">:</span> <span class="p">([</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">dataA</span><span class="o">.</span><span class="n">lat</span><span class="o">.</span><span class="n">data</span><span class="p">)})</span>
+    
+    <span class="n">stats_result</span><span class="p">[</span><span class="s2">&quot;t_statistic&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">([</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">],</span> <span class="n">stats_data</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">return_pvalue</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">stats_result</span><span class="p">[</span><span class="s2">&quot;pvalue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">([</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">],</span> <span class="n">pvalue_data</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">stats_result</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">stats_result</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Daniel Boateng.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

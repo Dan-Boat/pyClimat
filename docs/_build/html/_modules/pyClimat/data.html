@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyClimat.data &mdash; pyClimat 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> pyClimat
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pyClimat.html">pyClimat package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pyClimat</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>pyClimat.data</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyClimat.data</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Wed Jul 28 16:55:45 2021</span>
+
+<span class="sd">@author: Daniel Boateng</span>
+
+<span class="sd">Reading data routine for Climat (required user declarations of paths to datasets eg. Reanalysis</span>
+<span class="sd">                                 , ECHAM, DWD stations and Gtopo files etc)</span>
+<span class="sd">                                 </span>
+<span class="sd">Note: All User specifications must be declared in the control script which will import all the functions defined here                                </span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Importing modules</span>
+
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="read_ECHAM_processed"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.data.read_ECHAM_processed">[docs]</a><span class="k">def</span> <span class="nf">read_ECHAM_processed</span><span class="p">(</span><span class="n">main_path</span><span class="p">,</span> <span class="n">exp_name</span><span class="p">,</span> <span class="n">years</span><span class="o">=</span><span class="s2">&quot;1003_1017&quot;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s2">&quot;1m&quot;</span><span class="p">,</span> <span class="n">add_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">read_wiso</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads output processed from ECHAM</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    main_path : TYPE: STR</span>
+<span class="sd">        DESCRIPTION. directory to the main path for all module output (eg. esd02--&gt;ESD, or local path)</span>
+<span class="sd">    exp_name : TYPE : STR</span>
+<span class="sd">        DESCRIPTION. Name of experiment output (eg. a003_hpc-bw_e5w2.3_t159_PI_Alps_east_300_t159l31.6h)</span>
+<span class="sd">    years : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is &quot;1003_1017&quot;. or range of year you have processed</span>
+<span class="sd">    period : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is &quot;1m&quot;. or 1d, 1y if implemted here!</span>
+<span class="sd">    add_name : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. or eg. _msl (for particular variable)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data : TYPE: Dataset</span>
+<span class="sd">        DESCRIPTION. Dataset of echam ouput will some or all variables </span>
+<span class="sd">    data_wiso : TYPE: Dataset</span>
+<span class="sd">        DESCRIPTION. Dataset of echam wiso ouput will some or all variables </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">module_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">main_path</span><span class="p">,</span> <span class="n">exp_name</span><span class="p">)</span>
+    <span class="n">processed_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">module_path</span><span class="p">,</span> <span class="s2">&quot;output_processed&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">period</span> <span class="o">==</span> <span class="s2">&quot;1m&quot;</span><span class="p">:</span>
+        
+        <span class="n">processed_mmeans</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_path</span><span class="p">,</span> <span class="s2">&quot;MONTHLY_MEANS&quot;</span><span class="p">)</span>
+        <span class="n">processed_mwisomeans</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_path</span><span class="p">,</span> <span class="s2">&quot;MONTHLY_MEANS_WISO&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">add_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_mmeans</span><span class="p">,</span> <span class="n">years</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">period</span> <span class="o">+</span> <span class="s2">&quot;_mlterm.nc&quot;</span><span class="p">)</span>
+            <span class="n">data_wiso_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_mwisomeans</span><span class="p">,</span> <span class="n">years</span> <span class="o">+</span> <span class="s2">&quot;_wiso_&quot;</span> <span class="o">+</span> <span class="n">period</span> <span class="o">+</span> <span class="s2">&quot;_mlterm.nc&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_mmeans</span><span class="p">,</span> <span class="n">years</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">period</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">add_name</span> <span class="o">+</span><span class="s2">&quot;_mlterm.nc&quot;</span><span class="p">)</span>
+            <span class="n">data_wiso_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_mwisomeans</span><span class="p">,</span> <span class="n">years</span> <span class="o">+</span> <span class="s2">&quot;_wiso_&quot;</span> <span class="o">+</span> <span class="n">period</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">add_name</span> <span class="o">+</span> <span class="s2">&quot;_mlterm.nc&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">period</span> <span class="o">==</span> <span class="s2">&quot;1a&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Other periods are yet to be implemented or reading annual long-term means&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">add_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_path</span><span class="p">,</span> <span class="n">years</span> <span class="o">+</span> <span class="s2">&quot;_lterm.nc&quot;</span><span class="p">)</span>
+            <span class="n">data_wiso_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_path</span><span class="p">,</span> <span class="n">years</span> <span class="o">+</span> <span class="s2">&quot;_wiso_&quot;</span> <span class="o">+</span> <span class="s2">&quot;lterm.nc&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_path</span><span class="p">,</span> <span class="n">years</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">add_name</span> <span class="o">+</span><span class="s2">&quot;_lterm.nc&quot;</span><span class="p">)</span>
+            <span class="n">data_wiso_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_path</span><span class="p">,</span> <span class="n">years</span> <span class="o">+</span> <span class="s2">&quot;_wiso_&quot;</span> <span class="o">+</span> <span class="n">add_name</span> <span class="o">+</span> <span class="s2">&quot;_lterm.nc&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;define the period of the processed output&quot;</span><span class="p">)</span>
+        
+        
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">decode_cf</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_cftime</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">read_wiso</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">data</span>
+    <span class="k">else</span><span class="p">:</span>
+        
+         <span class="n">data_wiso</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">data_wiso_path</span><span class="p">,</span> <span class="n">decode_cf</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_cftime</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+         <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_wiso</span></div>
+
+<div class="viewcode-block" id="read_ECHAM_input"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.data.read_ECHAM_input">[docs]</a><span class="k">def</span> <span class="nf">read_ECHAM_input</span><span class="p">(</span><span class="n">main_path</span><span class="p">,</span> <span class="n">exp_name</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">read_var</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">varname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    main_path : TYPE: str</span>
+<span class="sd">        DESCRIPTION. Path containing all module outputs </span>
+<span class="sd">    exp_name : TYPE:str</span>
+<span class="sd">        DESCRIPTION. Name of the experiment </span>
+<span class="sd">    varname : TYPE: str</span>
+<span class="sd">        DESCRIPTION. Name of the input file (jan_surf file)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data : TYPE: dataset</span>
+<span class="sd">        DESCRIPTION.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path_to_exp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">main_path</span><span class="p">,</span> <span class="n">exp_name</span><span class="p">)</span>
+    <span class="n">path_data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_to_exp</span><span class="p">,</span> <span class="s2">&quot;input&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">path_data</span><span class="p">,</span> <span class="n">decode_cf</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_cftime</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">read_var</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">varname</span> <span class="o">==</span> <span class="s2">&quot;elev&quot;</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;GEOSP&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">9.8</span>  <span class="c1"># convert to m**2/s**2 --&gt; m</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="n">data</span></div>
+    
+<div class="viewcode-block" id="read_ERA_processed"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.data.read_ERA_processed">[docs]</a><span class="k">def</span> <span class="nf">read_ERA_processed</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">varname</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : TYPE: STR</span>
+<span class="sd">        DESCRIPTION. path of the ERA dataset</span>
+<span class="sd">    varname : TYPE:STR</span>
+<span class="sd">        DESCRIPTION. Variable name for ERA (eg. t2m for temperature, tp:precipitation)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data : TYPE: datarray</span>
+<span class="sd">        DESCRIPTION.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="n">data</span></div>
+    
+
+
+<div class="viewcode-block" id="read_Gtopo"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.data.read_Gtopo">[docs]</a><span class="k">def</span> <span class="nf">read_Gtopo</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">tile_name</span><span class="p">,</span> <span class="n">extract_var</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : TYPE: str</span>
+<span class="sd">        DESCRIPTION. directrory to all the tile files (or path to tiles)</span>
+<span class="sd">    tile_name : TYPE: str</span>
+<span class="sd">        DESCRIPTION. Which tile to use for modification (check the image in the original files folder)</span>
+<span class="sd">    extract_var : TYPE, optional : or yes</span>
+<span class="sd">        DESCRIPTION. The default is None or To extract only the values to datarray</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    TYPE: Dataset or dataarray</span>
+<span class="sd">        DESCRIPTION. It reads a particular tile file</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">tile_name</span><span class="p">))</span>
+    
+    <span class="k">if</span> <span class="n">extract_var</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">extract_var</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;yes&quot;</span><span class="p">,</span> <span class="s2">&quot;Yes&quot;</span><span class="p">,</span> <span class="s2">&quot;YES&quot;</span><span class="p">]:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dataset</span></div>
+    
+<div class="viewcode-block" id="read_GNIP_data"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.data.read_GNIP_data">[docs]</a><span class="k">def</span> <span class="nf">read_GNIP_data</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : TYPE: str</span>
+<span class="sd">        DESCRIPTION. The directory holding all the data</span>
+<span class="sd">    filename : TYPE: str</span>
+<span class="sd">        DESCRIPTION. The name of the file</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    df : TYPE: DataFrame</span>
+<span class="sd">        DESCRIPTION. Data containing lat, lon and d18op</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">filename</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">unpack</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">,</span> <span class="s2">&quot;d18op&quot;</span><span class="p">])</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">df</span> <span class="p">[</span><span class="s2">&quot;d18op&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="n">df</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Daniel Boateng.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

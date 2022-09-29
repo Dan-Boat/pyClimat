@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyClimat.plot_utils &mdash; pyClimat 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> pyClimat
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pyClimat.html">pyClimat package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pyClimat</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>pyClimat.plot_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyClimat.plot_utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jul 29 18:50:11 2021</span>
+
+<span class="sd">@author: dboateng</span>
+<span class="sd">This module contains all the utilities used in the Climat_plots</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Import modules</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="k">as</span> <span class="nn">mpatches</span>
+<span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="k">as</span> <span class="nn">colors</span>
+<span class="kn">import</span> <span class="nn">matplotlib.path</span> <span class="k">as</span> <span class="nn">mpath</span>
+<span class="kn">from</span> <span class="nn">cycler</span> <span class="kn">import</span> <span class="n">cycler</span>
+<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
+<span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="k">as</span> <span class="nn">cfeature</span>
+<span class="kn">from</span> <span class="nn">cartopy.mpl.ticker</span> <span class="kn">import</span> <span class="p">(</span><span class="n">LongitudeFormatter</span><span class="p">,</span> <span class="n">LatitudeFormatter</span><span class="p">,</span>
+                                <span class="n">LatitudeLocator</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">cartopy.util</span> <span class="kn">import</span> <span class="n">add_cyclic_point</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">rc</span>
+<span class="kn">import</span> <span class="nn">matplotlib.colors</span>
+
+
+<span class="c1"># defining image sizes and colors </span>
+<span class="c1"># A4 paper size: 210 mm X 297 mm</span>
+
+<span class="n">cm</span> <span class="o">=</span> <span class="mf">0.3937</span>   <span class="c1"># 1 cm in inch for plot size</span>
+<span class="n">pt</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">72.27</span>  <span class="c1"># pt in inch from latex geometry package</span>
+<span class="n">textwidth</span> <span class="o">=</span> <span class="mi">345</span><span class="o">*</span><span class="n">pt</span>
+<span class="n">big_width</span> <span class="o">=</span> <span class="n">textwidth</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="mi">3</span><span class="o">*</span><span class="n">cm</span>
+
+<span class="c1"># colors</span>
+<span class="n">orange</span> <span class="o">=</span> <span class="s1">&#39;orangered&#39;</span>
+<span class="n">lightblue</span> <span class="o">=</span> <span class="s1">&#39;teal&#39;</span>
+<span class="n">brown</span> <span class="o">=</span> <span class="s1">&#39;sienna&#39;</span>
+<span class="n">red</span> <span class="o">=</span> <span class="s1">&#39;#a41a36&#39;</span>
+<span class="n">blue</span> <span class="o">=</span> <span class="s1">&#39;#006c9e&#39;</span>
+<span class="n">green</span> <span class="o">=</span> <span class="s1">&#39;#55a868&#39;</span>
+<span class="n">purple</span> <span class="o">=</span> <span class="s1">&#39;#8172b2&#39;</span>
+<span class="n">lightbrown</span> <span class="o">=</span> <span class="s1">&#39;#ccb974&#39;</span>
+<span class="n">pink</span> <span class="o">=</span> <span class="s1">&#39;fuchsia&#39;</span>
+<span class="n">lightgreen</span> <span class="o">=</span> <span class="s1">&#39;lightgreen&#39;</span>
+<span class="n">skyblue</span> <span class="o">=</span> <span class="s2">&quot;skyblue&quot;</span>
+<span class="n">tomato</span> <span class="o">=</span> <span class="s2">&quot;tomato&quot;</span>
+<span class="n">gold</span> <span class="o">=</span> <span class="s2">&quot;gold&quot;</span>
+<span class="n">magenta</span> <span class="o">=</span> <span class="s2">&quot;magenta&quot;</span>
+<span class="n">black</span> <span class="o">=</span> <span class="s2">&quot;black&quot;</span>
+<span class="n">grey</span> <span class="o">=</span> <span class="s2">&quot;grey&quot;</span>
+<span class="n">golden</span> <span class="o">=</span> <span class="s2">&quot;darkgoldenrod&quot;</span>
+<span class="n">cyan</span> <span class="o">=</span> <span class="s2">&quot;cyan&quot;</span>
+<span class="n">olive</span> <span class="o">=</span> <span class="s2">&quot;olive&quot;</span>
+
+<span class="c1">#divergence colors </span>
+<span class="n">RdBu_r</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">RdBu_r</span>
+<span class="n">RdBu</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">RdBu</span>
+<span class="n">Blues</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Blues</span>
+<span class="n">Spectral_r</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Spectral_r</span>
+<span class="n">terrain</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">terrain</span>
+<span class="n">viridis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span>
+<span class="n">BwR_r</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">bwr_r</span>
+<span class="n">BwR</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">bwr</span>
+<span class="n">Seismic</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">seismic</span>
+<span class="n">Reds</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Reds</span>
+<span class="n">Greys</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Greys</span>
+<span class="n">RdGy</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">RdGy</span>
+<span class="n">PiYG</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">PiYG_r</span>
+<span class="n">PuOr</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">PuOr</span>
+<span class="n">BrBG</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">BrBG</span>
+<span class="n">RdYlBu</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">RdYlBu</span>
+<span class="n">RdYlBu_r</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">RdYlBu_r</span>
+<span class="n">RdYlGn</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">RdYlGn</span>
+<span class="n">Spectral</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Spectral</span>
+<span class="n">Spectral_r</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Spectral_r</span>
+<span class="n">YlGnBu</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">YlGnBu</span>
+<span class="n">winter</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">winter</span>
+<span class="n">PuBu</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">PuBu</span>
+<span class="n">PuBu_r</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">PuBu_r</span>
+
+<span class="c1"># defining plot styles (which contains fonts and backgrouds)</span>
+<span class="c1"># plt.style.use (can be seaborn, dark_background, fivethirtyeight, bmh</span>
+
+
+
+<div class="viewcode-block" id="apply_style"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.plot_utils.apply_style">[docs]</a><span class="k">def</span> <span class="nf">apply_style</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fontsize : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is 10.</span>
+<span class="sd">    style : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is &quot;bmh&quot;. [&quot;seaborn&quot;, &quot;fivethirtyeight&quot;,]</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">style</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>  
+        
+    <span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;family&#39;</span><span class="p">:</span><span class="s1">&#39;sans-serif&#39;</span><span class="p">,</span><span class="s1">&#39;sans-serif&#39;</span><span class="p">:[</span><span class="s1">&#39;Helvetica&#39;</span><span class="p">]})</span>
+    <span class="n">mpl</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">mpl</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;xtick&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
+    <span class="n">mpl</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;ytick&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
+    <span class="n">mpl</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;legend&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
+    <span class="n">mpl</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">)</span>
+    <span class="n">mpl</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">linewidth</span><span class="p">)</span>
+    <span class="n">mpl</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s2">&quot;font&quot;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">)</span></div>
+
+<span class="c1"># defining function for selecting background domain for cartopy</span>
+
+<div class="viewcode-block" id="plot_background"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.plot_utils.plot_background">[docs]</a><span class="k">def</span> <span class="nf">plot_background</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_AlbersEqualArea</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">left_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">bottom_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This funtion defines the plotting domain and also specifies the background. It requires </span>
+<span class="sd">    the plot handle from xarray.plot.imshow and other optional arguments </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    -------------</span>
+
+<span class="sd">    p: TYPE: plot handle </span>
+<span class="sd">    DESCRIPTION: the plot handle after plotting with xarray.plot.imshow</span>
+<span class="sd">    </span>
+<span class="sd">    domian = TYPE:str </span>
+<span class="sd">    DESCRIPTION: defines the domain size, eg. &quot;Europe&quot;, &quot;Asia&quot;, &quot;Africa&quot;</span>
+<span class="sd">                  &quot;South America&quot;, &quot;Alaska&quot;, &quot;Tibet Plateau&quot; or &quot;Himalaya&quot;, &quot;Eurosia&quot;,</span>
+<span class="sd">                  &quot;New Zealand&quot;, default: global</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_global</span><span class="p">()</span>                    <span class="c1"># setting global axis </span>
+    <span class="n">p</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">coastlines</span><span class="p">(</span><span class="n">resolution</span> <span class="o">=</span> <span class="s2">&quot;50m&quot;</span><span class="p">)</span>  <span class="c1"># add coastlines outlines to the current axis</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="n">cfeature</span><span class="o">.</span><span class="n">BORDERS</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">)</span> <span class="c1">#adding country boarder lines</span>
+    
+    <span class="c1">#setting domain size</span>
+    <span class="k">if</span> <span class="n">domain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="n">domain</span> <span class="o">==</span> <span class="s2">&quot;Europe&quot;</span><span class="p">:</span>   <span class="c1"># Europe</span>
+            <span class="n">minLon</span> <span class="o">=</span> <span class="o">-</span><span class="mi">15</span>
+            <span class="n">maxLon</span> <span class="o">=</span> <span class="mi">40</span>
+            <span class="n">minLat</span> <span class="o">=</span> <span class="mi">35</span>
+            <span class="n">maxLat</span> <span class="o">=</span> <span class="mi">65</span>
+        <span class="k">elif</span> <span class="n">domain</span> <span class="o">==</span> <span class="s2">&quot;South America&quot;</span><span class="p">:</span>   <span class="c1"># South America</span>
+            <span class="n">minLon</span> <span class="o">=</span> <span class="o">-</span><span class="mi">83</span>
+            <span class="n">maxLon</span> <span class="o">=</span> <span class="o">-</span><span class="mi">32</span>
+            <span class="n">minLat</span> <span class="o">=</span> <span class="o">-</span><span class="mi">25</span>
+            <span class="n">maxLat</span> <span class="o">=</span> <span class="mi">15</span>
+        <span class="k">elif</span> <span class="n">domain</span> <span class="o">==</span> <span class="s2">&quot;Tibetan Plateau&quot;</span> <span class="ow">or</span> <span class="n">domain</span> <span class="o">==</span> <span class="s2">&quot;Himalayas&quot;</span><span class="p">:</span>  <span class="c1">#Tibet Plateau/Himalayas</span>
+            <span class="n">minLon</span> <span class="o">=</span> <span class="mi">40</span>
+            <span class="n">maxLon</span> <span class="o">=</span> <span class="mi">120</span>
+            <span class="n">minLat</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">maxLat</span> <span class="o">=</span> <span class="mi">60</span>
+        <span class="k">elif</span> <span class="n">domain</span> <span class="o">==</span> <span class="s2">&quot;Eurasia&quot;</span><span class="p">:</span>        <span class="c1"># Eurasia</span>
+            <span class="n">minLon</span> <span class="o">=</span> <span class="o">-</span><span class="mi">18</span>
+            <span class="n">maxLon</span> <span class="o">=</span> <span class="mi">164</span>
+            <span class="n">minLat</span> <span class="o">=</span> <span class="mi">20</span>
+            <span class="n">maxLat</span> <span class="o">=</span> <span class="mi">77</span>
+        <span class="k">elif</span> <span class="n">domain</span> <span class="o">==</span> <span class="s2">&quot;Cascades&quot;</span><span class="p">:</span>  <span class="c1"># Cascades</span>
+            <span class="n">minLon</span> <span class="o">=</span> <span class="o">-</span><span class="mi">129</span>
+            <span class="n">maxLon</span> <span class="o">=</span> <span class="o">-</span><span class="mi">120</span>
+            <span class="n">minLat</span> <span class="o">=</span> <span class="mi">45</span>
+            <span class="n">maxLat</span> <span class="o">=</span> <span class="mi">52</span>
+        <span class="k">elif</span> <span class="n">domain</span> <span class="o">==</span> <span class="s2">&quot;Alaska&quot;</span><span class="p">:</span>  <span class="c1"># Alaska</span>
+            <span class="n">minLon</span> <span class="o">=</span> <span class="o">-</span><span class="mi">165</span>
+            <span class="n">maxLon</span> <span class="o">=</span> <span class="o">-</span><span class="mi">125</span>
+            <span class="n">minLat</span> <span class="o">=</span> <span class="mi">52</span>
+            <span class="n">maxLat</span> <span class="o">=</span> <span class="mi">68</span>
+        <span class="k">elif</span> <span class="n">domain</span> <span class="o">==</span> <span class="s2">&quot;Africa&quot;</span><span class="p">:</span>  <span class="c1"># Africa</span>
+            <span class="n">minLon</span> <span class="o">=</span> <span class="o">-</span><span class="mi">30</span>
+            <span class="n">maxLon</span> <span class="o">=</span> <span class="mi">55</span>
+            <span class="n">minLat</span> <span class="o">=</span> <span class="o">-</span><span class="mi">35</span>
+            <span class="n">maxLat</span> <span class="o">=</span> <span class="mi">40</span>
+        <span class="k">elif</span> <span class="n">domain</span> <span class="o">==</span> <span class="s2">&quot;New Zealand&quot;</span><span class="p">:</span>  <span class="c1"># New Zealand </span>
+            <span class="n">minLon</span> <span class="o">=</span> <span class="mi">165</span>
+            <span class="n">maxLon</span> <span class="o">=</span> <span class="mi">180</span>
+            <span class="n">minLat</span> <span class="o">=</span> <span class="o">-</span><span class="mi">47</span>
+            <span class="n">maxLat</span> <span class="o">=</span> <span class="o">-</span><span class="mi">34</span>
+        <span class="k">elif</span> <span class="n">domain</span> <span class="o">==</span> <span class="s2">&quot;Olympic Mnts&quot;</span><span class="p">:</span>  <span class="c1"># Olympic Mnt&#39;s</span>
+            <span class="n">minLon</span> <span class="o">=</span> <span class="o">-</span><span class="mi">126</span>
+            <span class="n">maxLon</span> <span class="o">=</span> <span class="o">-</span><span class="mi">118</span>
+            <span class="n">minLat</span> <span class="o">=</span> <span class="mi">43</span>
+            <span class="n">maxLat</span> <span class="o">=</span> <span class="mi">52</span>
+        <span class="k">elif</span> <span class="n">domain</span> <span class="o">==</span> <span class="s2">&quot;NH&quot;</span><span class="p">:</span> <span class="c1"># Northen Hemisphere</span>
+            <span class="n">minLon</span> <span class="o">=</span> <span class="o">-</span><span class="mi">80</span>
+            <span class="n">maxLon</span> <span class="o">=</span> <span class="mi">60</span>
+            <span class="n">minLat</span> <span class="o">=</span> <span class="mi">20</span>
+            <span class="n">maxLat</span> <span class="o">=</span> <span class="mi">80</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: invalid geographical domain passed in options&quot;</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_extent</span><span class="p">([</span><span class="n">minLon</span><span class="p">,</span> <span class="n">maxLon</span><span class="p">,</span> <span class="n">minLat</span><span class="p">,</span> <span class="n">maxLat</span><span class="p">],</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">domain</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="n">p</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_extent</span><span class="p">([</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">())</span>
+        
+    <span class="k">if</span> <span class="n">use_AlbersEqualArea</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="p">[(</span><span class="n">lon</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">lon</span> <span class="ow">in</span>  <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">vertices</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">lon</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span> <span class="k">for</span> <span class="n">lon</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="o">-</span><span class="mi">101</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="n">boundary</span><span class="o">=</span> <span class="n">mpath</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_boundary</span><span class="p">(</span><span class="n">boundary</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">())</span>
+        <span class="c1">#ax.set_global()                    # setting global axi</span>
+        <span class="n">gl</span><span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">gridlines</span><span class="p">(</span><span class="n">crs</span> <span class="o">=</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">(),</span> <span class="n">draw_labels</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                     <span class="n">edgecolor</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    
+    <span class="k">else</span><span class="p">:</span>
+        
+        <span class="c1"># adding gridlines    </span>
+        <span class="n">gl</span><span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">gridlines</span><span class="p">(</span><span class="n">crs</span> <span class="o">=</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">(),</span> <span class="n">draw_labels</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                     <span class="n">edgecolor</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    
+    <span class="n">gl</span><span class="o">.</span><span class="n">top_labels</span> <span class="o">=</span> <span class="kc">False</span>                  <span class="c1"># labesl at top</span>
+    <span class="n">gl</span><span class="o">.</span><span class="n">right_labels</span> <span class="o">=</span> <span class="kc">False</span>
+    
+    <span class="k">if</span> <span class="n">left_labels</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">left_labels</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">left_labels</span> <span class="o">=</span> <span class="kc">False</span>
+    
+    <span class="k">if</span> <span class="n">bottom_labels</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">bottom_labels</span> <span class="o">=</span><span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">bottom_labels</span> <span class="o">=</span> <span class="kc">False</span>
+        
+    <span class="n">gl</span><span class="o">.</span><span class="n">xformatter</span> <span class="o">=</span> <span class="n">LongitudeFormatter</span><span class="p">()</span>     <span class="c1"># axis formatter</span>
+    <span class="n">gl</span><span class="o">.</span><span class="n">yformatter</span> <span class="o">=</span> <span class="n">LatitudeFormatter</span><span class="p">()</span>
+    <span class="n">gl</span><span class="o">.</span><span class="n">xlabel_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fontsize&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;fontweight&quot;</span><span class="p">:</span> <span class="s2">&quot;semibold&quot;</span><span class="p">}</span>   <span class="c1">#axis style </span>
+    <span class="n">gl</span><span class="o">.</span><span class="n">ylabel_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fontsize&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;fontweight&quot;</span><span class="p">:</span> <span class="s2">&quot;semibold&quot;</span><span class="p">}</span></div>
+
+<span class="c1"># for divergence plots</span>
+<div class="viewcode-block" id="MidpointNormalize"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.plot_utils.MidpointNormalize">[docs]</a><span class="k">class</span> <span class="nc">MidpointNormalize</span><span class="p">(</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    At the moment its a bug to use divergence colormap and set the colorbar range midpoint </span>
+<span class="sd">    to zero if both vmax and vmin has different magnitude. This might be possible in </span>
+<span class="sd">    future development in matplotlib through colors.offsetNorm(). This class was original developed </span>
+<span class="sd">    by Joe Kingto and modified by Daniel Boateng. It sets the divergence color bar to a scale of 0-1 by dividing the midpoint to 0.5</span>
+<span class="sd">    Use this class at your own risk since its non-standard practice for quantitative data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">midpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">midpoint</span> <span class="o">=</span> <span class="n">midpoint</span>
+        <span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">clip</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># I&#39;m ignoring masked values and all kinds of edge cases to make a</span>
+        <span class="c1"># simple example...</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">vmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">midpoint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>      </div>
+
+
+<div class="viewcode-block" id="FixedPointNormalized"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.plot_utils.FixedPointNormalized">[docs]</a><span class="k">class</span> <span class="nc">FixedPointNormalized</span><span class="p">(</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sealevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color_val</span><span class="o">=</span><span class="mf">0.21875</span><span class="p">,</span>
+                 <span class="n">clip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sealevel</span> <span class="o">=</span> <span class="n">sealevel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color_val</span> <span class="o">=</span> <span class="n">color_val</span>
+        <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">clip</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        
+        <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">vmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sealevel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_val</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span></div>
+
+
+
+<span class="n">colors_ocean</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">terrain</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.17</span><span class="p">,</span> <span class="mi">56</span><span class="p">))</span>   
+<span class="n">colors_land</span> <span class="o">=</span>  <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">terrain</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+<span class="n">colors_combined</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">colors_ocean</span><span class="p">,</span> <span class="n">colors_land</span><span class="p">))</span>
+
+<span class="n">cut_terrain_map</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">LinearSegmentedColormap</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="s1">&#39;cut_terrain&#39;</span><span class="p">,</span> 
+                                                                      <span class="n">colors_combined</span><span class="p">)</span>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Daniel Boateng.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

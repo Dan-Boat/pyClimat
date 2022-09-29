@@ -7,18 +7,17 @@ README = (HERE / "README.md").read_text()
 
 setup(
       name = "pyClimat",
-      version = "0.1.0",
+      version = "0.0.1",
       description= "Python package for climate model output analysis and visualization",
       long_description = README,
-      long_description_content_type = "test/markdown",
+      long_description_content_type = "text/markdown",
       keywords = "climate analysis, climate data visualization, eof, Cartopy, Xarray",
       url="https://github.com/Dan-Boat/PyClimat",
       author="Daniel Boateng",
       author_email= "dannboateng@gmail.com",
       license="MIT",
       packages=["pyClimat"],
-      install_requires=["mpi4py",
-                        "numpy", 
+      install_requires=["numpy", 
                         "pandas",
                         "xarray", 
                         "statsmodels",
@@ -31,7 +30,7 @@ setup(
                         ],
 
       classifiers = [
-        'Development Status :: 1 -',
+        'Development Status :: 1 - Planning',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',  
         'Operating System :: POSIX :: Linux',        

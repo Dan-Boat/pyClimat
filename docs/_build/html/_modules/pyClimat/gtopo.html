@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyClimat.gtopo &mdash; pyClimat 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> pyClimat
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pyClimat.html">pyClimat package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pyClimat</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>pyClimat.gtopo</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyClimat.gtopo</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Mon Aug  2 19:27:52 2021</span>
+
+<span class="sd">@author: dboateng</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">#importing modules </span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">math</span> 
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span> 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
+<span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="k">as</span> <span class="nn">cfeature</span>
+<span class="kn">from</span> <span class="nn">cartopy.mpl.gridliner</span> <span class="kn">import</span> <span class="n">LATITUDE_FORMATTER</span><span class="p">,</span> <span class="n">LONGITUDE_FORMATTER</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">read_Gtopo</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">data</span> <span class="kn">import</span> <span class="n">read_Gtopo</span>
+
+
+<div class="viewcode-block" id="extract_alps"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.gtopo.extract_alps">[docs]</a><span class="k">def</span> <span class="nf">extract_alps</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">tile_name</span><span class="p">,</span> <span class="n">minelev</span><span class="p">,</span> <span class="n">extract_var</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">east_alps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">west_alps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">west_buffer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">central_buffer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">east_buffer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : TYPE: str</span>
+<span class="sd">        DESCRIPTION. The directrory to all the tile files </span>
+<span class="sd">    tile_name : TYPE: str</span>
+<span class="sd">        DESCRIPTION. : hich tile to use for modification (check the image in the original files folder)</span>
+<span class="sd">    minelev : TYPE: float</span>
+<span class="sd">        DESCRIPTION. Minimum elevation to extaract the Alps</span>
+<span class="sd">    extract_var : TYPE, optional or yes</span>
+<span class="sd">        DESCRIPTION. The default is None or To extract only the values to datarray</span>
+<span class="sd">    east_alps : TYPE, optional or yes</span>
+<span class="sd">        DESCRIPTION. The default is None. to mask out the eastern part</span>
+<span class="sd">    west_alps : TYPE, optional or yes </span>
+<span class="sd">        DESCRIPTION. The default is None. Or mask ou the west part of the Alps </span>
+<span class="sd">    west_buffer : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. Or yes to apply buffer gradient </span>
+<span class="sd">    central_buffer : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. or yes to apply buffer gradient at the central Alps</span>
+<span class="sd">    east_buffer : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. or to apply buffer gradient at the eastern side after modification</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    TYPE</span>
+<span class="sd">        DESCRIPTION.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># read dataset and var</span>
+    <span class="n">Dataset</span> <span class="o">=</span> <span class="n">read_Gtopo</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">tile_name</span><span class="o">=</span><span class="n">tile_name</span><span class="p">,</span> <span class="n">extract_var</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> 
+    
+    <span class="k">if</span> <span class="n">east_alps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">east_alps</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Yes&quot;</span><span class="p">,</span> <span class="s2">&quot;yes&quot;</span><span class="p">,</span> <span class="s2">&quot;yep&quot;</span><span class="p">]:</span>
+            <span class="n">maxlat</span><span class="p">,</span> <span class="n">minlat</span><span class="p">,</span> <span class="n">maxlon</span><span class="p">,</span> <span class="n">minlon</span> <span class="o">=</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">12</span>
+            <span class="c1">#convert lon to -180 to 180</span>
+            <span class="c1">#data_z = data_z.assign_coords({&quot;lon&quot;: (((data_z.lon + 180) % 360) - 180)})</span>
+    
+            <span class="n">lat_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lat</span> <span class="o">&gt;=</span> <span class="n">minlat</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lat</span> <span class="o">&lt;=</span> <span class="n">maxlat</span><span class="p">)</span>
+            <span class="n">lon_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lon</span> <span class="o">&gt;=</span> <span class="n">minlon</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lon</span> <span class="o">&lt;=</span> <span class="n">maxlon</span><span class="p">)</span>
+            <span class="n">data_extract</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">Dataset</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]))</span> <span class="o">*</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">lat_range</span> <span class="o">&amp;</span> <span class="n">lon_range</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">z</span> <span class="o">&gt;=</span> <span class="n">minelev</span><span class="p">))</span>
+            <span class="c1"># add as mask and extract values</span>
+            
+            <span class="n">Dataset</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;east_alps_mask&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">),</span> <span class="n">data_extract</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">Dataset</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;define east_alps as yes&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">west_alps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">west_alps</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Yes&quot;</span><span class="p">,</span> <span class="s2">&quot;yes&quot;</span><span class="p">,</span> <span class="s2">&quot;yep&quot;</span><span class="p">]:</span>
+            <span class="n">maxlat</span><span class="p">,</span> <span class="n">minlat</span><span class="p">,</span> <span class="n">maxlon</span><span class="p">,</span> <span class="n">minlon</span> <span class="o">=</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span>
+            <span class="c1">#convert lon to -180 to 180</span>
+            <span class="c1">#data_z = data_z.assign_coords({&quot;lon&quot;: (((data_z.lon + 180) % 360) - 180)})</span>
+    
+            <span class="n">lat_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lat</span> <span class="o">&gt;=</span> <span class="n">minlat</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lat</span> <span class="o">&lt;=</span> <span class="n">maxlat</span><span class="p">)</span>
+            <span class="n">lon_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lon</span> <span class="o">&gt;=</span> <span class="n">minlon</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lon</span> <span class="o">&lt;=</span> <span class="n">maxlon</span><span class="p">)</span>
+            <span class="n">data_extract</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">Dataset</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]))</span> <span class="o">*</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">lat_range</span> <span class="o">&amp;</span> <span class="n">lon_range</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">z</span> <span class="o">&gt;=</span> <span class="n">minelev</span><span class="p">))</span>
+            <span class="c1"># add as mask and extract values</span>
+            
+            <span class="n">Dataset</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;west_alps_mask&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">),</span> <span class="n">data_extract</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">Dataset</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;define the west_alps as yes&quot;</span><span class="p">)</span>
+            
+    <span class="k">elif</span> <span class="n">east_buffer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">east_buffer</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Yes&quot;</span><span class="p">,</span> <span class="s2">&quot;yes&quot;</span><span class="p">,</span> <span class="s2">&quot;yep&quot;</span><span class="p">]:</span>
+            <span class="n">maxlat</span><span class="p">,</span> <span class="n">minlat</span><span class="p">,</span> <span class="n">maxlon</span><span class="p">,</span> <span class="n">minlon</span> <span class="o">=</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">15.5</span>
+            <span class="c1">#convert lon to -180 to 180</span>
+            <span class="c1">#data_z = data_z.assign_coords({&quot;lon&quot;: (((data_z.lon + 180) % 360) - 180)})</span>
+    
+            <span class="n">lat_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lat</span> <span class="o">&gt;=</span> <span class="n">minlat</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lat</span> <span class="o">&lt;=</span> <span class="n">maxlat</span><span class="p">)</span>
+            <span class="n">lon_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lon</span> <span class="o">&gt;=</span> <span class="n">minlon</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lon</span> <span class="o">&lt;=</span> <span class="n">maxlon</span><span class="p">)</span>
+            <span class="n">data_extract</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">Dataset</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]))</span> <span class="o">*</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">lat_range</span> <span class="o">&amp;</span> <span class="n">lon_range</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">z</span> <span class="o">&gt;=</span> <span class="n">minelev</span><span class="p">))</span>
+            <span class="c1"># add as mask and extract values</span>
+            
+            <span class="n">Dataset</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;east_buffer_mask&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">),</span> <span class="n">data_extract</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">Dataset</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kc">None</span>
+            
+    <span class="k">elif</span> <span class="n">west_buffer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">west_buffer</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Yes&quot;</span><span class="p">,</span> <span class="s2">&quot;yes&quot;</span><span class="p">,</span> <span class="s2">&quot;yep&quot;</span><span class="p">]:</span>
+            <span class="n">maxlat</span><span class="p">,</span> <span class="n">minlat</span><span class="p">,</span> <span class="n">maxlon</span><span class="p">,</span> <span class="n">minlon</span> <span class="o">=</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">,</span> <span class="mi">2</span>
+            <span class="c1">#convert lon to -180 to 180</span>
+            <span class="c1">#data_z = data_z.assign_coords({&quot;lon&quot;: (((data_z.lon + 180) % 360) - 180)})</span>
+    
+            <span class="n">lat_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lat</span> <span class="o">&gt;=</span> <span class="n">minlat</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lat</span> <span class="o">&lt;=</span> <span class="n">maxlat</span><span class="p">)</span>
+            <span class="n">lon_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lon</span> <span class="o">&gt;=</span> <span class="n">minlon</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lon</span> <span class="o">&lt;=</span> <span class="n">maxlon</span><span class="p">)</span>
+            <span class="n">data_extract</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">Dataset</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]))</span> <span class="o">*</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">lat_range</span> <span class="o">&amp;</span> <span class="n">lon_range</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">z</span> <span class="o">&gt;=</span> <span class="n">minelev</span><span class="p">))</span>
+            <span class="c1"># add as mask and extract values</span>
+            
+            <span class="n">Dataset</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;west_buffer_mask&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">),</span> <span class="n">data_extract</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">Dataset</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kc">None</span>
+            
+    <span class="k">elif</span> <span class="n">central_buffer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">west_buffer</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Yes&quot;</span><span class="p">,</span> <span class="s2">&quot;yes&quot;</span><span class="p">,</span> <span class="s2">&quot;yep&quot;</span><span class="p">]:</span>
+            <span class="n">maxlat</span><span class="p">,</span> <span class="n">minlat</span><span class="p">,</span> <span class="n">maxlon</span><span class="p">,</span> <span class="n">minlon</span> <span class="o">=</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mf">12.5</span><span class="p">,</span> <span class="mf">9.5</span>
+            <span class="c1">#convert lon to -180 to 180</span>
+            <span class="c1">#data_z = data_z.assign_coords({&quot;lon&quot;: (((data_z.lon + 180) % 360) - 180)})</span>
+    
+            <span class="n">lat_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lat</span> <span class="o">&gt;=</span> <span class="n">minlat</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lat</span> <span class="o">&lt;=</span> <span class="n">maxlat</span><span class="p">)</span>
+            <span class="n">lon_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lon</span> <span class="o">&gt;=</span> <span class="n">minlon</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lon</span> <span class="o">&lt;=</span> <span class="n">maxlon</span><span class="p">)</span>
+            <span class="n">data_extract</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">Dataset</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]))</span> <span class="o">*</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">lat_range</span> <span class="o">&amp;</span> <span class="n">lon_range</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">z</span> <span class="o">&gt;=</span> <span class="n">minelev</span><span class="p">))</span>
+            <span class="c1"># add as mask and extract values</span>
+            
+            <span class="n">Dataset</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;central_buffer_mask&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">),</span> <span class="n">data_extract</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">Dataset</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">maxlat</span><span class="p">,</span> <span class="n">minlat</span><span class="p">,</span> <span class="n">maxlon</span><span class="p">,</span> <span class="n">minlon</span> <span class="o">=</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">2</span>
+        <span class="c1">#convert lon to -180 to 180</span>
+        <span class="c1">#data_z = data_z.assign_coords({&quot;lon&quot;: (((data_z.lon + 180) % 360) - 180)})</span>
+    
+        <span class="n">lat_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lat</span> <span class="o">&gt;=</span> <span class="n">minlat</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lat</span> <span class="o">&lt;=</span> <span class="n">maxlat</span><span class="p">)</span>
+        <span class="n">lon_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lon</span> <span class="o">&gt;=</span> <span class="n">minlon</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">lon</span> <span class="o">&lt;=</span> <span class="n">maxlon</span><span class="p">)</span>
+        <span class="n">data_extract</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">Dataset</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]))</span> <span class="o">*</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">lat_range</span> <span class="o">&amp;</span> <span class="n">lon_range</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">z</span> <span class="o">&gt;=</span> <span class="n">minelev</span><span class="p">))</span>
+        <span class="c1"># add as mask and extract values</span>
+            
+        <span class="n">Dataset</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;alps_mask&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">),</span> <span class="n">data_extract</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">Dataset</span></div>
+   
+
+<div class="viewcode-block" id="modify_Gtopo"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.gtopo.modify_Gtopo">[docs]</a><span class="k">def</span> <span class="nf">modify_Gtopo</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">part_of_alps</span><span class="p">,</span> <span class="n">path_to_store</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">tile_name</span><span class="p">,</span> <span class="n">minelev</span><span class="p">,</span> <span class="n">extract_var</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">east_alps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">west_alps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">west_buffer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">central_buffer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">east_buffer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    factor : TYPE: float</span>
+<span class="sd">        DESCRIPTION. The factor to multiply for changing the original topography</span>
+<span class="sd">    part_of_alps : TYPE: str</span>
+<span class="sd">        DESCRIPTION. Eg. full or whole, East_alps, West_alps </span>
+<span class="sd">    path_to_store : TYPE:str</span>
+<span class="sd">        DESCRIPTION. The directory to save the output</span>
+<span class="sd">    path : TYPE: str</span>
+<span class="sd">        DESCRIPTION. The directory to load the original paths</span>
+<span class="sd">   tile_name : TYPE: str</span>
+<span class="sd">        DESCRIPTION. : hich tile to use for modification (check the image in the original files folder)</span>
+<span class="sd">    minelev : TYPE: float</span>
+<span class="sd">        DESCRIPTION. Minimum elevation to extaract the Alps</span>
+<span class="sd">    extract_var : TYPE, optional or yes</span>
+<span class="sd">        DESCRIPTION. The default is None or To extract only the values to datarray</span>
+<span class="sd">    east_alps : TYPE, optional or yes</span>
+<span class="sd">        DESCRIPTION. The default is None. to mask out the eastern part</span>
+<span class="sd">    west_alps : TYPE, optional or yes </span>
+<span class="sd">        DESCRIPTION. The default is None. Or mask ou the west part of the Alps </span>
+<span class="sd">    west_buffer : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. Or yes to apply buffer gradient </span>
+<span class="sd">    central_buffer : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. or yes to apply buffer gradient at the central Alps</span>
+<span class="sd">    east_buffer : TYPE, optional</span>
+<span class="sd">        DESCRIPTION. The default is None. or to apply buffer gradient at the eastern side after modification</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Dataset : TYPE: Dataset</span>
+<span class="sd">        DESCRIPTION. Returns Dataset with similar headers like the original file from Gtopo</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">part_of_alps</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;full&quot;</span><span class="p">,</span> <span class="s2">&quot;whole&quot;</span><span class="p">]:</span>
+        <span class="n">Dataset</span> <span class="o">=</span> <span class="n">extract_alps</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">tile_name</span><span class="o">=</span><span class="n">tile_name</span><span class="p">,</span> <span class="n">minelev</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">factor</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;z_modified&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;alps_mask&quot;</span><span class="p">])</span><span class="o">==</span><span class="kc">False</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;z_modified&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;alps_mask&quot;</span><span class="p">])</span><span class="o">==</span><span class="kc">False</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">factor</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">])</span>
+        
+        <span class="c1">#drop the original data and masks</span>
+        <span class="n">Dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">drop_vars</span><span class="p">([</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;alps_mask&quot;</span><span class="p">])</span>
+        
+        <span class="c1">#rename z_modified to z because of topo scripts (ncl) and add headers, attributes like original data</span>
+        <span class="n">Dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s2">&quot;z_modified&quot;</span><span class="p">:</span><span class="s2">&quot;z&quot;</span><span class="p">})</span>
+        <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;long_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span>
+        <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;actual_range&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Dataset</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">()])</span>
+        <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;long_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;longitude&quot;</span>
+        <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;actual_range&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">20.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">])</span>
+        <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;degrees_east&quot;</span>
+        <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;long_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;latitude&quot;</span>
+        <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;actual_range&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">40.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">])</span>
+        <span class="n">Dataset</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;degrees_north&quot;</span>
+        <span class="n">Dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span> <span class="o">=</span> <span class="s2">&quot;float32&quot;</span><span class="p">,</span> <span class="n">casting</span><span class="o">=</span> <span class="s2">&quot;same_kind&quot;</span><span class="p">)</span>
+        
+        <span class="c1">#saving to path (using netcdf3_classic because of old version of ncl scripts use for upscaling into T159)</span>
+        <span class="n">Dataset</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_to_store</span><span class="p">,</span> <span class="s2">&quot;Alps_modified_&quot;</span><span class="o">+</span> <span class="n">part_of_alps</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">),</span> <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;NETCDF3_CLASSIC&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">Dataset</span>
+    <span class="k">elif</span> <span class="n">part_of_alps</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;East_alps&quot;</span><span class="p">,</span> <span class="s2">&quot;east_alps&quot;</span><span class="p">,</span> <span class="s2">&quot;East_Alps&quot;</span><span class="p">]:</span>
+        <span class="n">Dataset</span> <span class="o">=</span> <span class="n">extract_alps</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">tile_name</span><span class="o">=</span><span class="n">tile_name</span><span class="p">,</span> <span class="n">minelev</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">east_alps</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Not yet implemented&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">part_of_alps</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;West_alps&quot;</span><span class="p">,</span> <span class="s2">&quot;west_alps&quot;</span><span class="p">,</span> <span class="s2">&quot;West_Alps&quot;</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No yet implemented&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="kc">None</span> </div>
+            
+<div class="viewcode-block" id="visualise_topo"><a class="viewcode-back" href="../../pyClimat.html#pyClimat.gtopo.visualise_topo">[docs]</a><span class="k">def</span> <span class="nf">visualise_topo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">path_to_store</span><span class="p">,</span> <span class="n">name_of_plot</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The function to visualise the modified topo file </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : TYPE: Dataset</span>
+<span class="sd">        DESCRIPTION. The Dataset containing the modified topography</span>
+<span class="sd">    path_to_store : TYPE: str</span>
+<span class="sd">        DESCRIPTION. The Dataset to store the figure</span>
+<span class="sd">    name_of_plot : TYPE:str</span>
+<span class="sd">        DESCRIPTION. The name of the file</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">projection</span> <span class="o">=</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">()</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span> <span class="n">subplot_kw</span><span class="o">=</span> <span class="p">{</span><span class="s2">&quot;projection&quot;</span><span class="p">:</span><span class="n">projection</span><span class="p">})</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">ax</span> <span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">terrain</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">transform</span> <span class="o">=</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">(),</span> 
+                                      <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cbar_kwargs</span><span class="o">=</span> <span class="p">{</span><span class="s2">&quot;drawedges&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;vertical&quot;</span><span class="p">,</span> <span class="s2">&quot;shrink&quot;</span><span class="p">:</span> <span class="mf">0.40</span><span class="p">},</span>
+                                      <span class="n">extend</span><span class="o">=</span> <span class="s2">&quot;neither&quot;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Elevation&quot;</span> <span class="o">+</span> <span class="s2">&quot; [m]&quot;</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>  
+    <span class="n">p</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_global</span><span class="p">()</span>                    <span class="c1"># setting global axis </span>
+    <span class="n">p</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">coastlines</span><span class="p">(</span><span class="n">resolution</span> <span class="o">=</span> <span class="s2">&quot;50m&quot;</span><span class="p">)</span>  <span class="c1"># add coastlines outlines to the current axis</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="n">cfeature</span><span class="o">.</span><span class="n">BORDERS</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_extent</span><span class="p">([</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">65</span><span class="p">],</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">())</span>
+    <span class="n">gl</span><span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">gridlines</span><span class="p">(</span><span class="n">crs</span> <span class="o">=</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">(),</span> <span class="n">draw_labels</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                          <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="s2">&quot;--&quot;</span><span class="p">)</span>
+        
+    <span class="n">gl</span><span class="o">.</span><span class="n">top_labels</span> <span class="o">=</span> <span class="kc">True</span>                  <span class="c1"># labesl at top</span>
+    <span class="n">gl</span><span class="o">.</span><span class="n">right_labels</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">gl</span><span class="o">.</span><span class="n">xformatter</span> <span class="o">=</span> <span class="n">LONGITUDE_FORMATTER</span>     <span class="c1"># axis formatter</span>
+    <span class="n">gl</span><span class="o">.</span><span class="n">yformatter</span> <span class="o">=</span> <span class="n">LATITUDE_FORMATTER</span>
+    <span class="n">gl</span><span class="o">.</span><span class="n">xlabel_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="s2">&quot;bold&quot;</span><span class="p">}</span>   <span class="c1">#axis style </span>
+    <span class="n">gl</span><span class="o">.</span><span class="n">ylabel_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="s2">&quot;bold&quot;</span><span class="p">}</span>
+    
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_to_store</span><span class="p">,</span> <span class="n">name_of_plot</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;tiff&quot;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span></div>
+    
+        
+    
+
+<span class="c1"># #### control script ####</span>
+<span class="c1"># path = &quot;/home/dboateng/Gtopo30/001_original_nc/&quot;</span>
+<span class="c1"># path_to_store = &quot;/home/dboateng/Gtopo30/Modified_topo/&quot;</span>
+<span class="c1"># tile_name = &quot;W020N90.nc&quot;</span>
+
+<span class="c1"># data = extract_alps(path=path, tile_name=tile_name, minelev=800, east_alps=None, west_alps=None)</span>
+
+<span class="c1"># data_modi = modify_Gtopo(factor=0, part_of_alps=&quot;full&quot;, path_to_store=path_to_store, path=path, tile_name=tile_name, minelev=800, extract_var=None, east_alps=None, west_alps=None, west_buffer=None, central_buffer=None,</span>
+<span class="c1">#                  east_buffer=None)</span>
+
+<span class="c1"># visualise_topo(data_modi, path_to_store,&quot;Alps_0_full.tiff&quot;)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Daniel Boateng.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

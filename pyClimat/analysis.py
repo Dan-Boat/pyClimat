@@ -31,7 +31,28 @@ except:
 
 def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None, lev_units=None, lev=None):
     """
+    This function extracts some defined variables from a netCDF file. Moreover, if the variable require calculation 
+    or unit conversion, the user speficication can be pass to such task. For example, echam out put the differrent 
+    component of precipitation (convective, large scale, etc). Therefore extraction of total precipitation would require
+    the calculation of the total precipitation. Example of the defined variables: 
+
+    * "temp2" --  near surface temperature
+    * "prec" -- total precipitation 
+    * "d18op" -- O^18 isotopic composition in precipitation 
+    * "d18ov" -- O^18 isotopic composition in vapour
+    * "relhum" -- relative humidity
+    * "elev"  -- topography or elevation
+    "slm" -- mean sea level pressure
+    * "evap" -- evaporation
+    * "u, v, omega" -- zonal, meridoinal, and vertical velocity
     
+    and others 
+
+    example
+    
+    data = xr.open_dataset(path_to_data)
+    temp = extract_var(data, varname= "temp2", unit= "°C",) ---> extract the t2m variable and convert it from K to °C
+
 
     Parameters
     ----------
