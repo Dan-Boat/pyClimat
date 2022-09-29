@@ -1,4 +1,14 @@
-# pyClimat
+
+<h1 align="center">Welcome to REAME pyClimat 👋</h1>
+
+<p align="center">
+<a href="https://pypi.python.org/pypi/py" target="_blank">
+  <img src="https://img.shields.io/pypi/v/pyClimat.svg" alt="PyPi">
+</a>
+<a href="https://pypi.org/project/pyClimat" target="_blank">
+  <img src="https://img.shields.io/pypi/pyversions/pyClimat" alt="PyPI - Python Version">
+</a>
+</h1>
 
 Climat python package for analysising GCM model output and visualization. The package is written in a function based 
 (would be pivoted to OPP style in future development). The analysis module features climate variable extraction 
@@ -26,3 +36,4 @@ The scripts can be located in the folder [Alps](./examples/Alps/)
 
 
 - ⚡ Fun fact **Happy coding and contact me if you have issues with the package**
+
