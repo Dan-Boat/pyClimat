@@ -17,7 +17,7 @@ estimates and many other classical methods like testing, OLS estiates, etc.
 
 ## installation 
 
-The easy way is to use `pip intall pyClimat` (but would require some dependencies)
+The easy way is to use `pip install pyClimat` (but would require some dependencies)
 The following packages must be installed: cartopy and xarray. If you failed to compile this in your environment,
 kindy raise an issue on that so I rebuid the dist for all systems. The stable verison should work on UNIX platforms for now
 
