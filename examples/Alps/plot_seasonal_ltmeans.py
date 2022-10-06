@@ -7,10 +7,7 @@ Created on Tue Sep  7 18:29:56 2021
 """
 #Importing ClimatPackages (this will later be compile into a package wheere __init__.py with import all the functions)
 
-import sys
-sys.path.append("/home/dboateng/Python_scripts/ClimatPackage_repogit") 
-
-from Package import *
+from pyClimat import *
 
 # Path to experiments
 module_output_main_path = "/home/dboateng/Model_output_pst"

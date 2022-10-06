@@ -11,10 +11,7 @@ Note: it is structured solely for the personal needs of the author, therefore, i
 #Importing ClimatPackages (this will later be compile into a package wheere __init__.py with import all the functions)
 
 
-import sys
-sys.path.append("/home/dboateng/Python_scripts/ClimatPackage_repogit") 
-
-from Package import *
+from pyClimat import *
 
 # Path to experiments
 module_output_main_path = "/home/dboateng/Model_output_pst"
@@ -260,7 +257,7 @@ def plot_summer_diff(varname =None):
         
         
         plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw100e100_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
-                           axes=[ax1], fig=fig, vmax=30, vmin=-10, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], title=True, 
+                           axes=[ax1], fig=fig, vmax=30, vmin=-5, levels=22, domain="Europe", level_ticks=11, cbar_pos = [0.90, 0.68, 0.02, 0.25], title=True, 
                            season_label= ["[A]  CTL"], bottom_labels=False, left_labels=True)
         
         plot_seasonal_mean(variable="Temperature", data_slt=temp2_aw200e100_slt , cmap=RdBu_r, units="°C", seasons=["JJA"], 
@@ -293,7 +290,7 @@ def plot_summer_diff(varname =None):
         plt.tight_layout()
         plt.subplots_adjust(left=0.05, right=0.89, top=0.94, bottom=0.06)
         plt.savefig(os.path.join(path_to_store, "fig3.svg"), format= "svg", bbox_inches="tight", dpi=300)
-        plt.savefig(os.path.join(path_to_store, "fig3.png"), format= "png", bbox_inches="tight", dpi=300)
+        #plt.savefig(os.path.join(path_to_store, "fig3.png"), format= "png", bbox_inches="tight", dpi=300)
     
     if varname == "Precipitation":
         #prec
@@ -491,11 +488,11 @@ def plot_egu_talk():
 
     
 if __name__ == '__main__':
-    #plot_summer_diff(varname="Temperature")
-    plot_summer_diff(varname="d18op")
+    plot_summer_diff(varname="Temperature")
+    #plot_summer_diff(varname="d18op")
     #plot_summer_diff(varname="Precipitation")
     
     # # annual plots 
-    plot_annual_diff(varname="d18op")
+    #plot_annual_diff(varname="d18op")
     #plot_egu_talk()
     
