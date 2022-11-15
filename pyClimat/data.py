@@ -190,3 +190,24 @@ def read_GNIP_data(path, filename):
     df["lon"] = data[1]
     
     return df
+
+
+def read_from_path(path, filename):
+    """
+    
+
+    parameters
+    ----------
+    path : TYPE: str
+        DESCRIPTION. The main path to the files
+    filename : TYPE: str
+        DESCRIPTION. The name of the file
+
+    Returns
+    -------
+    dataset : TYPE: xarray.dataset
+        DESCRIPTION. All variables with dimension, coordinates and meta attributes
+
+    """
+    path_to_data = os.path.join(path, filename)
+    dataset = xr.open_dataset(path_to_data, decode_cf=True, use_cftime=True)

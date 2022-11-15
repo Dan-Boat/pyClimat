@@ -972,7 +972,7 @@ def scatter_plot_laspe_rate(reg_params, df_x_y_yhat, color, marker, label, ylabe
     
 def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, levels=None, domain=None, output_name=None, 
                      output_format=None, level_ticks=None, title=None, path_to_store=None, cbar = None, cbar_orientation=None, cbar_position = None,
-                     fig=None, left_labels= True, bottom_labels=True):
+                     fig=None, left_labels= True, bottom_labels=True, norm=None, projection=None):
     """
     
 
@@ -1023,10 +1023,12 @@ def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, 
     None.
 
     """
-    
-    norm = MidpointNormalize(midpoint = 0)
-    projection = ccrs.PlateCarree()
-    
+    if norm is None:
+        norm = MidpointNormalize(midpoint = 0)
+        
+    if projection is None:
+        projection = ccrs.PlateCarree()
+    projection_p = ccrs.PlateCarree()
     #generating plot using geoaxis predefined or from default
     if ax is None:
         fig, ax = plt.subplots(1, 1, sharex=False, figsize= (15, 13), subplot_kw= {"projection":projection})
@@ -1041,7 +1043,7 @@ def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, 
             cbar_ax.set_yticklabels([])
             cbar_ax.tick_params(size=0)
             
-            p = data.plot.imshow(ax=ax, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, transform = projection,
+            p = data.plot.imshow(ax=ax, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, transform = projection_p,
                                  cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": cbar_orientation, 
                                                "shrink": 0.5, "format": "%.0f", "ticks":ticks}, extend= "neither", add_colorbar=True, cbar_ax=cbar_ax,
                                  add_labels=False)

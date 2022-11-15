@@ -44,6 +44,11 @@ This package was adopted for all the visualization in the research study by Boat
 - Oxygen isotope in precipitatiom comparsion plot
 ![Europe_d18Op](./img/img1.png)
 
+### Package structure 
+- _**pyclimat.data**_ loads the climate model output (mostly the long-term means), however, xarray.open_dataset can be used to read data and use the other utilities
+- _**pyclimat.analysis**_ is used for data analysis such as means, anomalies, EOF analysis and extraction of some section of the data 
+- _**pyclimat.plot**_ features many plotting functionalities such as spatial maps, profiles and scatter points (check the examples or the associated research papers for more hints)
+
 ### To do 
 - Structure the modules in classes for easy scripting 
 - Update the documentation for all the functions 
