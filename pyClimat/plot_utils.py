@@ -116,7 +116,7 @@ def apply_style(fontsize=20, style=None, linewidth=2):
 # defining function for selecting background domain for cartopy
 
 def plot_background(p, domain=None, use_AlbersEqualArea=None,ax=None, left_labels=True,
-                    bottom_labels=True, plot_coastlines=False):
+                    bottom_labels=True, plot_coastlines=True, plot_borders=False):
     """
     This funtion defines the plotting domain and also specifies the background. It requires 
     the plot handle from xarray.plot.imshow and other optional arguments 
@@ -135,6 +135,8 @@ def plot_background(p, domain=None, use_AlbersEqualArea=None,ax=None, left_label
     
     if plot_coastlines ==True:
         p.axes.coastlines(resolution = "50m")  # add coastlines outlines to the current axis
+    
+    if plot_borders == True:
         p.axes.add_feature(cfeature.BORDERS, edgecolor="black", linewidth = 0.3) #adding country boarder lines
     
     #setting domain size
@@ -189,6 +191,12 @@ def plot_background(p, domain=None, use_AlbersEqualArea=None,ax=None, left_label
             maxLon = 60
             minLat = 20
             maxLat = 80
+            
+        elif domain == "West Africa":
+            minLon = -25
+            maxLon = 40
+            minLat = -5
+            maxLat = 35
             
         else:
             print("ERROR: invalid geographical domain passed in options")

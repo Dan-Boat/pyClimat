@@ -400,7 +400,16 @@ def compute_lterm_mean(data, time="annual", month=None, season=None, season_cale
         
         if month is not None:
             print("Calculating the monthly long-term mean for the month number:", month)
-            data_ltmean = data_ltmean.sel(month=month)
+            
+            if month == "JJAS": # useful for WAM analysis
+                data_ltmean = data_ltmean.sel(month=data_ltmean.month.isin([5, 6, 7, 8, 9, 10]))
+                data_ltmean = data_ltmean.mean(dim="month")
+                
+            elif isinstance(month, int):    
+                data_ltmean = data_ltmean.sel(month=month)
+                
+            else:
+                raise ValueError("The define month parameter is not right")
     else:
         print("Define the time period for long-term mean or the annual mean is computed")
         

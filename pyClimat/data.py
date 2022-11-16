@@ -211,3 +211,5 @@ def read_from_path(path, filename):
     """
     path_to_data = os.path.join(path, filename)
     dataset = xr.open_dataset(path_to_data, decode_cf=True, use_cftime=True)
+    
+    return dataset
