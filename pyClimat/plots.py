@@ -34,9 +34,10 @@ except:
 # annual plots 
 
 def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=None, levels=None, domain=None, center= True, output_name=None, 
-                     output_format=None, level_ticks=None, title=None, path_to_store=None, data_v10=None, data_u10=None, GNIP_data=None,
+                     output_format=None, level_ticks=None, title=None, path_to_store=None, data_v=None, data_u=None, GNIP_data=None,
                      left_labels= True, bottom_labels=True, add_colorbar=True, plot_stats= False, compare_data1=None, compare_data2=None, max_pvalue=None,
-                     hatches=None, fig=None, cbar_pos=None, use_colorbar_default=False):
+                     hatches=None, fig=None, cbar_pos=None, use_colorbar_default=False, plot_winds=False,
+                     orientation = "horizontal", time=None):
     """
     
 
@@ -116,11 +117,19 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
         
         if use_colorbar_default == False:
             
+            
             cbar_ax = fig.add_axes(cbar_pos)   # axis for subplot colorbar # left, bottom, width, height
-            cbar_ax.get_xaxis().set_visible(False)
-            cbar_ax.yaxis.set_ticks_position('right')
-            cbar_ax.set_yticklabels([])
-            cbar_ax.tick_params(size=0)
+            
+            if orientation == "vertical":
+                cbar_ax.get_xaxis().set_visible(False)
+                cbar_ax.yaxis.set_ticks_position('right')
+                cbar_ax.set_yticklabels([])
+                cbar_ax.tick_params(size=0)
+            else:
+                cbar_ax.get_yaxis().set_visible(False)
+                cbar_ax.xaxis.set_ticks_position('bottom')
+                cbar_ax.set_xticklabels([])
+                cbar_ax.tick_params(size=0)
         
     
     
@@ -135,7 +144,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                         
                         p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
                                         levels=levels, transform = projection, norm=norm, 
-                                        cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
+                                        cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": orientation, 
                                                       "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither",
                                         add_colorbar=True, add_labels=False)
                     else:
@@ -143,7 +152,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
             
                          p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
                                          levels=levels, transform = projection, norm=norm, 
-                                         cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": "vertical", 
+                                         cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": orientation, 
                                                        "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "neither",
                                          add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
                 else:
@@ -157,14 +166,14 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                         
                         p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
                                         levels=levels, transform = projection, 
-                                        cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
+                                        cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": orientation, 
                                                       "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither", 
                                         add_colorbar=True, add_labels=False)
                     else:
                         
                         p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
                                         levels=levels, transform = projection, 
-                                        cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": "vertical", 
+                                        cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": orientation, 
                                                       "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "neither", 
                                         add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
                 else:
@@ -177,7 +186,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                 if use_colorbar_default == True:
                     p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
                                          levels=levels, transform = projection, 
-                                         cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
+                                         cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": orientation, 
                                                        "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "both",
                                          add_colorbar=True, add_labels=False)
                 else:
@@ -186,7 +195,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                 
                     p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
                                          levels=levels, transform = projection, 
-                                         cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "vertical", 
+                                         cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": orientation, 
                                                        "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "both",
                                          add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
             else:
@@ -196,7 +205,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
     # when limits are not defined for the plot            
     else:
         p = data_alt.plot.imshow(ax =ax, cmap=cmap, transform = projection, 
-                                 cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "vertical", 
+                                 cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": orientation, 
                                                "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither", 
                                  add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
     
@@ -209,22 +218,26 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
     # ploting background extent
     plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels)
     
-    if all(data is not None for data in [data_v10, data_u10]):
-        # extracting variables for quiver 
-        x = data_v10.coords["lon"].data
-        y = data_v10.coords["lat"].data
     
-        u = data_u10.data
-        v = data_v10.data
-    
-        X,Y = np.meshgrid(x,y)
-        skip = (slice(None, None, 3), slice(None, None, 3))  #for extracting the data on interval or use data[::3, ::3]
+    if plot_winds == True: 
         
-        # ploting winds using quiver 
-        q = ax.quiver(X[skip], Y[skip], u[skip], v[skip], transform=projection,  pivot= "mid", scale= 50,
-                      headwidth=3, headlength=5, headaxislength=4.5)
-        qk = ax.quiverkey(q, 1.0, -0.02, 2, r'$1 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
-                          {"size": 20, "weight":"bold"})
+        if all(data is not None for data in [data_v, data_u]):
+            # extracting variables for quiver 
+            x = data_v.coords["lon"].data
+            y = data_v.coords["lat"].data
+        
+            u = data_u.data
+            v = data_v.data
+        
+            X,Y = np.meshgrid(x,y)
+            skip = (slice(None, None, 3), slice(None, None, 3))  #for extracting the data on interval or use data[::3, ::3]
+            
+            # ploting winds using quiver 
+            q = ax.quiver(X[skip], Y[skip], u[skip], v[skip], transform=projection,  pivot= "mid", scale= 100,
+                          headwidth=3, headlength=5, headaxislength=4.5)
+            
+            qk = ax.quiverkey(q, 0.90, -0.1, 5, r'$5 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
+                              {"size": 20, "weight":"bold"})
         
     if plot_stats == True:
         data1 = compare_data1
@@ -234,9 +247,14 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
             minlat, maxlat, minlon, maxlon = 35, 65, -15, 40
             stats_results = student_t_test_btn_datasets(dataA=data1, dataB=data2, return_pvalue=True, 
                                                         minlat=minlat, minlon=minlon, maxlon=maxlon, maxlat=maxlat,
-                                                        max_pvalue=max_pvalue)
+                                                        max_pvalue=max_pvalue, time=time)
+        elif domain == "West Africa":
+            minlat, maxlat, minlon, maxlon = -5, 35, -25, 40
+            stats_results = student_t_test_btn_datasets(dataA=data1, dataB=data2, return_pvalue=True, 
+                                                        minlat=minlat, minlon=minlon, maxlon=maxlon, maxlat=maxlat,
+                                                        max_pvalue=max_pvalue, time=time)
         else:
-            stats_results = student_t_test_btn_datasets(dataA=data1, dataB=data2, return_pvalue=True, max_pvalue=max_pvalue)
+            stats_results = student_t_test_btn_datasets(dataA=data1, dataB=data2, return_pvalue=True, max_pvalue=max_pvalue, time=time)
         
         if hatches is not None:
             ax.contourf(stats_results.lon.values, stats_results.lat.values, stats_results.t_statistic.values, colors="none", hatches=[hatches])

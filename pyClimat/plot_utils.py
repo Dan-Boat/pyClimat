@@ -70,6 +70,7 @@ Greys = plt.cm.Greys
 RdGy = plt.cm.RdGy
 PiYG = plt.cm.PiYG_r
 PuOr = plt.cm.PuOr
+PuOr_r = plt.cm.PuOr_r
 BrBG = plt.cm.BrBG
 RdYlBu = plt.cm.RdYlBu
 RdYlBu_r = plt.cm.RdYlBu_r

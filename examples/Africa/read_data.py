@@ -16,9 +16,9 @@ from pyClimat.data import read_from_path
 # define paths 
 main_path = "/home/dboateng/Model_output_pst"
 lgm_path = os.path.join(main_path, "LGM", "MONTHLY_MEANS")
-plio_path = os.path.join(main_path, "LGM", "MONTHLY_MEANS")
-mh_path = os.path.join(main_path, "LGM", "MONTHLY_MEANS")
-pi_path = os.path.join(main_path, "LGM", "MONTHLY_MEANS")
+plio_path = os.path.join(main_path, "PLIO", "MONTHLY_MEANS")
+mh_path = os.path.join(main_path, "MH", "MONTHLY_MEANS")
+pi_path = os.path.join(main_path, "PI", "MONTHLY_MEANS")
 
 
 filename_lterm = "1003_1017_1m_mlterm.nc"

@@ -402,7 +402,7 @@ def compute_lterm_mean(data, time="annual", month=None, season=None, season_cale
             print("Calculating the monthly long-term mean for the month number:", month)
             
             if month == "JJAS": # useful for WAM analysis
-                data_ltmean = data_ltmean.sel(month=data_ltmean.month.isin([5, 6, 7, 8, 9, 10]))
+                data_ltmean = data_ltmean.sel(month=data_ltmean.month.isin([6, 7, 8, 9]))
                 data_ltmean = data_ltmean.mean(dim="month")
                 
             elif isinstance(month, int):    
@@ -918,7 +918,7 @@ def correlation(dataA, dataB, max_pvalue=0.1, use_spearmanr=False, use_pearsonr=
         
 
 def student_t_test_btn_datasets(dataA, dataB, max_pvalue=0.1, return_pvalue=False, maxlon=None, 
-                                minlon=None, maxlat=None, minlat=None):
+                                minlon=None, maxlat=None, minlat=None, time=None):
     """
     
 
@@ -947,6 +947,10 @@ def student_t_test_btn_datasets(dataA, dataB, max_pvalue=0.1, return_pvalue=Fals
         DESCRIPTION.
 
     """
+    
+    if time == "JJAS":
+        dataA = dataA.sel(time= dataA.time.dt.month.isin([6, 7, 8, 9]))
+        dataB = dataB.sel(time= dataB.time.dt.month.isin([6, 7, 8, 9]))
     
     if all(par is not None for par in [maxlon, minlon, maxlat, minlat]):
         
