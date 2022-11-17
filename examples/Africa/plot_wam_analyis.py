@@ -142,16 +142,16 @@ plt.savefig(os.path.join(path_to_store, "t2m_anomalies.png"), format= "png", bbo
 projection = ccrs.PlateCarree()
 fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":
                                                                                                                   projection})
-plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=MH_slp_alt_diff , cmap=RdBu, units="hPa", ax=ax1, fig=fig, vmax=15, vmin=-10,
+plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=MH_slp_alt_diff , cmap=RdBu, units="hPa", ax=ax1, fig=fig, vmax=20, vmin=-10,
                  levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
                            title= ["[A]  MH - PI"], bottom_labels=True, left_labels=True, plot_winds=True, data_u=MH_u850_alt, data_v=MH_v850_alt, time="JJAS")
 
-plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=LGM_slp_alt_diff , cmap=RdBu, units="hPa", ax=ax2, fig=fig, vmax=15, vmin=-10,
+plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=LGM_slp_alt_diff , cmap=RdBu, units="hPa", ax=ax2, fig=fig, vmax=20, vmin=-10,
                  levels=22, domain="West Africa", level_ticks=11, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
                            title= ["[B]  LGM - PI"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=LGM_u850_alt, data_v=LGM_v850_alt, 
                            orientation= "horizontal", time="JJAS") 
 
-plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=PLIO_slp_alt_diff , cmap=RdBu, units="hPa", ax=ax3, fig=fig, vmax=15, vmin=-10,
+plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=PLIO_slp_alt_diff , cmap=RdBu, units="hPa", ax=ax3, fig=fig, vmax=20, vmin=-10,
                  levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
                            title= ["[C]  PLIO - PI"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=PLIO_u850_alt, data_v=PLIO_v850_alt, 
                            time="JJAS") 
