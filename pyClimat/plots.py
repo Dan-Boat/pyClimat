@@ -1216,14 +1216,14 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
         
 def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig=None, vmax=None, vmin=None, levels=None, output_name=None, 
                      output_format=None, level_ticks=None, title=None, path_to_store=None, plot_colorbar=True,
-                     cbar_pos=None, fig_title=None, season_label=None, geosp_data=None, dim=None, left_labels=True, bottom_labels=True,
-                     right_labels=True, use_norm=False, use_cbar_norm=False):
+                     cbar_pos=None, fig_title=None, season_label=None, geosp_data=None, dim=None, left_labels=False, bottom_labels=False,
+                     right_labels=False, use_norm=False, use_cbar_norm=False):
     
-    # extracting coords from data (select up to 200 hPa)
+    # extracting coords from data (select up to 200 hPa) [:,:10] y = data.columns.values[:10], data = data.iloc[:, :10]
     x = data.index.values
-    y = data.columns.values[:10]
+    y = data.columns.values[:12]
     
-    data = data.iloc[:, :10]
+    data = data.iloc[:, :12]
     # applying meshgrid 
     X,Y = np.meshgrid(x,y)
     Z = data.values.T
@@ -1265,10 +1265,10 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
         if level_ticks is not None:
             if use_cbar_norm == True:
                 cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
-                         format="%.2f", ticks = ticks, extend = "both", pad = 0.05, norm=norm)
+                         format="%.2f", ticks = ticks, extend = "neither", pad = 0.05, norm=norm)
             else:
                 cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
-                         format="%.2f", ticks = ticks, extend = "both", pad = 0.05,)
+                         format="%.2f", ticks = ticks, extend = "neither", pad = 0.05,)
         else:
             cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
                      format="%.2f", extend = "neither", pad=0.05, norm=norm)
@@ -1320,7 +1320,8 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
         ax2.set_ylabel("Height [km]", fontsize=22, fontweight="bold")
         
     else:
-        ax2.set_yticklabels([])
+        if geosp_data is not None:
+            ax2.set_yticklabels([])
     
     
     if title is not None:

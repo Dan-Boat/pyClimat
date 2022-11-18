@@ -15,6 +15,7 @@ import numpy as np
 
 #pyClimat models
 from pyClimat.analysis import extract_var, compute_lterm_mean, extract_transect, compute_lterm_diff
+from pyClimat.analysis import extract_vertical_section
 
 # relative imports
 from read_data import * # EXP_ID_data for surface variables and EXP_ID_plev_data for pressure variables
@@ -194,3 +195,12 @@ PLIO_month_sahara_t2m, PLIO_month_sahel_t2m, PLIO_month_guinea_t2m = extract_sec
 
 # extract vertical section to show the ATJ, EAJ, WAM surface westerlies, and updraft and subsidence (zonal, meridoinal, and omega)
 
+minlat = 0
+maxlat = 30
+minlon = -15
+maxlon = 10
+
+PI_cross_section_u = extract_vertical_section(data=PI_u_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
+MH_cross_section_u = extract_vertical_section(data=MH_u_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
+LGM_cross_section_u = extract_vertical_section(data=LGM_u_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
+PLIO_cross_section_u = extract_vertical_section(data=PLIO_u_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")

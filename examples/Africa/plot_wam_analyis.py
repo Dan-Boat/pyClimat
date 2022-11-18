@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 from pyClimat.plot_utils import *
-from pyClimat.plots import plot_annual_mean, plot_seasonal_mean
+from pyClimat.plots import plot_annual_mean, plot_seasonal_mean, plot_vertical_section
 
 from wam_analysis import *
 
@@ -25,19 +25,22 @@ def plot_monthly_sections(data_sahara, data_sahel, data_guinea, ax, ymax, ymin, 
     
     ax.set_ylabel(varname, fontsize= 20, fontweight="bold")
     ax.set_ylim(bottom=ymin, top=ymax)
-    ax.set_title(title, fontdict= {"fontsize": 15, "fontweight":"bold"}, loc= "left")
+    ax.set_title(title, fontdict= {"fontsize": 20, "fontweight":"bold"}, loc= "left")
     
     
-def plot_monthly_period_per_section(PI, MH, LGM, PLIO, ax, title): # extend with ERA (gold), SSP2.6(purple), 4,5(brown), 8.5(orange)  
+def plot_monthly_period_per_section(PI, MH, LGM, PLIO, ax, title, ymax, ymin, varname=None): # extend with ERA (gold), SSP2.6(purple), 4,5(brown), 8.5(orange)  
     
     ax.plot(PI["mean"], "--", color=black, label="PI", linewidth=3)
     ax.plot(MH["mean"], "--", color=red, label="MH", linewidth=3)
     ax.plot(LGM["mean"], "--", color=blue, label="LGM", linewidth=3)
     ax.plot(PLIO["mean"], "--", color=green, label="PLIO", linewidth=3)
     
-    ax.set_ylabel(varname, fontsize= 20, fontweight="bold")
+    if varname is not None:
+        ax.set_ylabel(varname, fontweight="bold", fontsize=22)
+    
+    #ax.grid(False, linestyle="--", color=grey, alpha=0.8)
     ax.set_ylim(bottom=ymin, top=ymax)
-    ax.set_title(title, fontdict= {"fontsize": 15, "fontweight":"bold"}, loc= "left")
+    ax.set_title(title, fontdict= {"fontsize": 22, "fontweight":"bold"}, loc= "left")
       
 # fonts and ploting stlye 
 
@@ -92,87 +95,130 @@ def plot_PI_JJAS():
     
     plt.savefig(os.path.join(path_to_store, "PI_tp_t2m_slp.png"), format= "png", bbox_inches="tight", dpi=300)
     
+def plot_JJA_anomaly():    
+    apply_style(fontsize=22, style=None, linewidth=2) 
     
+    projection = ccrs.PlateCarree()
+    fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":
+                                                                                                                      projection})
+    plot_annual_mean(variable="Precipitation anomalies", data_alt=MH_prec_alt_diff , cmap=BrBG, units="mm/month", ax=ax1, fig=fig, vmax=150, vmin=-150,
+                     levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
+                               title= ["[A]  MH - PI"], bottom_labels=True, left_labels=True, compare_data1=PI_prec,
+                               compare_data2=MH_prec, max_pvalue=0.01, plot_stats=True, time="JJAS")
+    
+    plot_annual_mean(variable="Precipitation anomalies", data_alt=LGM_prec_alt_diff , cmap=BrBG, units="mm/month", ax=ax2, fig=fig, vmax=150, vmin=-150,
+                     levels=22, domain="West Africa", level_ticks=11, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
+                               title= ["[B]  LGM - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_prec,
+                               compare_data2=LGM_prec, max_pvalue=0.01, plot_stats=True, orientation= "horizontal", time="JJAS") 
+    
+    plot_annual_mean(variable="Precipitation anomalies", data_alt=PLIO_prec_alt_diff , cmap=BrBG, units="mm/month", ax=ax3, fig=fig, vmax=150, vmin=-150,
+                     levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
+                               title= ["[C]  PLIO - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_prec,
+                               compare_data2=PLIO_prec, max_pvalue=0.01, plot_stats=True, time="JJAS") 
+    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
+    plt.savefig(os.path.join(path_to_store, "prec_anomalies.png"), format= "png", bbox_inches="tight", dpi=300)
+    
+    projection = ccrs.PlateCarree()
+    fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":
+                                                                                                                      projection})
+    plot_annual_mean(variable="Temperature anomalies", data_alt=MH_t2m_alt_diff , cmap=RdBu_r, units="°C", ax=ax1, fig=fig, vmax=12, vmin=-12,
+                     levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
+                               title= ["[A]  MH - PI"], bottom_labels=True, left_labels=True, compare_data1=PI_t2m,
+                               compare_data2=MH_t2m, max_pvalue=0.01, plot_stats=True, time="JJAS")
+    
+    plot_annual_mean(variable="Temperature anomalies", data_alt=LGM_t2m_alt_diff , cmap=RdBu_r, units="°C", ax=ax2, fig=fig, vmax=12, vmin=-12,
+                     levels=22, domain="West Africa", level_ticks=11, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
+                               title= ["[B]  LGM - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_t2m,
+                               compare_data2=LGM_t2m, max_pvalue=0.01, plot_stats=True, orientation= "horizontal", time="JJAS") 
+    
+    plot_annual_mean(variable="Temperature anomalies", data_alt=PLIO_t2m_alt_diff , cmap=RdBu_r, units="°C", ax=ax3, fig=fig, vmax=12, vmin=-12,
+                     levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
+                               title= ["[C]  PLIO - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_t2m,
+                               compare_data2=PLIO_t2m, max_pvalue=0.01, plot_stats=True, time="JJAS") 
+    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
+    plt.savefig(os.path.join(path_to_store, "t2m_anomalies.png"), format= "png", bbox_inches="tight", dpi=300)
+    
+    projection = ccrs.PlateCarree()
+    fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":
+                                                                                                                      projection})
+    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=MH_slp_alt_diff , cmap=RdBu, units="hPa", ax=ax1, fig=fig, vmax=20, vmin=-10,
+                     levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
+                               title= ["[A]  MH - PI"], bottom_labels=True, left_labels=True, plot_winds=True, data_u=MH_u850_alt, data_v=MH_v850_alt, time="JJAS")
+    
+    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=LGM_slp_alt_diff , cmap=RdBu, units="hPa", ax=ax2, fig=fig, vmax=20, vmin=-10,
+                     levels=22, domain="West Africa", level_ticks=11, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
+                               title= ["[B]  LGM - PI"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=LGM_u850_alt, data_v=LGM_v850_alt, 
+                               orientation= "horizontal", time="JJAS") 
+    
+    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=PLIO_slp_alt_diff , cmap=RdBu, units="hPa", ax=ax3, fig=fig, vmax=20, vmin=-10,
+                     levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
+                               title= ["[C]  PLIO - PI"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=PLIO_u850_alt, data_v=PLIO_v850_alt, 
+                               time="JJAS") 
+    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
+    plt.savefig(os.path.join(path_to_store, "slp_anomalies.png"), format= "png", bbox_inches="tight", dpi=300)
+
+  
+
+# left, bottom, width, height
+
+def plot_monthly_variability():
+    apply_style(fontsize=22, style=None, linewidth=2) 
+    fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), sharey=False)
+    
+    plot_monthly_period_per_section(PI=PI_month_sahara_prec , MH= MH_month_sahara_prec, LGM=LGM_month_sahara_prec, 
+                                    PLIO=PLIO_month_sahara_prec, ax=ax1, title="Sahara", varname="Precipitation [mm/month]", ymax=14,
+                                    ymin=0, )
+    
+    plot_monthly_period_per_section(PI=PI_month_sahel_prec , MH= MH_month_sahel_prec, LGM=LGM_month_sahel_prec, 
+                                    PLIO=PLIO_month_sahel_prec, ax=ax2, title="Sahel", ymax=250,
+                                    ymin=0, varname="Precipitation [mm/month]")
+    
+    plot_monthly_period_per_section(PI=PI_month_guinea_prec , MH= MH_month_guinea_prec, LGM=LGM_month_guinea_prec, 
+                                    PLIO=PLIO_month_guinea_prec, ax=ax3, title="Coast of Guinea", ymax=350,
+                                    ymin=0, varname="Precipitation [mm/month]")
+    
+    
+    ax2.legend(bbox_to_anchor=(0.01, 1.04, 1., 0.102), loc=3, ncol=4, borderaxespad=0., frameon = True, 
+                  fontsize=20)
+    plt.tight_layout()
+    plt.savefig(os.path.join(path_to_store, "PI_monthly_sections.png"), format= "png", bbox_inches="tight", dpi=300)
+
+
+
 apply_style(fontsize=22, style=None, linewidth=2) 
 
 projection = ccrs.PlateCarree()
-fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":
-                                                                                                                  projection})
-plot_annual_mean(variable="Precipitation anomalies", data_alt=MH_prec_alt_diff , cmap=BrBG, units="mm/month", ax=ax1, fig=fig, vmax=150, vmin=-150,
-                 levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
-                           title= ["[A]  MH - PI"], bottom_labels=True, left_labels=True, compare_data1=PI_prec,
-                           compare_data2=MH_prec, max_pvalue=0.01, plot_stats=True, time="JJAS")
+fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15), sharex=False,
+                                           sharey=False)
 
-plot_annual_mean(variable="Precipitation anomalies", data_alt=LGM_prec_alt_diff , cmap=BrBG, units="mm/month", ax=ax2, fig=fig, vmax=150, vmin=-150,
-                 levels=22, domain="West Africa", level_ticks=11, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
-                           title= ["[B]  LGM - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_prec,
-                           compare_data2=LGM_prec, max_pvalue=0.01, plot_stats=True, orientation= "horizontal", time="JJAS") 
+plot_vertical_section(variable="Zonal Wind", data=PI_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
+                            level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.35, 0.02, 0.35], dim="lon", ax=ax1, fig=fig, 
+                            bottom_labels=False, right_labels=False, left_labels=True, title= "[A] PI", use_norm=True, 
+                            use_cbar_norm=True)
 
-plot_annual_mean(variable="Precipitation anomalies", data_alt=PLIO_prec_alt_diff , cmap=BrBG, units="mm/month", ax=ax3, fig=fig, vmax=150, vmin=-150,
-                 levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
-                           title= ["[C]  PLIO - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_prec,
-                           compare_data2=PLIO_prec, max_pvalue=0.01, plot_stats=True, time="JJAS") 
-fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+plot_vertical_section(variable="Zonal Wind", data=MH_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
+                            level_ticks=6, plot_colorbar=False, dim="lon", ax=ax2, fig=fig, 
+                            bottom_labels=False, left_labels=False, title= "[B] MH", use_norm=True)
+
+plot_vertical_section(variable="Zonal Wind", data=LGM_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
+                            level_ticks=6, plot_colorbar=False, dim="lon", ax=ax3, fig=fig, 
+                            bottom_labels=True, left_labels=True, title= "[C] LGM", use_norm=True)
+
+plot_vertical_section(variable="Zonal Wind", data=PLIO_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
+                            level_ticks=6, plot_colorbar=False, dim="lon", ax=ax4, fig=fig, 
+                            bottom_labels=True, left_labels=False, title= "[D] PLIO", use_norm=True)
+
 plt.tight_layout()
-plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
-plt.savefig(os.path.join(path_to_store, "prec_anomalies.png"), format= "png", bbox_inches="tight", dpi=300)
+plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
+plt.savefig(os.path.join(path_to_store, "u_vertical_sections.png"), format= "png", bbox_inches="tight", dpi=300)
 
-projection = ccrs.PlateCarree()
-fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":
-                                                                                                                  projection})
-plot_annual_mean(variable="Temperature anomalies", data_alt=MH_t2m_alt_diff , cmap=RdBu_r, units="°C", ax=ax1, fig=fig, vmax=12, vmin=-12,
-                 levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
-                           title= ["[A]  MH - PI"], bottom_labels=True, left_labels=True, compare_data1=PI_t2m,
-                           compare_data2=MH_t2m, max_pvalue=0.01, plot_stats=True, time="JJAS")
-
-plot_annual_mean(variable="Temperature anomalies", data_alt=LGM_t2m_alt_diff , cmap=RdBu_r, units="°C", ax=ax2, fig=fig, vmax=12, vmin=-12,
-                 levels=22, domain="West Africa", level_ticks=11, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
-                           title= ["[B]  LGM - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_t2m,
-                           compare_data2=LGM_t2m, max_pvalue=0.01, plot_stats=True, orientation= "horizontal", time="JJAS") 
-
-plot_annual_mean(variable="Temperature anomalies", data_alt=PLIO_t2m_alt_diff , cmap=RdBu_r, units="°C", ax=ax3, fig=fig, vmax=12, vmin=-12,
-                 levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
-                           title= ["[C]  PLIO - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_t2m,
-                           compare_data2=PLIO_t2m, max_pvalue=0.01, plot_stats=True, time="JJAS") 
-fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
-plt.tight_layout()
-plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
-plt.savefig(os.path.join(path_to_store, "t2m_anomalies.png"), format= "png", bbox_inches="tight", dpi=300)
-
-projection = ccrs.PlateCarree()
-fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":
-                                                                                                                  projection})
-plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=MH_slp_alt_diff , cmap=RdBu, units="hPa", ax=ax1, fig=fig, vmax=20, vmin=-10,
-                 levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
-                           title= ["[A]  MH - PI"], bottom_labels=True, left_labels=True, plot_winds=True, data_u=MH_u850_alt, data_v=MH_v850_alt, time="JJAS")
-
-plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=LGM_slp_alt_diff , cmap=RdBu, units="hPa", ax=ax2, fig=fig, vmax=20, vmin=-10,
-                 levels=22, domain="West Africa", level_ticks=11, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
-                           title= ["[B]  LGM - PI"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=LGM_u850_alt, data_v=LGM_v850_alt, 
-                           orientation= "horizontal", time="JJAS") 
-
-plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=PLIO_slp_alt_diff , cmap=RdBu, units="hPa", ax=ax3, fig=fig, vmax=20, vmin=-10,
-                 levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
-                           title= ["[C]  PLIO - PI"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=PLIO_u850_alt, data_v=PLIO_v850_alt, 
-                           time="JJAS") 
-fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
-plt.tight_layout()
-plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
-plt.savefig(os.path.join(path_to_store, "slp_anomalies.png"), format= "png", bbox_inches="tight", dpi=300)
 plt.show()
-    
-    
 
-# left, bottom, width, height
-# fig, (ax1,ax2) = plt.subplots(nrows = 1, ncols = 2, figsize=(20, 13))
 
-# plot_monthly_sections(data_sahara=PI_month_sahara_prec, data_sahel=PI_month_sahel_prec, data_guinea=PI_month_guinea_prec,
-#                       ax=ax1, ymax=250, ymin=0, varname="Precipitation [mm/month]", title="[A]")
 
-# plot_monthly_sections(data_sahara=PI_month_sahara_t2m, data_sahel=PI_month_sahel_t2m, data_guinea=PI_month_guinea_t2m,
-#                       ax=ax2, ymax=35, ymin=5, varname="Temperature [°C]", title="[B]")
-
-# ax2.legend(bbox_to_anchor=(1.04,1),frameon=True, fontsize=25, loc="upper left")
-# plt.tight_layout()
-# plt.savefig(os.path.join(path_to_store, "PI_monthly_sections.png"), format= "png", bbox_inches="tight", dpi=300)
-# plt.show()
