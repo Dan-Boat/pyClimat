@@ -22,7 +22,9 @@ from pyClimat.plots import plot_echam_topo
 # path to the Herold original files
 
 path_to_ctl = "/home/dboateng/Model_output_pst/Miotopofiles/CTL_Mio_Herold/orography.nc"
-path_to_ctl_t159 = "/home/dboateng/Model_output_pst/Miotopofiles/CTL_Mio_Herold/T159_MIO_W2E1_278ppm_jan_surf_Herold.nc"
+path_to_t159 = "/home/dboateng/Model_output_pst/Miotopofiles/CTL_Mio_Herold/jan_surf_files/"
+path_to_mio278 = "/home/dboateng/Model_output_pst/Miotopofiles/CTL_Mio278"
+path_to_mio450 = "/home/dboateng/Model_output_pst/Miotopofiles/CTL_Mio450"
 path_to_store = "/home/dboateng/Model_output_pst/Miotopofiles/CTL_Mio_Herold/"
 
 
@@ -87,39 +89,123 @@ def modify_topo_mio(filename):
     data = data.rename({"topo_modify": "topo"})
     data.to_netcdf(os.path.join(path_to_store, filename), format = "NETCDF3_CLASSIC")
 
-filenames = ["W2E1_orography.nc", "W2E1.5_orography.nc", "W2E0_orography.nc", "W2E2_orography.nc"]
+# filenames = ["W2E1_orography.nc", "W2E1.5_orography.nc", "W2E0_orography.nc", "W2E2_orography.nc"]
 
-for filename in filenames:
-    print ("running for", filename)
-    modify_topo_mio(filename)
+# for filename in filenames:
+#     print ("running for", filename)
+#     modify_topo_mio(filename)
     
 
-def plot_jan_surf(path_to_ctl_t159):
+def read_jan_surf_oromea(path, filename):
     # plot jan_surf 
-    ctl_jan_surf = xr.open_dataset(path_to_ctl_t159)   
-    oromea = ctl_jan_surf.OROMEA
-    oromea = xr.where(ctl_jan_surf.SLM == 0, -100, oromea)
-       
-    # # # add cyclic on the longitude coordinates
-    # # lon = mmco_topo.coords["lon"]
-    # # lon_index = mmco_topo.dims.index("lon")
+    jan_surf = xr.open_dataset(os.path.join(path, filename))   
+    oromea = jan_surf.OROMEA
+    oromea = xr.where(jan_surf.SLM == 0, -100, oromea)
     
-    # # wrap_data, wrap_lon = add_cyclic_point(mmco_topo.values, coord=lon, axis=lon_index)
+    return oromea
+
+projection = ccrs.EuroPP()
+fig, ((ax1,ax2,ax3), (ax4, ax5,ax6)) = plt.subplots(nrows = 2, ncols = 3, figsize=(25, 17), 
+                                                    subplot_kw={"projection": projection})
+
     
-    levels = [i for i in range(-100, 3000, 100)]
-    terrain_new = mpl.cm.get_cmap("terrain", 256)
-    terrain_adjust = ListedColormap(terrain_new(np.linspace(0.23, 1, 256)))
-    new_colors = terrain_adjust(np.linspace(0,1,256))
-    
-    blue = np.array([135/256, 206/256, 250/256, 1])
-    new_colors[:1, :] = blue
-    terrain_shift = ListedColormap(new_colors)
-    
-    norm_new = col.BoundaryNorm(levels, ncolors=terrain_shift.N, clip=True)
-    projection = ccrs.EuroPP()
-    # plt.subplots(nrows = 1, ncols = 1, figsize=(20, 15), subplot_kw={"projection":projection})
-    
-    plot_echam_topo(variable="Elevation", data=oromea, cmap=terrain_shift, units="[m]", 
-                    vmax=3000, vmin=-100, levels=31, level_ticks=5,
-                    domain="Europe", cbar=True, cbar_position= [0.90, 0.30, 0.02, 0.40], cbar_orientation="vertical",
-                    projection=projection, norm=norm_new, plot_coastlines=True, plot_borders=False)
+levels = [i for i in range(-100, 4000, 100)]
+terrain_new = mpl.cm.get_cmap("terrain", 256)
+terrain_adjust = ListedColormap(terrain_new(np.linspace(0.23, 1, 256)))
+new_colors = terrain_adjust(np.linspace(0,1,256))
+
+blue = np.array([135/256, 206/256, 250/256, 1])
+new_colors[:1, :] = blue
+terrain_shift = ListedColormap(new_colors)
+
+norm_new = col.BoundaryNorm(levels, ncolors=terrain_shift.N, clip=True)
+
+# plt.subplots(nrows = 1, ncols = 1, figsize=(20, 15), subplot_kw={"projection":projection})
+pi_oromea = read_jan_surf_oromea(path_to_t159, "T159_PI_W1E1_jan_surf.nc")
+plot_echam_topo(variable="Elevation", data=pi_oromea, cmap=terrain_shift, units="m", 
+                vmax=4000, vmin=-100, levels=31, level_ticks=6,
+                domain="Europe", cbar=True, cbar_position= [0.35, 0.05, 0.25, 0.02], cbar_orientation="horizontal",
+                projection=projection, norm=norm_new, plot_coastlines=True, plot_borders=False, ax=ax1, 
+                title="[A] PI-W1E1", bottom_labels=False, fig=fig)
+
+miow1e1_oromea = read_jan_surf_oromea(path_to_t159, "T159_MIO_W1E1_jan_surf_Herold.nc")
+
+plot_echam_topo(variable="Elevation", data=miow1e1_oromea, cmap=terrain_shift, units="m", 
+                vmax=4000, vmin=-100, levels=31, level_ticks=6,
+                domain="Europe", cbar=False, projection=projection, norm=norm_new, plot_coastlines=True, plot_borders=False, 
+                ax=ax2, title="[B] MIO-W1E1", bottom_labels=False, left_labels=False)
+
+miow2e2_oromea = read_jan_surf_oromea(path_to_t159, "T159_MIO_W2E2_jan_surf_Herold.nc")
+
+plot_echam_topo(variable="Elevation", data=miow2e2_oromea, cmap=terrain_shift, units="m", 
+                vmax=4000, vmin=-100, levels=31, level_ticks=6,
+                domain="Europe", cbar=False, projection=projection, norm=norm_new, plot_coastlines=True, plot_borders=False, 
+                ax=ax3, title="[C] MIO-W2E2", bottom_labels=False, left_labels=False)
+
+miow2e1_oromea = read_jan_surf_oromea(path_to_t159, "T159_MIO_W2E1_jan_surf_Herold.nc")
+
+plot_echam_topo(variable="Elevation", data=miow2e1_oromea, cmap=terrain_shift, units="m", 
+                vmax=4000, vmin=-100, levels=31, level_ticks=6,
+                domain="Europe", cbar=False, projection=projection, norm=norm_new, plot_coastlines=True, plot_borders=False, 
+                ax=ax4, title="[D] MIO-W2E1", bottom_labels=True, left_labels=True)
+
+miow2e1_5_oromea = read_jan_surf_oromea(path_to_t159, "T159_MIO_W2E1.5_jan_surf_Herold.nc")
+
+plot_echam_topo(variable="Elevation", data=miow2e1_5_oromea, cmap=terrain_shift, units="m", 
+                vmax=4000, vmin=-100, levels=31, level_ticks=6,
+                domain="Europe", cbar=False, projection=projection, norm=norm_new, plot_coastlines=True, plot_borders=False, 
+                ax=ax5, title="[E] MIO-W2E1.5", bottom_labels=True, left_labels=False)
+
+miow2e0_oromea = read_jan_surf_oromea(path_to_t159, "T159_MIO_W2E0_jan_surf_Herold.nc")
+
+plot_echam_topo(variable="Elevation", data=miow2e0_oromea, cmap=terrain_shift, units="m", 
+                vmax=4000, vmin=-100, levels=31, level_ticks=6,
+                domain="Europe", cbar=False, projection=projection, norm=norm_new, plot_coastlines=True, plot_borders=False, 
+                ax=ax6, title="[F] MIO-W2E0", bottom_labels=True, left_labels=False)
+
+fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+plt.tight_layout() 
+plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.001, hspace=0.06)
+plt.savefig(os.path.join(path_to_store, "topography_mio_herold.png"), format= "png", bbox_inches="tight", dpi=300)
+
+
+projection = ccrs.EuroPP()
+fig, (ax1,ax2,ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), 
+                                                    subplot_kw={"projection": projection})
+
+
+pi_oromea = read_jan_surf_oromea(path_to_t159, "T159_PI_W1E1_jan_surf.nc")
+plot_echam_topo(variable="Elevation", data=pi_oromea, cmap=terrain_shift, units="m", 
+                vmax=4000, vmin=-100, levels=31, level_ticks=6,
+                domain="Europe", cbar=True, cbar_position= [0.35, 0.05, 0.25, 0.02], cbar_orientation="horizontal",
+                projection=projection, norm=norm_new, plot_coastlines=True, plot_borders=False, ax=ax1, 
+                title="[A] PI-W1E1", bottom_labels=True, fig=fig)
+
+mio278_oromea = read_jan_surf_oromea(path_to_mio278, "T159_MIO_278ppm_jan_surf_Frigola.nc")
+
+plot_echam_topo(variable="Elevation", data=mio278_oromea, cmap=terrain_shift, units="m", 
+                vmax=4000, vmin=-100, levels=31, level_ticks=6,
+                domain="Europe", cbar=False, projection=projection, norm=norm_new, plot_coastlines=True, plot_borders=False, 
+                ax=ax2, title="[B] MIO-W1E1 (Frigola MMC0)", bottom_labels=True, left_labels=False)
+
+mio450_oromea = read_jan_surf_oromea(path_to_mio450, "T159_MIO_450ppm_jan_surf_Frigola.nc")
+
+plot_echam_topo(variable="Elevation", data=mio450_oromea, cmap=terrain_shift, units="m", 
+                vmax=4000, vmin=-100, levels=31, level_ticks=6,
+                domain="Europe", cbar=False, projection=projection, norm=norm_new, plot_coastlines=True, plot_borders=False, 
+                ax=ax3, title="[C] MIO-W1E1 (Frigola MMG)", bottom_labels=True, left_labels=False)
+
+fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+plt.tight_layout() 
+plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10)
+plt.savefig(os.path.join(path_to_store, "topography_mio_frigola.png"), format= "png", bbox_inches="tight", dpi=300)
+plt.show()
+
+
+# filenames = ["T159_PI_W1E1_jan_surf.nc", "T159_MIO_W1E1_jan_surf_Herold.nc",  "T159_MIO_W2E1.5_jan_surf_Herold.nc",  "T159_MIO_W2E2_jan_surf_Herold.nc",
+# "T159_MIO_W2E0_jan_surf_Herold.nc",  "T159_MIO_W2E1_jan_surf_Herold.nc"]
+
+
+
+
+

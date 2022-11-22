@@ -37,7 +37,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                      output_format=None, level_ticks=None, title=None, path_to_store=None, data_v=None, data_u=None, GNIP_data=None,
                      left_labels= True, bottom_labels=True, add_colorbar=True, plot_stats= False, compare_data1=None, compare_data2=None, max_pvalue=None,
                      hatches=None, fig=None, cbar_pos=None, use_colorbar_default=False, plot_winds=False,
-                     orientation = "horizontal", time=None):
+                     orientation = "horizontal", time=None, plot_projection=None):
     """
     
 
@@ -107,9 +107,12 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
     norm = MidpointNormalize(midpoint = 0)
     projection = ccrs.PlateCarree()
     
+    if plot_projection is None:
+        plot_projection = ccrs.PlateCarree()
+        
     #generating plot using geoaxis predefined or from default
     if ax is None:
-        fig, ax = plt.subplots(1, 1, sharex=False, figsize= (15, 13), subplot_kw= {"projection":projection})
+        fig, ax = plt.subplots(1, 1, sharex=False, figsize= (15, 13), subplot_kw= {"projection":plot_projection})
         
     if add_colorbar == True:    
         if cbar_pos is None:
@@ -236,7 +239,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
             q = ax.quiver(X[skip], Y[skip], u[skip], v[skip], transform=projection,  pivot= "mid", scale= 100,
                           headwidth=3, headlength=5, headaxislength=4.5)
             
-            qk = ax.quiverkey(q, 0.90, -0.1, 5, r'$5 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
+            qk = ax.quiverkey(q, 0.90, -0.1, 2, r'$2 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
                               {"size": 20, "weight":"bold"})
         
     if plot_stats == True:
@@ -1051,15 +1054,22 @@ def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, 
     if ax is None:
         fig, ax = plt.subplots(1, 1, sharex=False, figsize= (15, 13), subplot_kw= {"projection":projection})
     if all(parameter is not None for parameter in [vmin, vmax, levels, level_ticks]):
-        ticks = np.linspace(vmin, vmax, level_ticks)
+        ticks = np.linspace(0, vmax, level_ticks)
         if cbar==True:
             
             cbar_pos = cbar_position
             cbar_ax = fig.add_axes(cbar_pos)   # axis for subplot colorbar # left, bottom, width, height
-            cbar_ax.get_xaxis().set_visible(False)
-            cbar_ax.yaxis.set_ticks_position('right')
-            cbar_ax.set_yticklabels([])
-            cbar_ax.tick_params(size=0)
+            
+            if cbar_orientation == "vertical":
+                cbar_ax.get_xaxis().set_visible(False)
+                cbar_ax.yaxis.set_ticks_position('right')
+                cbar_ax.set_yticklabels([])
+                cbar_ax.tick_params(size=0)
+            else:
+                cbar_ax.get_yaxis().set_visible(False)
+                cbar_ax.xaxis.set_ticks_position('bottom')
+                cbar_ax.set_xticklabels([])
+                cbar_ax.tick_params(size=0)
             
             p = data.plot.imshow(ax=ax, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, transform = projection_p,
                                  cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": cbar_orientation, 
@@ -1071,10 +1081,10 @@ def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, 
             p.colorbar.ax.tick_params(labelsize=20, size=0,)
             
         elif cbar == False:
-            p = data.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, transform = projection, add_colorbar=False, add_labels=False)
+            p = data.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, transform = projection_p, add_colorbar=False, add_labels=False)
                                  
     else:
-        p = data.plot.imshow(ax =ax, cmap=cmap, transform = projection, 
+        p = data.plot.imshow(ax =ax, cmap=cmap, transform = projection_p, 
                                  cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
                                                "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither")
         
