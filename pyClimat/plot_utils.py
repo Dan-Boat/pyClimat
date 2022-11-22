@@ -72,6 +72,7 @@ PiYG = plt.cm.PiYG_r
 PuOr = plt.cm.PuOr
 PuOr_r = plt.cm.PuOr_r
 BrBG = plt.cm.BrBG
+BrBG_r = plt.cm.BrBG_r
 RdYlBu = plt.cm.RdYlBu
 RdYlBu_r = plt.cm.RdYlBu_r
 RdYlGn = plt.cm.RdYlGn

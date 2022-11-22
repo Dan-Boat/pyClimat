@@ -990,7 +990,7 @@ def scatter_plot_laspe_rate(reg_params, df_x_y_yhat, color, marker, label, ylabe
     
 def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, levels=None, domain=None, output_name=None, 
                      output_format=None, level_ticks=None, title=None, path_to_store=None, cbar = None, cbar_orientation=None, cbar_position = None,
-                     fig=None, left_labels= True, bottom_labels=True, norm=None, projection=None):
+                     fig=None, left_labels= True, bottom_labels=True, norm=None, projection=None, plot_coastlines=True, plot_borders=False):
     """
     
 
@@ -1080,7 +1080,8 @@ def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, 
         
     
     # ploting background extent
-    plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels)
+    plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels, 
+                    plot_coastlines=plot_coastlines, plot_borders=plot_borders)
     
     if title is not None:
         ax.set_title(title, fontsize=20, weight="bold", loc="left")

@@ -197,10 +197,20 @@ PLIO_month_sahara_t2m, PLIO_month_sahel_t2m, PLIO_month_guinea_t2m = extract_sec
 
 minlat = 0
 maxlat = 30
-minlon = -15
-maxlon = 10
+minlon = -20
+maxlon = 30
 
 PI_cross_section_u = extract_vertical_section(data=PI_u_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
 MH_cross_section_u = extract_vertical_section(data=MH_u_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
 LGM_cross_section_u = extract_vertical_section(data=LGM_u_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
 PLIO_cross_section_u = extract_vertical_section(data=PLIO_u_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
+
+PI_cross_section_v = extract_vertical_section(data=PI_v_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
+MH_cross_section_v = extract_vertical_section(data=MH_v_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
+LGM_cross_section_v = extract_vertical_section(data=LGM_v_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
+PLIO_cross_section_v = extract_vertical_section(data=PLIO_v_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
+
+PI_cross_section_omega = extract_vertical_section(data=PI_omega_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
+MH_cross_section_omega = extract_vertical_section(data=MH_omega_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
+LGM_cross_section_omega = extract_vertical_section(data=LGM_omega_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
+PLIO_cross_section_omega = extract_vertical_section(data=PLIO_omega_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")

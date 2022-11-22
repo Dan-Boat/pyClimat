@@ -145,16 +145,16 @@ def plot_JJA_anomaly():
     projection = ccrs.PlateCarree()
     fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":
                                                                                                                       projection})
-    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=MH_slp_alt_diff , cmap=RdBu, units="hPa", ax=ax1, fig=fig, vmax=20, vmin=-10,
+    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=MH_slp_alt_diff , cmap=RdBu_r, units="hPa", ax=ax1, fig=fig, vmax=20, vmin=-10,
                      levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
                                title= ["[A]  MH - PI"], bottom_labels=True, left_labels=True, plot_winds=True, data_u=MH_u850_alt, data_v=MH_v850_alt, time="JJAS")
     
-    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=LGM_slp_alt_diff , cmap=RdBu, units="hPa", ax=ax2, fig=fig, vmax=20, vmin=-10,
+    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=LGM_slp_alt_diff , cmap=RdBu_r, units="hPa", ax=ax2, fig=fig, vmax=20, vmin=-10,
                      levels=22, domain="West Africa", level_ticks=11, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
                                title= ["[B]  LGM - PI"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=LGM_u850_alt, data_v=LGM_v850_alt, 
                                orientation= "horizontal", time="JJAS") 
     
-    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=PLIO_slp_alt_diff , cmap=RdBu, units="hPa", ax=ax3, fig=fig, vmax=20, vmin=-10,
+    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=PLIO_slp_alt_diff , cmap=RdBu_r, units="hPa", ax=ax3, fig=fig, vmax=20, vmin=-10,
                      levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
                                title= ["[C]  PLIO - PI"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=PLIO_u850_alt, data_v=PLIO_v850_alt, 
                                time="JJAS") 
@@ -190,35 +190,91 @@ def plot_monthly_variability():
     plt.savefig(os.path.join(path_to_store, "PI_monthly_sections.png"), format= "png", bbox_inches="tight", dpi=300)
 
 
+def plot_vertical_sections():
+    apply_style(fontsize=22, style=None, linewidth=2) 
+    
+    projection = ccrs.PlateCarree()
+    fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15), sharex=False,
+                                               sharey=False)
+    
+    plot_vertical_section(variable="Zonal Velocity", data=PI_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
+                                level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.35, 0.02, 0.35], dim="lat", ax=ax1, fig=fig, 
+                                bottom_labels=False, right_labels=False, left_labels=True, title= "[A] PI", use_norm=True, 
+                                use_cbar_norm=True)
+    
+    plot_vertical_section(variable="Zonal Velocity", data=MH_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
+                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax2, fig=fig, 
+                                bottom_labels=False, left_labels=False, title= "[B] MH", use_norm=True)
+    
+    plot_vertical_section(variable="Zonal Velocity", data=LGM_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
+                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax3, fig=fig, 
+                                bottom_labels=True, left_labels=True, title= "[C] LGM", use_norm=True)
+    
+    plot_vertical_section(variable="Zonal Velocity", data=PLIO_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
+                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax4, fig=fig, 
+                                bottom_labels=True, left_labels=False, title= "[D] PLIO", use_norm=True)
+    
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
+    plt.savefig(os.path.join(path_to_store, "u_vertical_sections.png"), format= "png", bbox_inches="tight", dpi=300)
+    
+    
+    fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15), sharex=False,
+                                               sharey=False)
+    
+    plot_vertical_section(variable="Meridoinal Velocity", data=PI_cross_section_v , cmap=BwR, units="m/s", vmax=6, vmin=-6, levels=22,
+                                level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.35, 0.02, 0.35], dim="lat", ax=ax1, fig=fig, 
+                                bottom_labels=False, right_labels=False, left_labels=True, title= "[A] PI", use_norm=True, 
+                                use_cbar_norm=True)
+    
+    plot_vertical_section(variable="Meridoinal Velocity", data=MH_cross_section_v , cmap=BwR, units="m/s", vmax=6, vmin=-6, levels=22,
+                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax2, fig=fig, 
+                                bottom_labels=False, left_labels=False, title= "[B] MH", use_norm=True)
+    
+    plot_vertical_section(variable="Meridoinal Velocity", data=LGM_cross_section_v , cmap=BwR, units="m/s", vmax=6, vmin=-6, levels=22,
+                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax3, fig=fig, 
+                                bottom_labels=True, left_labels=True, title= "[C] LGM", use_norm=True)
+    
+    plot_vertical_section(variable="Meridoinal Velocity", data=PLIO_cross_section_v , cmap=BwR, units="m/s", vmax=6, vmin=-6, levels=22,
+                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax4, fig=fig, 
+                                bottom_labels=True, left_labels=False, title= "[D] PLIO", use_norm=True)
+    
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
+    plt.savefig(os.path.join(path_to_store, "v_vertical_sections.png"), format= "png", bbox_inches="tight", dpi=300)
+    
+    
+    fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15), sharex=False,
+                                               sharey=False)
+    
+    plot_vertical_section(variable="Vertical Velocity", data=PI_cross_section_omega , cmap=BrBG_r, units="m/s", vmax=0.1, vmin=-0.1, levels=22,
+                                level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.35, 0.02, 0.35], dim="lat", ax=ax1, fig=fig, 
+                                bottom_labels=False, right_labels=False, left_labels=True, title= "[A] PI", use_norm=True, 
+                                use_cbar_norm=True)
+    
+    plot_vertical_section(variable="Vertical Velocity", data=MH_cross_section_omega , cmap=BrBG_r, units="m/s", vmax=0.1, vmin=-0.1, levels=22,
+                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax2, fig=fig, 
+                                bottom_labels=False, left_labels=False, title= "[B] MH", use_norm=True)
+    
+    plot_vertical_section(variable="Vertical Velocity", data=LGM_cross_section_omega , cmap=BrBG_r, units="m/s", vmax=0.1, vmin=-0.1, levels=22,
+                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax3, fig=fig, 
+                                bottom_labels=True, left_labels=True, title= "[C] LGM", use_norm=True)
+    
+    plot_vertical_section(variable="Vertical Velocity", data=PLIO_cross_section_omega , cmap=BrBG_r, units="m/s", vmax=0.1, vmin=-0.1, levels=22,
+                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax4, fig=fig, 
+                                bottom_labels=True, left_labels=False, title= "[D] PLIO", use_norm=True)
+    
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
+    plt.savefig(os.path.join(path_to_store, "omega_vertical_sections.png"), format= "png", bbox_inches="tight", dpi=300)
 
-apply_style(fontsize=22, style=None, linewidth=2) 
 
-projection = ccrs.PlateCarree()
-fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15), sharex=False,
-                                           sharey=False)
+# run for all 
+plot_PI_JJAS()
+plot_JJA_anomaly()
+plot_monthly_variability()
+plot_vertical_sections()
 
-plot_vertical_section(variable="Zonal Wind", data=PI_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
-                            level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.35, 0.02, 0.35], dim="lon", ax=ax1, fig=fig, 
-                            bottom_labels=False, right_labels=False, left_labels=True, title= "[A] PI", use_norm=True, 
-                            use_cbar_norm=True)
-
-plot_vertical_section(variable="Zonal Wind", data=MH_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
-                            level_ticks=6, plot_colorbar=False, dim="lon", ax=ax2, fig=fig, 
-                            bottom_labels=False, left_labels=False, title= "[B] MH", use_norm=True)
-
-plot_vertical_section(variable="Zonal Wind", data=LGM_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
-                            level_ticks=6, plot_colorbar=False, dim="lon", ax=ax3, fig=fig, 
-                            bottom_labels=True, left_labels=True, title= "[C] LGM", use_norm=True)
-
-plot_vertical_section(variable="Zonal Wind", data=PLIO_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
-                            level_ticks=6, plot_colorbar=False, dim="lon", ax=ax4, fig=fig, 
-                            bottom_labels=True, left_labels=False, title= "[D] PLIO", use_norm=True)
-
-plt.tight_layout()
-plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
-plt.savefig(os.path.join(path_to_store, "u_vertical_sections.png"), format= "png", bbox_inches="tight", dpi=300)
-
-plt.show()
 
 
 
