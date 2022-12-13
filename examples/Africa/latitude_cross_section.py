@@ -16,46 +16,37 @@ import matplotlib.pyplot as plt
 from pyClimat.analysis import extract_var, compute_lterm_mean, extract_transect, compute_lterm_diff
 from pyClimat.analysis import extract_vertical_section
 from pyClimat.plot_utils import *
+from pyClimat.plots import plot_hovmoller_space_time
 
 # relative imports
 from read_data import * # EXP_ID_data for surface variables and EXP_ID_plev_data for pressure variables
 
+path_to_store = "/home/dboateng/Python_scripts/ClimatPackage_repogit/examples/Africa/plots"
+
 # define variables
-t2m = "temp2"
 prec = "prec"
-v10 = "v10"
-u10 = "u10"
 
 
-def extract_all_variables(data_surface, data_plev):
+
+def extract_all_variables():
     
-    data_t2m = extract_var(Dataset=data_surface, varname=t2m, units="°C")
-    data_prec = extract_var(Dataset=data_surface, varname=prec, units="mm/month")
-    data_v10 = extract_var(Dataset=data_surface, varname=v10) # default in m/s
-    data_u10 = extract_var(Dataset=data_surface, varname=u10) # default in m/s
-    data_slp = extract_var(Dataset=data_plev, varname="slp", units="hPa")
-    data_v = extract_var(Dataset=data_plev, varname="v", lev_units="hPa")
-    data_u = extract_var(Dataset=data_plev, varname="u", lev_units="hPa")
-    data_omega = extract_var(Dataset=data_plev, varname="omega", lev_units="hPa")
-    data_v850 = data_v.sel(lev=850)
-    data_u850 = data_u.sel(lev=850)
+    PI_prec = extract_var(Dataset=PI_data , varname=prec, units="mm/month")
+    LGM_prec = extract_var(Dataset=LGM_data , varname=prec, units="mm/month")
+    MH_prec = extract_var(Dataset=MH_data , varname=prec, units="mm/month")
+    PLIO_prec = extract_var(Dataset=PLIO_data , varname=prec, units="mm/month")
 
-    return data_t2m, data_prec, data_v10, data_u10, data_slp, data_v, data_u, data_omega, data_v850, data_u850
+
+    return PI_prec, MH_prec, LGM_prec, PLIO_prec
 
 
 # Pre_Industrial - other experiments (function)
-PI_t2m, PI_prec, PI_v10, PI_u10, PI_slp, PI_v, PI_u, PI_omega, PI_v850, PI_u850 = extract_all_variables(data_surface=PI_data, 
-                                                                                             data_plev=PI_plev_data)
+PI_prec, MH_prec, LGM_prec, PLIO_prec = extract_all_variables()
 
 #PI
-PI_t2m_alt = compute_lterm_mean(data=PI_t2m, time="month")
 PI_prec_alt = compute_lterm_mean(data=PI_prec, time="month")
-PI_v_alt = compute_lterm_mean(data=PI_v, time="month")
-PI_u_alt = compute_lterm_mean(data=PI_u, time="month")
-PI_omega_alt = compute_lterm_mean(data=PI_omega, time="month")
-PI_slp_alt = compute_lterm_mean(data=PI_slp, time="month")
-PI_u850_alt = compute_lterm_mean(data=PI_u850, time="month")
-PI_v850_alt = compute_lterm_mean(data=PI_v850, time="month")
+MH_prec_alt = compute_lterm_mean(data=MH_prec, time="month")
+LGM_prec_alt = compute_lterm_mean(data=LGM_prec, time="month")
+PLIO_prec_alt = compute_lterm_mean(data=PLIO_prec, time="month")
 
 
 minlat = 0
@@ -63,20 +54,39 @@ maxlat = 30
 minlon = -20
 maxlon = 30
 
-PI_cross_section_prec = extract_vertical_section(data=PI_prec_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat",
+PI_tp = extract_vertical_section(data=PI_prec_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat",
                                               lev=None)
+MH_tp = extract_vertical_section(data=MH_prec_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat",
+                                              lev=None)
+LGM_tp = extract_vertical_section(data=LGM_prec_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat",
+                                              lev=None)
+PLIO_tp = extract_vertical_section(data=PLIO_prec_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
+ 
+                                   
+ 
+apply_style(fontsize=22, style=None, linewidth=2)                                   
+fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows=2, ncols=2, figsize=(24, 18), sharex=False, sharey=False)
 
-data = PI_cross_section_prec
-y = data.index.values
-x = data.columns.values
-     
-X,Y = np.meshgrid(x,y)
-Z = data.values
+plot_hovmoller_space_time(variable="Precipitation", data=PI_tp, cmap=YlGnBu, units="mm/month", plot_colorbar=True,
+                          ax=ax1, bottom_labels=True, left_labels=True, fig=fig, vmax=400, vmin=0,
+                                            levels=22, level_ticks=6, cbar_pos=[0.90, 0.35, 0.02, 0.35], title= "[A]  PI")
 
-fig, ax = plt.subplots(nrows=1, ncols=1, sharex= False, sharey= False, figsize=(15, 10))
+plot_hovmoller_space_time(variable="Precipitation", data=MH_tp, cmap=YlGnBu, units="mm/month", plot_colorbar=False,
+                          ax=ax2, bottom_labels=True, left_labels=True, fig=fig, vmax=400, vmin=0,
+                                            levels=22, level_ticks=6, title= "[A]  MH")
 
-p = ax.contourf(X,Y,Z, cmap=YlGnBu)
-c = ax.contour(X,Y,Z,color="black", linewidth=2, levels=10)
-clb = ax.clabel(c, fmt="%2.0f", use_clabeltext=True)
+plot_hovmoller_space_time(variable="Precipitation", data=LGM_tp, cmap=YlGnBu, units="mm/month", plot_colorbar=False,
+                          ax=ax3, bottom_labels=True, left_labels=True, fig=fig, vmax=400, vmin=0,
+                                            levels=22, level_ticks=6, title= "[A]  LGM")
 
-plt.show()
+plot_hovmoller_space_time(variable="Precipitation", data=PLIO_tp, cmap=YlGnBu, units="mm/month", plot_colorbar=False,
+                          ax=ax4, bottom_labels=True, left_labels=True, fig=fig, vmax=400, vmin=0,
+                                            levels=22, level_ticks=6, title= "[A]  PLIO")
+
+plt.tight_layout()
+plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
+
+plt.savefig(os.path.join(path_to_store, "time_space_tp.svg"), format= "svg", bbox_inches="tight", dpi=300)
+
+
+

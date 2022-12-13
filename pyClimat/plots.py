@@ -1368,7 +1368,105 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
         plt.savefig(os.path.join(path_to_store, output_name + "." + output_format), format= output_format, bbox_inches="tight")
         
                
+def plot_hovmoller_space_time(variable, data, cmap, units, ax=None, fig=None, vmax=None, vmin=None, levels=None, output_name=None, 
+                     output_format=None, level_ticks=None, title=None, path_to_store=None, plot_colorbar=True,
+                     cbar_pos=None, fig_title=None, left_labels=False, bottom_labels=False,
+                     right_labels=False, use_norm=False, use_cbar_norm=False,
+                     plot_contour=True):
+    
+    # extracting coords from data (select up to 200 hPa) [:,:10] y = data.columns.values[:10], data = data.iloc[:, :10]
+    y = data.index.values
+    x = data.columns.values
+    
+    # applying meshgrid 
+    X,Y = np.meshgrid(x,y)
+    Z = data.values
+     
+    if ax is None:
+        fig, ax = plt.subplots(nrows=1, ncols=1, sharex= False, sharey= False, figsize=(8, 7))
+    
+    #ploting with plt.contourf 
+    norm = MidpointNormalize(midpoint=0)
+    
+    if all(parameter is not None for parameter in [vmin, vmax, levels, level_ticks]):
+        ticks = np.linspace(vmin, vmax, level_ticks)
+        if vmin < 0 and use_norm==True:
+            p = ax.contourf(X,Y,Z, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, norm=norm)
+        else:
+            p = ax.contourf(X,Y,Z, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels,)
+    else:
+        p = ax.contourf(X,Y,Z, cmap=cmap)
+    
+    
+    if plot_colorbar == True:
+        if use_cbar_norm == True:
+            norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+            
+        if cbar_pos is None:
+            cbar_pos = [0.90, 0.30, 0.03, 0.45]
+        
+        if fig is not None:
+            
+            cbar_ax = fig.add_axes(cbar_pos)   # axis for subplot colorbar # left, bottom, width, height
+            
+            cbar_ax.get_xaxis().set_visible(False)
+            cbar_ax.yaxis.set_ticks_position('right')
+            cbar_ax.set_yticklabels([])
+            cbar_ax.tick_params(size=0)
+        
+        if level_ticks is not None:
+            if use_cbar_norm == True:
+                cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
+                         format="%.2f", ticks = ticks, extend = "neither", pad = 0.05, norm=norm)
+            else:
+                cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
+                         format="%.2f", ticks = ticks, extend = "neither", pad = 0.05,)
+        else:
+            cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
+                     format="%.2f", extend = "neither", pad=0.05, norm=norm)
+            
+        cb.set_label(label=variable + " [" + units + "]", size= 20, fontweight="bold")
+        cb.ax.tick_params(labelsize=20, size=0,)
+    
+    if plot_contour == True:
+        
+        c = ax.contour(X,Y,Z, color="black", linewidth=2, levels=10)
+        clb = ax.clabel(c, fmt="%2.0f", use_clabeltext=True, colors="black", fontsize=20)
+    if bottom_labels == True:
+        
+        ax.set_xlabel("Months ", fontsize=22, fontweight="bold")
+        ax.xaxis.set_ticks(np.arange(min(x), max(x)+1, 1.0))
 
+        
+            
+    if left_labels == True:
+        ax.set_ylabel("Latitude [°N]", fontsize=22, fontweight="bold")
+            
+    
+    if left_labels ==False:
+        ax.grid(False)
+        #ax.axes.yaxis.set_visible(False)
+        ax.set_yticklabels([])
+    
+        
+    if bottom_labels == False:
+        ax.grid(False)
+        #ax.axes.yaxis.set_visible(False)
+        ax.set_xticklabels([])
+    
+    
+    
+    if title is not None:
+        ax.set_title(title, fontdict= {"fontsize": 22, "fontweight":"bold"}, loc="left")
+        
+    plt.tight_layout()
+    
+    #optional if one plot is required, alternatively save from the control script
+    if all(parameter is not None for parameter in [output_format, output_name, path_to_store]):
+        plt.savefig(os.path.join(path_to_store, output_name + "." + output_format), format= output_format, bbox_inches="tight")
+        
+        
+        
 def plot_wind_streamlines():
     pass
 

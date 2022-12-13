@@ -161,9 +161,31 @@ def plot_JJA_anomaly():
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
-    plt.savefig(os.path.join(path_to_store, "slp_anomalies.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "slp_.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
-  
+
+def plot_slp():
+    
+    projection = ccrs.PlateCarree()
+    fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":
+                                                                                                                      projection})
+    plot_annual_mean(variable="Sea Level Pressure ", data_alt=MH_slp_alt , cmap=RdYlBu_r, units="hPa", ax=ax1, fig=fig, vmax=1040, vmin=1000,
+                     levels=22, domain="West Africa", level_ticks=6, add_colorbar=False,
+                               title= ["[A]  MH "], bottom_labels=True, left_labels=True, plot_winds=True, data_u=MH_u850_alt, data_v=MH_v850_alt, time="JJAS")
+    
+    plot_annual_mean(variable="Sea Level Pressure", data_alt=LGM_slp_alt , cmap=RdYlBu_r, units="hPa", ax=ax2, fig=fig, vmax=1040, vmin=1000,
+                     levels=22, domain="West Africa", level_ticks=6, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
+                               title= ["[B]  LGM"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=LGM_u850_alt, data_v=LGM_v850_alt, 
+                               orientation= "horizontal", time="JJAS") 
+    
+    plot_annual_mean(variable="Sea Level Pressure ", data_alt=PLIO_slp_alt , cmap=RdYlBu_r, units="hPa", ax=ax3, fig=fig, vmax=1040, vmin=1000,
+                     levels=22, domain="West Africa", level_ticks=6, add_colorbar=False,
+                               title= ["[C]  PLIO"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=PLIO_u850_alt, data_v=PLIO_v850_alt, 
+                               time="JJAS") 
+    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
+    plt.savefig(os.path.join(path_to_store, "slp_.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 # left, bottom, width, height
 
@@ -273,7 +295,8 @@ def plot_vertical_sections():
 # plot_PI_JJAS()
 # plot_JJA_anomaly()
 # plot_monthly_variability()
-plot_vertical_sections()
+#plot_vertical_sections()
+plot_slp()
 
 
 

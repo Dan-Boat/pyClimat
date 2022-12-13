@@ -23,7 +23,6 @@ pi_path = os.path.join(main_path, "PI", "MONTHLY_MEANS")
 
 filename_lterm = "1003_1017_1m_mlterm.nc"
 
-path_to_store = "/home/dboateng/Python_scripts/ClimatPackage_repogit/examples/Africa/plots"
 
 # read long-term means
 
