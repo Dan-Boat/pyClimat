@@ -242,6 +242,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
             qk = ax.quiverkey(q, 0.90, -0.1, 2, r'$2 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
                               {"size": 20, "weight":"bold"})
         
+        
     if plot_stats == True:
         data1 = compare_data1
         data2 = compare_data2
@@ -1228,7 +1229,8 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
 def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig=None, vmax=None, vmin=None, levels=None, output_name=None, 
                      output_format=None, level_ticks=None, title=None, path_to_store=None, plot_colorbar=True,
                      cbar_pos=None, fig_title=None, season_label=None, geosp_data=None, dim=None, left_labels=False, bottom_labels=False,
-                     right_labels=False, use_norm=False, use_cbar_norm=False):
+                     right_labels=False, use_norm=False, use_cbar_norm=False,
+                     data_u =None, data_v=None, plot_winds=False):
     
     # extracting coords from data (select up to 200 hPa) [:,:10] y = data.columns.values[:10], data = data.iloc[:, :10]
     x = data.index.values
@@ -1301,6 +1303,27 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
         # setting limit to match pressure levels (Try with the cdo converted height levels later)
         ax2.set_ylim(0, 11.5)
     
+    
+    if plot_winds == True:
+        
+        if all(data is not None for data in [data_v, data_u]):
+            # extracting variables for quiver 
+            x = data_v.index.values[::1]
+            y = data_v.columns.values[:14]
+        
+            u = data_u.iloc[::1, :14] # meridoinal values (m/s)
+            v = data_v.iloc[::1, :14] * -120 #(omega in Pa/s)
+        
+            X,Y = np.meshgrid(x,y)
+            #skip = (slice(None, None, 3), slice(None, None, 3))  #for extracting the data on interval or use data[::3, ::3]
+            
+            # ploting winds using quiver 
+            q = ax.quiver(X, Y, u.values, v.values,  pivot= "mid", scale= 100,
+                          headwidth=3, headlength=5, headaxislength=4.5)
+            
+            qk = ax.quiverkey(q, 0.90, -0.1, 2, r'$2 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
+                              {"size": 20, "weight":"bold"})
+        
     if bottom_labels == True:
         if dim == "lon":
              ax.set_xlabel("Longitude [E°]", fontsize=22, fontweight="bold")

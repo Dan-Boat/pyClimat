@@ -70,7 +70,7 @@ def plot_PI_JJAS():
     
     
     plot_annual_mean(ax=ax1, variable="Precipitation", data_alt=PI_prec_alt, cmap=YlGnBu, units="mm/month", vmax=350, vmin=50, domain="West Africa", 
-                      levels=22, level_ticks=6, title="[A]", left_labels=True, bottom_labels=False, use_colorbar_default=True,
+                      levels=22, level_ticks=6, title="[A]", left_labels=True, bottom_labels=True, use_colorbar_default=True,
                       )
     
     ax1.add_patch(patches.Rectangle(xy =(lon_sh, lat_sh), width= w_sh, height=h_sh, ls= "--", color= red, transform = projection, 
@@ -82,10 +82,10 @@ def plot_PI_JJAS():
     
     
     plot_annual_mean(ax=ax2, variable="Temperature", data_alt=PI_t2m_alt, cmap=Spectral_r, units="°C", vmax=40, vmin=10, domain="West Africa", 
-                      levels=22, level_ticks=11, title="[B]", left_labels=True, bottom_labels=True, use_colorbar_default=True)
+                      levels=22, level_ticks=11, title="[B]", left_labels=False, bottom_labels=True, use_colorbar_default=True)
     
     plot_annual_mean(ax=ax3, variable="Sea Level Pressure", data_alt=PI_slp_alt, cmap=RdYlBu_r, units="hPa", vmax=1020, vmin=1000, domain="West Africa", 
-                      levels=22, level_ticks=6, title="[C]", left_labels=True, bottom_labels=True, use_colorbar_default=True,
+                      levels=22, level_ticks=6, title="[C]", left_labels=False, bottom_labels=True, use_colorbar_default=True,
                       plot_winds=True, data_u=PI_u850_alt, data_v=PI_v850_alt)
     
     
@@ -93,7 +93,7 @@ def plot_PI_JJAS():
     plt.tight_layout() 
     plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.06)
     
-    plt.savefig(os.path.join(path_to_store, "PI_tp_t2m_slp.png"), format= "png", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "PI_tp_t2m_slp.svg"), format= "svg", bbox_inches="tight", dpi=300)
     
 def plot_JJA_anomaly():    
     apply_style(fontsize=22, style=None, linewidth=2) 
@@ -118,7 +118,7 @@ def plot_JJA_anomaly():
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
-    plt.savefig(os.path.join(path_to_store, "prec_anomalies.png"), format= "png", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "prec_anomalies.svg"), format= "svg", bbox_inches="tight", dpi=300)
     
     projection = ccrs.PlateCarree()
     fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":
@@ -140,7 +140,7 @@ def plot_JJA_anomaly():
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
-    plt.savefig(os.path.join(path_to_store, "t2m_anomalies.png"), format= "png", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "t2m_anomalies.svg"), format= "svg", bbox_inches="tight", dpi=300)
     
     projection = ccrs.PlateCarree()
     fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":
@@ -161,7 +161,7 @@ def plot_JJA_anomaly():
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
-    plt.savefig(os.path.join(path_to_store, "slp_anomalies.png"), format= "png", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "slp_anomalies.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
   
 
@@ -187,7 +187,7 @@ def plot_monthly_variability():
     ax2.legend(bbox_to_anchor=(0.01, 1.04, 1., 0.102), loc=3, ncol=4, borderaxespad=0., frameon = True, 
                   fontsize=20)
     plt.tight_layout()
-    plt.savefig(os.path.join(path_to_store, "PI_monthly_sections.png"), format= "png", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "PI_monthly_sections.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 def plot_vertical_sections():
@@ -195,7 +195,7 @@ def plot_vertical_sections():
     
     projection = ccrs.PlateCarree()
     fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15), sharex=False,
-                                               sharey=False)
+                                                sharey=False)
     
     plot_vertical_section(variable="Zonal Velocity", data=PI_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
                                 level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.35, 0.02, 0.35], dim="lat", ax=ax1, fig=fig, 
@@ -216,11 +216,11 @@ def plot_vertical_sections():
     
     plt.tight_layout()
     plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
-    plt.savefig(os.path.join(path_to_store, "u_vertical_sections.png"), format= "png", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "u_vertical_sections.svg"), format= "svg", bbox_inches="tight", dpi=300)
     
     
     fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15), sharex=False,
-                                               sharey=False)
+                                                sharey=False)
     
     plot_vertical_section(variable="Meridoinal Velocity", data=PI_cross_section_v , cmap=BwR, units="m/s", vmax=6, vmin=-6, levels=22,
                                 level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.35, 0.02, 0.35], dim="lat", ax=ax1, fig=fig, 
@@ -241,16 +241,16 @@ def plot_vertical_sections():
     
     plt.tight_layout()
     plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
-    plt.savefig(os.path.join(path_to_store, "v_vertical_sections.png"), format= "png", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "v_vertical_sections.svg"), format= "svg", bbox_inches="tight", dpi=300)
     
     
     fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15), sharex=False,
                                                sharey=False)
     
-    plot_vertical_section(variable="Vertical Velocity", data=PI_cross_section_omega , cmap=BrBG_r, units="m/s", vmax=0.1, vmin=-0.1, levels=22,
+    plot_vertical_section(variable="Vertical Velocity", data=PI_cross_section_omega , cmap=BrBG_r, units="Pa/s", vmax=0.1, vmin=-0.1, levels=22,
                                 level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.35, 0.02, 0.35], dim="lat", ax=ax1, fig=fig, 
                                 bottom_labels=False, right_labels=False, left_labels=True, title= "[A] PI", use_norm=True, 
-                                use_cbar_norm=True)
+                                use_cbar_norm=True, data_u=PI_cross_section_v, data_v=PI_cross_section_omega, plot_winds=True)
     
     plot_vertical_section(variable="Vertical Velocity", data=MH_cross_section_omega , cmap=BrBG_r, units="m/s", vmax=0.1, vmin=-0.1, levels=22,
                                 level_ticks=6, plot_colorbar=False, dim="lat", ax=ax2, fig=fig, 
@@ -266,13 +266,13 @@ def plot_vertical_sections():
     
     plt.tight_layout()
     plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
-    plt.savefig(os.path.join(path_to_store, "omega_vertical_sections.png"), format= "png", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "omega_vertical_sections.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
-# run for all 
-plot_PI_JJAS()
-plot_JJA_anomaly()
-plot_monthly_variability()
+#run for all 
+# plot_PI_JJAS()
+# plot_JJA_anomaly()
+# plot_monthly_variability()
 plot_vertical_sections()
 
 

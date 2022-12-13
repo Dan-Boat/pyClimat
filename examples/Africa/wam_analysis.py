@@ -214,3 +214,8 @@ PI_cross_section_omega = extract_vertical_section(data=PI_omega_alt, maxlon=maxl
 MH_cross_section_omega = extract_vertical_section(data=MH_omega_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
 LGM_cross_section_omega = extract_vertical_section(data=LGM_omega_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
 PLIO_cross_section_omega = extract_vertical_section(data=PLIO_omega_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, dim="lat")
+
+
+MH_PI_u_cross_section = MH_cross_section_u - PI_cross_section_u
+LGM_PI_u_cross_section = LGM_cross_section_u - PI_cross_section_u
+PLIO_PI_u_cross_section = PLIO_cross_section_u - PI_cross_section_u

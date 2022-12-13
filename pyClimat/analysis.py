@@ -609,7 +609,7 @@ def extract_profile(data, maxlon, minlon, maxlat, minlat, dim, to_pandas=True, s
     return data_prof
 
 def extract_vertical_section(data, maxlon, minlon, maxlat, minlat, dim, sea_land_mask=False, minelev=None, maxelev=None, 
-                    Dataset=None, season = None, month=None):
+                    Dataset=None, season = None, month=None, lev=None):
     
     data_extract = extract_transect(data=data, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, sea_land_mask=sea_land_mask, 
                                     minelev=minelev, maxelev=maxelev, Dataset=Dataset)
@@ -630,6 +630,8 @@ def extract_vertical_section(data, maxlon, minlon, maxlat, minlat, dim, sea_land
     if month is not None: 
         data_sect = data_sect.sel(month=month)
     
+    if lev is not None:
+        data_sect = data_sect.sel(lev=lev)
     # convert to pandas 
     df = data_sect.to_pandas()
     df = df.T  # transpose axis
