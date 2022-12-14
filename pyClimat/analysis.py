@@ -104,6 +104,10 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
             elif units == "mm/a":
                 var_data = var_data *60*60*24*365 #mm/a
                 var_data.attrs["units"] = units
+                
+            elif units == "mm/day":
+                var_data = var_data *60*60*24 #mm/day
+                var_data.attrs["units"] = units
             else:
                 print("Define unit well or the default is kg/m²s")
     
@@ -335,6 +339,9 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
             
     elif varname == "latent heat":
         var_data = Dataset["ahfl"] * -1 #positive values
+        
+    elif varname =="qvi":
+        var_data = Dataset["qvi"] # vertical integrated water vapor
         
         
     else:

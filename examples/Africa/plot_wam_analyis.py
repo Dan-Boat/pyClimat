@@ -169,7 +169,7 @@ def plot_slp():
     projection = ccrs.PlateCarree()
     fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":
                                                                                                                       projection})
-    plot_annual_mean(variable="Sea Level Pressure ", data_alt=MH_slp_alt , cmap=RdYlBu_r, units="hPa", ax=ax1, fig=fig, vmax=1040, vmin=1000,
+    plot_annual_mean(variable="Sea Level Pressure ", data_alt=MH_slp_alt , cmap=RdYlBu_r, units="hPa", ax=ax1, fig=fig, vmax=1020, vmin=1000,
                      levels=22, domain="West Africa", level_ticks=6, add_colorbar=False,
                                title= ["[A]  MH "], bottom_labels=True, left_labels=True, plot_winds=True, data_u=MH_u850_alt, data_v=MH_v850_alt, time="JJAS")
     
@@ -178,7 +178,7 @@ def plot_slp():
                                title= ["[B]  LGM"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=LGM_u850_alt, data_v=LGM_v850_alt, 
                                orientation= "horizontal", time="JJAS") 
     
-    plot_annual_mean(variable="Sea Level Pressure ", data_alt=PLIO_slp_alt , cmap=RdYlBu_r, units="hPa", ax=ax3, fig=fig, vmax=1040, vmin=1000,
+    plot_annual_mean(variable="Sea Level Pressure ", data_alt=PLIO_slp_alt , cmap=RdYlBu_r, units="hPa", ax=ax3, fig=fig, vmax=1020, vmin=1000,
                      levels=22, domain="West Africa", level_ticks=6, add_colorbar=False,
                                title= ["[C]  PLIO"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=PLIO_u850_alt, data_v=PLIO_v850_alt, 
                                time="JJAS") 

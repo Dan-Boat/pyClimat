@@ -151,8 +151,8 @@ def plot_background(p, domain=None, use_AlbersEqualArea=None,ax=None, left_label
         elif domain == "South America":   # South America
             minLon = -83
             maxLon = -32
-            minLat = -25
-            maxLat = 15
+            minLat = -35
+            maxLat = 5
         elif domain == "Tibetan Plateau" or domain == "Himalayas":  #Tibet Plateau/Himalayas
             minLon = 40
             maxLon = 120

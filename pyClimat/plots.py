@@ -294,7 +294,8 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                      output_format=None, level_ticks=None, title=None, path_to_store=None, data_v=None,
                      plot_winds_pattern=False, plot_winds_streamline=False,
                      data_u=None, cbar_pos=None, fig_title=None, season_label=None, plot_stats= False, compare_data1=None, compare_data2=None, max_pvalue=None,
-                     hatches=None, add_colorbar = True, left_labels= True, bottom_labels=True, show_arrow_scale=True, center=True):
+                     hatches=None, add_colorbar = True, left_labels= True, bottom_labels=True, show_arrow_scale=True, center=True, 
+                     orientation = "vertical"):
     """
     
 
@@ -413,7 +414,7 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                     if add_colorbar ==True:
                         p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
                                  levels=levels, transform = projection, norm=norm, 
-                                 cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": "vertical", 
+                                 cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": orientation, 
                                                "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "neither",
                                  add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
                     else:
@@ -426,7 +427,7 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                         
                         p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, 
                                      levels=levels, transform = projection, 
-                                     cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": "vertical", 
+                                     cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": orientation, 
                                                    "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "neither",
                                      add_colorbar=True, cbar_ax=cbar_ax, add_labels=False) 
                     else: 
@@ -435,7 +436,7 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                                      
             else:
                 p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, transform = projection, 
-                                 cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": "vertical", 
+                                 cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": orientation, 
                                                "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "neither", add_labels=False)
             if add_colorbar == True:
                 p.colorbar.set_label(label=variable + " [" + units + "]", size= 22, fontweight= "bold")
