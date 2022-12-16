@@ -460,11 +460,11 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                     skip = (slice(None, None, 3), slice(None, None, 3))  #for extracting the data on interval or use data[::3, ::3]
                     
                     # ploting winds using quiver 
-                    q = axes[i].quiver(X[skip], Y[skip], u[skip], v[skip], transform=projection,  pivot= "mid", scale= 50,
+                    q = axes[i].quiver(X[skip], Y[skip], u[skip], v[skip], transform=projection,  pivot= "mid", scale= 80,
                                   headwidth=3, headlength=5, headaxislength=4.5)
                     
                     if show_arrow_scale==True:
-                        qk = axes[i].quiverkey(q, 1.0, -0.02, 2, r'$1 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
+                        qk = axes[i].quiverkey(q, 1.0, -0.02, 5, r'$5 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
                                                {"size": 22, "weight":"bold"})
             
         else:
@@ -497,8 +497,12 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                     skip = (slice(None, None, 3), slice(None, None, 3))  #for extracting the data on interval or use data[::3, ::3]
                     
                     # ploting winds using quiver 
-                    q = axes[i].quiver(X[skip], Y[skip], u[skip], v[skip], transform=projection,  pivot= "mid", scale= 50,
+                    q = axes[i].quiver(X[skip], Y[skip], u[skip], v[skip], transform=projection,  pivot= "mid", scale= 80,
                                   headwidth=3, headlength=5, headaxislength=4.5)
+                    
+                    if show_arrow_scale==True:
+                        qk = axes[i].quiverkey(q, 1.0, -0.02, 5, r'$5 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
+                                               {"size": 22, "weight":"bold"})
                 
                 
         if plot_stats == True:

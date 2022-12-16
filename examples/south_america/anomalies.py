@@ -101,23 +101,63 @@ MH_u500_alt =  compute_lterm_mean(data=MH_u500, time="season", season_calendar="
 projection = ccrs.PlateCarree()
 apply_style(fontsize=22, style=None, linewidth=2) 
 
-fig, ((ax1,ax2), (ax3, ax4) )= plt.subplots(nrows = 2, ncols = 2, figsize=(25, 23), subplot_kw={"projection":
-                                                                                                                      projection})
+varname="Precipitation"
+vmax=500
+vmin=0
+vmax_diff=150
+vmin_diff=-150
+units="mm/month"
+plot_filename="tp_anomalies.svg"
 
-plot_seasonal_mean(variable="Precipitation", data_slt=prec_diff, cmap=BrBG, units="mm/month", seasons=["JJA", "DJF"], 
-                   axes=[ax3, ax4], vmin=-180, vmax=180, levels=22, level_ticks=11, add_colorbar=True, 
-                   cbar_pos = [0.90, 0.30, 0.02, 0.25], fig=fig, domain="South America", orientation="vertical",
-                   bottom_labels=True, season_label=["[C] MH - PI", "[D] MH - PI"], title=True)
+def plot_anomalies(data, data_diff, varname, cmap, cmap_diff, vmax, vmin, vmax_diff, vmin_diff, units, plot_filename, plot_winds=False,
+                   u_data=None, v_data=None, u_data_diff=None, v_data_diff=None):
+    
 
-plot_seasonal_mean(variable="Precipitation", data_slt=PI_prec_alt, cmap=YlGnBu, units="mm/month", seasons=["JJA", "DJF"], 
-                   axes=[ax1, ax2], vmin=50, vmax=500, levels=22, level_ticks=11, add_colorbar=True, 
-                   cbar_pos = [0.90, 0.65, 0.02, 0.25], fig=fig, domain="South America", orientation="vertical", bottom_labels=True,
-                   season_label=["[A] PI (JJA)", "[B] PI (DJF)"], title=True)
+    fig, ((ax1,ax2), (ax3, ax4) )= plt.subplots(nrows = 2, ncols = 2, figsize=(25, 23), subplot_kw={"projection":projection})
+     
+    if plot_winds == True:  
+        
+        plot_seasonal_mean(variable=varname, data_slt=data_diff, cmap=cmap_diff, units=units, seasons=["JJA", "DJF"], 
+                           axes=[ax3, ax4], vmin=vmin_diff, vmax=vmax_diff, levels=22, level_ticks=11, add_colorbar=True, 
+                           cbar_pos = [0.90, 0.20, 0.02, 0.25], fig=fig, domain="South America", orientation="vertical",
+                           bottom_labels=True, season_label=["[C] MH - PI", "[D] MH - PI"], title=True, 
+                           plot_winds_pattern=True, data_u=u_data_diff, data_v=v_data_diff)
+        
+        plot_seasonal_mean(variable=varname, data_slt=data, cmap=cmap, units=units, seasons=["JJA", "DJF"], 
+                           axes=[ax1, ax2], vmin=vmin, vmax=vmax, levels=22, level_ticks=11, add_colorbar=True, 
+                           cbar_pos = [0.90, 0.60, 0.02, 0.25], fig=fig, domain="South America", orientation="vertical", bottom_labels=True,
+                           season_label=["[A] PI (JJA)", "[B] PI (DJF)"], title=True, 
+                           plot_winds_pattern=True, data_u=u_data, data_v=v_data)
+    else:
+                                                                                                                             
 
-fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
-plt.tight_layout()
-plt.subplots_adjust(left=0.05, right=0.88, top=0.94, bottom=0.15, hspace=0.05)
-plt.savefig(os.path.join(path_to_store, "PI_tp_t2m_slp.svg"), format= "svg", bbox_inches="tight", dpi=300)
+        plot_seasonal_mean(variable=varname, data_slt=data_diff, cmap=cmap_diff, units=units, seasons=["JJA", "DJF"], 
+                           axes=[ax3, ax4], vmin=vmin_diff, vmax=vmax_diff, levels=22, level_ticks=11, add_colorbar=True, 
+                           cbar_pos = [0.90, 0.20, 0.02, 0.25], fig=fig, domain="South America", orientation="vertical",
+                           bottom_labels=True, season_label=["[C] MH - PI", "[D] MH - PI"], title=True)
+        
+        plot_seasonal_mean(variable=varname, data_slt=data, cmap=cmap, units=units, seasons=["JJA", "DJF"], 
+                           axes=[ax1, ax2], vmin=vmin, vmax=vmax, levels=22, level_ticks=11, add_colorbar=True, 
+                           cbar_pos = [0.90, 0.60, 0.02, 0.25], fig=fig, domain="South America", orientation="vertical", bottom_labels=True,
+                           season_label=["[A] PI (JJA)", "[B] PI (DJF)"], title=True)
+    
+    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.05, right=0.88, top=0.94, bottom=0.10, hspace=0.05)
+    plt.savefig(os.path.join(path_to_store, plot_filename), format= "svg", bbox_inches="tight", dpi=300)
 
-plt.show()
+# plot_anomalies(data=PI_prec_alt , data_diff=prec_diff, varname="Precipitation", cmap=YlGnBu, cmap_diff=BrBG, vmax=500, vmin=0, 
+#                vmax_diff=150, vmin_diff=-150, units="mm/month", plot_filename="prec_anomalies.svg")
+
+# plot_anomalies(data=PI_t2m_alt , data_diff=t2m_diff, varname="Temperature", cmap=Spectral_r, cmap_diff=RdBu_r, vmax=35, vmin=-5, 
+#                vmax_diff=10, vmin_diff=-10, units="°C", plot_filename="t2m_anomalies.svg")
+
+# plot_anomalies(data=PI_slp_alt , data_diff=slp_diff, varname="Sea Level Pressure", cmap=RdYlBu_r, cmap_diff=RdBu_r, vmax=1040, vmin=1000, 
+#                vmax_diff=10, vmin_diff=-10, units="hPa", plot_filename="slp_anomalies.svg")
+
+plot_anomalies(data=PI_geop_500_alt , data_diff=geosp_diff, varname="Geopotential", cmap=RdYlBu_r, cmap_diff=RdBu_r, vmax=5950, vmin=5600, 
+               vmax_diff=30, vmin_diff=-30, units="gpm", plot_filename="geop_anomalies.svg", plot_winds=True, u_data=PI_u500_alt,
+               v_data=PI_v500_alt, u_data_diff=MH_u500_alt, v_data_diff=MH_v500_alt)
+
+
 
