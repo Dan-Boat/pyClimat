@@ -351,7 +351,7 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
 
 
 
-def compute_lterm_mean(data, time="annual", month=None, season=None, season_calendar = None):
+def compute_lterm_mean(data, time="annual", month=None, season=None, season_calendar = None, time_range=None):
     """
     
 
@@ -367,6 +367,9 @@ def compute_lterm_mean(data, time="annual", month=None, season=None, season_cale
         DESCRIPTION. The default is None.
     season_calendar : TYPE, optional
         DESCRIPTION. The default is None. Use standard if you want to consider the days of the month into consideration
+        
+    time_range: datetime
+                The time range to extract for computing the mean
 
     Returns
     -------
@@ -375,7 +378,15 @@ def compute_lterm_mean(data, time="annual", month=None, season=None, season_cale
 
     """
     
+    if time_range is not None:
+        
+        print("------selecting time range for the long-term means ---------")
+        
+        data = data.sel(time =time_range)
+        
+    
     data_ltmean = data.mean(dim="time")
+    
     if time =="season":
         if season_calendar is not None:
             if season_calendar == "standard":

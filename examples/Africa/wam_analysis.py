@@ -42,6 +42,18 @@ def extract_all_variables(data_surface, data_plev):
 
     return data_t2m, data_prec, data_v10, data_u10, data_slp, data_v, data_u, data_omega, data_v850, data_u850
 
+def extract_only_prec_temp_winds(data_surface):
+    
+    data_t2m = extract_var(Dataset=data_surface, varname=t2m, units="°C")
+    
+    data_prec = extract_var(Dataset=data_surface, varname=prec, units="mm/month")
+    
+    data_v10 = extract_var(Dataset=data_surface, varname=v10) # default in m/s
+    data_u10 = extract_var(Dataset=data_surface, varname=u10) # default in m/s
+    
+    
+    return data_prec, data_t2m, data_v10, data_u10
+
 
 # Pre_Industrial - other experiments (function)
 PI_t2m, PI_prec, PI_v10, PI_u10, PI_slp, PI_v, PI_u, PI_omega, PI_v850, PI_u850 = extract_all_variables(data_surface=PI_data, 
@@ -56,8 +68,16 @@ MH_t2m, MH_prec, MH_v10, MH_u10, MH_slp, MH_v, MH_u, MH_omega, MH_v850, MH_u850 
 PLIO_t2m, PLIO_prec, PLIO_v10, PLIO_u10, PLIO_slp, PLIO_v, PLIO_u, PLIO_omega, PLIO_v850, PLIO_u850 = extract_all_variables(data_surface=PLIO_data, 
                                                                                                                             data_plev=PLIO_plev_data)
 
+PD_prec, PD_t2m, PD_v10, PD_u10 = extract_only_prec_temp(PD_data)
+
 
 # select the monsoon months then estimate annual means
+#PD
+
+PD_t2m_alt = compute_lterm_mean(data=PD_t2m, time="month", month="JJAS")
+PD_prec_alt = compute_lterm_mean(data=PD_prec, time="month", month="JJAS")
+PD_v10_alt = compute_lterm_mean(data=PD_v10, time="month", month="JJAS")
+PD_u10_alt = compute_lterm_mean(data=PD_u10, time="month", month="JJAS")
 
 #PI
 PI_t2m_alt = compute_lterm_mean(data=PI_t2m, time="month", month="JJAS")
@@ -108,6 +128,8 @@ PLIO_u850_alt = compute_lterm_mean(data=PLIO_u850, time="month", month="JJAS")
 PLIO_v850_alt = compute_lterm_mean(data=PLIO_v850, time="month", month="JJAS")
 
 # compute the long-term mean difference
+
+
 
 LGM_t2m_alt_diff = compute_lterm_diff(data_control=PI_t2m, data_main= LGM_t2m, time="month", month="JJAS")
 LGM_prec_alt_diff = compute_lterm_diff(data_control=PI_prec, data_main= LGM_prec, time="month", month="JJAS")

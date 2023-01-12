@@ -23,7 +23,7 @@ pi_path = os.path.join(main_path, "PI", "MONTHLY_MEANS")
 
 filename_lterm = "1003_1017_1m_mlterm.nc"
 
-
+from1980to2000 = pd.date_range(start="1980-01-01", end="2000-12-31", freq="MS")
 # read long-term means
 
 PI_data = read_from_path(pi_path, filename_lterm)
@@ -33,7 +33,9 @@ pi_temp2 = extract_var(Dataset=PI_data, varname="temp2", units="°C")
 
 
 PI_temp2_alt = compute_lterm_mean(data=pi_temp2, time="month", month="JJAS")
-t2m_alt = compute_lterm_mean(data=t2m, time="month", month="JJAS")
+t2m_alt = compute_lterm_mean(data=t2m, time="month", month="JJAS", time_range=from1980to2000)
+
+from wam_analysis import PD_prec_alt, PD_t2m_alt
 
 def plot_PI_ERA5_t2m():
     apply_style(fontsize=22, style=None, linewidth=2) 
@@ -60,7 +62,7 @@ def plot_PI_ERA5_t2m():
     lon_g , w_g = -20, 50  # long and width 
     
     
-    plot_annual_mean(ax=ax1, variable="Temperature", data_alt=PI_temp2_alt, cmap=Spectral_r, units="°C", vmax=40, vmin=10, domain="West Africa", 
+    plot_annual_mean(ax=ax1, variable="Temperature", data_alt=PD_t2m_alt, cmap=Spectral_r, units="°C", vmax=40, vmin=10, domain="West Africa", 
                       levels=22, level_ticks=11, title="[A] PI-ECHAM5", left_labels=True, bottom_labels=True, use_colorbar_default=True,
                       )
     
