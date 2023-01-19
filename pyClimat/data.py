@@ -192,7 +192,8 @@ def read_GNIP_data(path, filename):
     return df
 
 
-def read_from_path(path, filename):
+def read_from_path(path, filename, varname=None, decode=True, isPMIP=False,
+                   start=None, period=None):
     """
     
 
@@ -210,6 +211,22 @@ def read_from_path(path, filename):
 
     """
     path_to_data = os.path.join(path, filename)
-    dataset = xr.open_dataset(path_to_data, decode_cf=True, use_cftime=True)
     
-    return dataset
+    if decode == True: 
+        dataset = xr.open_dataset(path_to_data, decode_cf=True, use_cftime=True)
+    else:
+        dataset = xr.open_dataset(path_to_data, decode_cf=False, use_cftime=False)
+    
+    if varname is not None:
+        
+        data = dataset[varname]
+        
+        if isPMIP:
+            dates = xr.cftime_range(start=start, periods=period, freq="MS", calendar="noleap")
+            
+            data["time"] = dates
+       
+        return data
+    
+    else:
+        return dataset

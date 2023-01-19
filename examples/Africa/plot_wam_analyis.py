@@ -30,10 +30,10 @@ def plot_monthly_sections(data_sahara, data_sahel, data_guinea, ax, ymax, ymin, 
     
 def plot_monthly_period_per_section(PI, MH, LGM, PLIO, ax, title, ymax, ymin, varname=None): # extend with ERA (gold), SSP2.6(purple), 4,5(brown), 8.5(orange)  
     
-    ax.plot(PI["mean"], "--", color=black, label="PI", linewidth=3)
-    ax.plot(MH["mean"], "--", color=red, label="MH", linewidth=3)
-    ax.plot(LGM["mean"], "--", color=blue, label="LGM", linewidth=3)
-    ax.plot(PLIO["mean"], "--", color=green, label="PLIO", linewidth=3)
+    ax.plot(PI["mean"], "-", color=black, label="PI", linewidth=4)
+    ax.plot(MH["mean"], "--", color=red, label="MH", linewidth=4)
+    ax.plot(LGM["mean"], "-.", color=blue, label="LGM", linewidth=4)
+    ax.plot(PLIO["mean"], ":", color=green, label="mPLIO", linewidth=4)
     
     if varname is not None:
         ax.set_ylabel(varname, fontweight="bold", fontsize=22)
@@ -113,7 +113,7 @@ def plot_JJA_anomaly():
     
     plot_annual_mean(variable="Precipitation anomalies", data_alt=PLIO_prec_alt_diff , cmap=BrBG, units="mm/month", ax=ax3, fig=fig, vmax=150, vmin=-150,
                      levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
-                               title= ["[C]  PLIO - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_prec,
+                               title= ["[C]  mPLIO - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_prec,
                                compare_data2=PLIO_prec, max_pvalue=0.01, plot_stats=True, time="JJAS") 
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
@@ -135,7 +135,7 @@ def plot_JJA_anomaly():
     
     plot_annual_mean(variable="Temperature anomalies", data_alt=PLIO_t2m_alt_diff , cmap=RdBu_r, units="°C", ax=ax3, fig=fig, vmax=12, vmin=-12,
                      levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
-                               title= ["[C]  PLIO - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_t2m,
+                               title= ["[C]  mPLIO - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_t2m,
                                compare_data2=PLIO_t2m, max_pvalue=0.01, plot_stats=True, time="JJAS") 
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
@@ -145,23 +145,23 @@ def plot_JJA_anomaly():
     projection = ccrs.PlateCarree()
     fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":
                                                                                                                       projection})
-    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=MH_slp_alt_diff , cmap=RdBu_r, units="hPa", ax=ax1, fig=fig, vmax=20, vmin=-10,
-                     levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
+    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=MH_slp_alt_diff , cmap=BwR, units="hPa", ax=ax1, fig=fig, vmax=20, vmin=-20,
+                     levels=22, domain="West Africa Wide", level_ticks=11, add_colorbar=False,
                                title= ["[A]  MH - PI"], bottom_labels=True, left_labels=True, plot_winds=True, data_u=MH_u850_alt, data_v=MH_v850_alt, time="JJAS")
     
-    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=LGM_slp_alt_diff , cmap=RdBu_r, units="hPa", ax=ax2, fig=fig, vmax=20, vmin=-10,
-                     levels=22, domain="West Africa", level_ticks=11, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
+    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=LGM_slp_alt_diff , cmap=BwR, units="hPa", ax=ax2, fig=fig, vmax=20, vmin=-20,
+                     levels=22, domain="West Africa Wide", level_ticks=11, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
                                title= ["[B]  LGM - PI"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=LGM_u850_alt, data_v=LGM_v850_alt, 
                                orientation= "horizontal", time="JJAS") 
     
-    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=PLIO_slp_alt_diff , cmap=RdBu_r, units="hPa", ax=ax3, fig=fig, vmax=20, vmin=-10,
-                     levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
-                               title= ["[C]  PLIO - PI"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=PLIO_u850_alt, data_v=PLIO_v850_alt, 
+    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=PLIO_slp_alt_diff , cmap=BwR, units="hPa", ax=ax3, fig=fig, vmax=20, vmin=-20,
+                     levels=22, domain="West Africa Wide", level_ticks=11, add_colorbar=False,
+                               title= ["[C]  mPLIO - PI"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=PLIO_u850_alt, data_v=PLIO_v850_alt, 
                                time="JJAS") 
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
-    plt.savefig(os.path.join(path_to_store, "slp_.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "slp_anomalies.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 def plot_slp():
@@ -191,7 +191,7 @@ def plot_slp():
 
 def plot_monthly_variability():
     apply_style(fontsize=22, style=None, linewidth=2) 
-    fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), sharey=False)
+    fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 14), sharey=False)
     
     plot_monthly_period_per_section(PI=PI_month_sahara_prec , MH= MH_month_sahara_prec, LGM=LGM_month_sahara_prec, 
                                     PLIO=PLIO_month_sahara_prec, ax=ax1, title="Sahara", varname="Precipitation [mm/month]", ymax=14,
@@ -209,94 +209,92 @@ def plot_monthly_variability():
     ax2.legend(bbox_to_anchor=(0.01, 1.04, 1., 0.102), loc=3, ncol=4, borderaxespad=0., frameon = True, 
                   fontsize=20)
     plt.tight_layout()
-    plt.savefig(os.path.join(path_to_store, "PI_monthly_sections.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "monthly_sections_sahara_sahel_coast.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 def plot_vertical_sections():
     apply_style(fontsize=22, style=None, linewidth=2) 
     
     projection = ccrs.PlateCarree()
-    fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15), sharex=False,
+    
+    from matplotlib.colors import TwoSlopeNorm
+    
+    norm = TwoSlopeNorm(vcenter=0, vmin=-15, vmax=15)
+    fig, ((ax1,ax2, ax3, ax4),(ax5, ax6, ax7, ax8)) = plt.subplots(nrows = 2, ncols = 4, figsize=(28, 18), sharex=False,
                                                 sharey=False)
     
     plot_vertical_section(variable="Zonal Velocity", data=PI_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
-                                level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.35, 0.02, 0.35], dim="lat", ax=ax1, fig=fig, 
+                                level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.55, 0.02, 0.35], dim="lat", ax=ax1, fig=fig, 
                                 bottom_labels=False, right_labels=False, left_labels=True, title= "[A] PI", use_norm=True, 
-                                use_cbar_norm=True)
+                                use_cbar_norm=True, norm=norm)
     
     plot_vertical_section(variable="Zonal Velocity", data=MH_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
                                 level_ticks=6, plot_colorbar=False, dim="lat", ax=ax2, fig=fig, 
-                                bottom_labels=False, left_labels=False, title= "[B] MH", use_norm=True)
+                                bottom_labels=False, left_labels=False, title= "[B] MH", use_norm=True, norm=norm)
     
     plot_vertical_section(variable="Zonal Velocity", data=LGM_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
                                 level_ticks=6, plot_colorbar=False, dim="lat", ax=ax3, fig=fig, 
-                                bottom_labels=True, left_labels=True, title= "[C] LGM", use_norm=True)
+                                bottom_labels=False, left_labels=False, title= "[C] LGM", use_norm=True, norm=norm)
     
     plot_vertical_section(variable="Zonal Velocity", data=PLIO_cross_section_u , cmap=BwR, units="m/s", vmax=15, vmin=-15, levels=22,
                                 level_ticks=6, plot_colorbar=False, dim="lat", ax=ax4, fig=fig, 
-                                bottom_labels=True, left_labels=False, title= "[D] PLIO", use_norm=True)
-    
-    plt.tight_layout()
-    plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
-    plt.savefig(os.path.join(path_to_store, "u_vertical_sections.svg"), format= "svg", bbox_inches="tight", dpi=300)
+                                bottom_labels=False, left_labels=False, title= "[D] mPLIO", use_norm=True, norm=norm)
     
     
-    fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15), sharex=False,
-                                                sharey=False)
     
     plot_vertical_section(variable="Meridoinal Velocity", data=PI_cross_section_v , cmap=BwR, units="m/s", vmax=6, vmin=-6, levels=22,
-                                level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.35, 0.02, 0.35], dim="lat", ax=ax1, fig=fig, 
-                                bottom_labels=False, right_labels=False, left_labels=True, title= "[A] PI", use_norm=True, 
+                                level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.05, 0.02, 0.35], dim="lat", ax=ax5, fig=fig, 
+                                bottom_labels=True, right_labels=False, left_labels=True, title= "[E] PI", use_norm=True, 
                                 use_cbar_norm=True)
     
     plot_vertical_section(variable="Meridoinal Velocity", data=MH_cross_section_v , cmap=BwR, units="m/s", vmax=6, vmin=-6, levels=22,
-                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax2, fig=fig, 
-                                bottom_labels=False, left_labels=False, title= "[B] MH", use_norm=True)
+                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax6, fig=fig, 
+                                bottom_labels=True, left_labels=False, title= "[F] MH", use_norm=True)
     
     plot_vertical_section(variable="Meridoinal Velocity", data=LGM_cross_section_v , cmap=BwR, units="m/s", vmax=6, vmin=-6, levels=22,
-                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax3, fig=fig, 
-                                bottom_labels=True, left_labels=True, title= "[C] LGM", use_norm=True)
+                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax7, fig=fig, 
+                                bottom_labels=True, left_labels=False, title= "[G] LGM", use_norm=True)
     
     plot_vertical_section(variable="Meridoinal Velocity", data=PLIO_cross_section_v , cmap=BwR, units="m/s", vmax=6, vmin=-6, levels=22,
-                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax4, fig=fig, 
-                                bottom_labels=True, left_labels=False, title= "[D] PLIO", use_norm=True)
+                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax8, fig=fig, 
+                                bottom_labels=True, left_labels=False, title= "[H] mPLIO", use_norm=True)
     
     plt.tight_layout()
     plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
-    plt.savefig(os.path.join(path_to_store, "v_vertical_sections.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "vertical_section_u_v.svg"), format= "svg", bbox_inches="tight", dpi=300)
     
     
-    fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15), sharex=False,
-                                               sharey=False)
+    # fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15), sharex=False,
+    #                                            sharey=False)
     
-    plot_vertical_section(variable="Vertical Velocity", data=PI_cross_section_omega , cmap=BrBG_r, units="Pa/s", vmax=0.1, vmin=-0.1, levels=22,
-                                level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.35, 0.02, 0.35], dim="lat", ax=ax1, fig=fig, 
-                                bottom_labels=False, right_labels=False, left_labels=True, title= "[A] PI", use_norm=True, 
-                                use_cbar_norm=True, data_u=PI_cross_section_v, data_v=PI_cross_section_omega, plot_winds=True)
+    # plot_vertical_section(variable="Vertical Velocity", data=PI_cross_section_omega , cmap=BrBG_r, units="Pa/s", vmax=0.1, vmin=-0.1, levels=22,
+    #                             level_ticks=6, plot_colorbar=True, cbar_pos=[0.90, 0.35, 0.02, 0.35], dim="lat", ax=ax1, fig=fig, 
+    #                             bottom_labels=False, right_labels=False, left_labels=True, title= "[A] PI", use_norm=True, 
+    #                             use_cbar_norm=True, data_u=PI_cross_section_v, data_v=PI_cross_section_omega, plot_winds=True)
     
-    plot_vertical_section(variable="Vertical Velocity", data=MH_cross_section_omega , cmap=BrBG_r, units="m/s", vmax=0.1, vmin=-0.1, levels=22,
-                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax2, fig=fig, 
-                                bottom_labels=False, left_labels=False, title= "[B] MH", use_norm=True)
+    # plot_vertical_section(variable="Vertical Velocity", data=MH_cross_section_omega , cmap=BrBG_r, units="m/s", vmax=0.1, vmin=-0.1, levels=22,
+    #                             level_ticks=6, plot_colorbar=False, dim="lat", ax=ax2, fig=fig, 
+    #                             bottom_labels=False, left_labels=False, title= "[B] MH", use_norm=True)
     
-    plot_vertical_section(variable="Vertical Velocity", data=LGM_cross_section_omega , cmap=BrBG_r, units="m/s", vmax=0.1, vmin=-0.1, levels=22,
-                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax3, fig=fig, 
-                                bottom_labels=True, left_labels=True, title= "[C] LGM", use_norm=True)
+    # plot_vertical_section(variable="Vertical Velocity", data=LGM_cross_section_omega , cmap=BrBG_r, units="m/s", vmax=0.1, vmin=-0.1, levels=22,
+    #                             level_ticks=6, plot_colorbar=False, dim="lat", ax=ax3, fig=fig, 
+    #                             bottom_labels=True, left_labels=True, title= "[C] LGM", use_norm=True)
     
-    plot_vertical_section(variable="Vertical Velocity", data=PLIO_cross_section_omega , cmap=BrBG_r, units="m/s", vmax=0.1, vmin=-0.1, levels=22,
-                                level_ticks=6, plot_colorbar=False, dim="lat", ax=ax4, fig=fig, 
-                                bottom_labels=True, left_labels=False, title= "[D] PLIO", use_norm=True)
+    # plot_vertical_section(variable="Vertical Velocity", data=PLIO_cross_section_omega , cmap=BrBG_r, units="m/s", vmax=0.1, vmin=-0.1, levels=22,
+    #                             level_ticks=6, plot_colorbar=False, dim="lat", ax=ax4, fig=fig, 
+    #                             bottom_labels=True, left_labels=False, title= "[D] PLIO", use_norm=True)
     
-    plt.tight_layout()
-    plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
-    plt.savefig(os.path.join(path_to_store, "omega_vertical_sections.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    # plt.tight_layout()
+    # plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
+    # plt.savefig(os.path.join(path_to_store, "omega_vertical_sections.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 #run for all 
 # plot_PI_JJAS()
-# plot_JJA_anomaly()
-# plot_monthly_variability()
+#plot_JJA_anomaly()
+plot_monthly_variability()
 #plot_vertical_sections()
-plot_slp()
+#plot_slp()
 
 
 

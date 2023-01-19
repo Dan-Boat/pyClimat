@@ -50,7 +50,7 @@ PLIO_prec_alt = compute_lterm_mean(data=PLIO_prec, time="month")
 
 
 minlat = 0
-maxlat = 30
+maxlat = 25
 minlon = -20
 maxlon = 30
 
@@ -65,7 +65,7 @@ PLIO_tp = extract_vertical_section(data=PLIO_prec_alt, maxlon=maxlon, minlon=min
                                    
  
 apply_style(fontsize=22, style=None, linewidth=2)                                   
-fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows=2, ncols=2, figsize=(24, 18), sharex=False, sharey=False)
+fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows=2, ncols=2, figsize=(26, 18), sharex=False, sharey=False)
 
 plot_hovmoller_space_time(variable="Precipitation", data=PI_tp, cmap=YlGnBu, units="mm/month", plot_colorbar=True,
                           ax=ax1, bottom_labels=True, left_labels=True, fig=fig, vmax=400, vmin=0,
@@ -73,20 +73,20 @@ plot_hovmoller_space_time(variable="Precipitation", data=PI_tp, cmap=YlGnBu, uni
 
 plot_hovmoller_space_time(variable="Precipitation", data=MH_tp, cmap=YlGnBu, units="mm/month", plot_colorbar=False,
                           ax=ax2, bottom_labels=True, left_labels=True, fig=fig, vmax=400, vmin=0,
-                                            levels=22, level_ticks=6, title= "[A]  MH")
+                                            levels=22, level_ticks=6, title= "[B]  MH")
 
 plot_hovmoller_space_time(variable="Precipitation", data=LGM_tp, cmap=YlGnBu, units="mm/month", plot_colorbar=False,
                           ax=ax3, bottom_labels=True, left_labels=True, fig=fig, vmax=400, vmin=0,
-                                            levels=22, level_ticks=6, title= "[A]  LGM")
+                                            levels=22, level_ticks=6, title= "[C]  LGM")
 
 plot_hovmoller_space_time(variable="Precipitation", data=PLIO_tp, cmap=YlGnBu, units="mm/month", plot_colorbar=False,
                           ax=ax4, bottom_labels=True, left_labels=True, fig=fig, vmax=400, vmin=0,
-                                            levels=22, level_ticks=6, title= "[A]  PLIO")
+                                            levels=22, level_ticks=6, title= "[D]  mPLIO")
 
 plt.tight_layout()
 plt.subplots_adjust(left=0.02, right=0.86, top=0.98, bottom=0.03)
 
-plt.savefig(os.path.join(path_to_store, "time_space_tp.svg"), format= "svg", bbox_inches="tight", dpi=300)
+plt.savefig(os.path.join(path_to_store, "time_space_tp_pi_mh_mplio_lgm.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 

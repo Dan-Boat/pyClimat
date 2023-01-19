@@ -200,6 +200,12 @@ def plot_background(p, domain=None, use_AlbersEqualArea=None,ax=None, left_label
             minLat = -5
             maxLat = 35
             
+        elif domain == "West Africa Wide":
+            minLon = -45
+            maxLon = 40
+            minLat = 0
+            maxLat = 45
+            
         else:
             print("ERROR: invalid geographical domain passed in options")
         p.axes.set_extent([minLon, maxLon, minLat, maxLat], ccrs.PlateCarree())

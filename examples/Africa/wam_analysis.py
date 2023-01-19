@@ -68,7 +68,7 @@ MH_t2m, MH_prec, MH_v10, MH_u10, MH_slp, MH_v, MH_u, MH_omega, MH_v850, MH_u850 
 PLIO_t2m, PLIO_prec, PLIO_v10, PLIO_u10, PLIO_slp, PLIO_v, PLIO_u, PLIO_omega, PLIO_v850, PLIO_u850 = extract_all_variables(data_surface=PLIO_data, 
                                                                                                                             data_plev=PLIO_plev_data)
 
-PD_prec, PD_t2m, PD_v10, PD_u10 = extract_only_prec_temp(PD_data)
+PD_prec, PD_t2m, PD_v10, PD_u10 = extract_only_prec_temp_winds(PD_data)
 
 
 # select the monsoon months then estimate annual means

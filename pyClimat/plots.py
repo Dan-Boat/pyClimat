@@ -239,7 +239,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
             q = ax.quiver(X[skip], Y[skip], u[skip], v[skip], transform=projection,  pivot= "mid", scale= 100,
                           headwidth=3, headlength=5, headaxislength=4.5)
             
-            qk = ax.quiverkey(q, 0.90, -0.1, 2, r'$2 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
+            qk = ax.quiverkey(q, 0.90, -0.1, 5, r'$5 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
                               {"size": 20, "weight":"bold"})
         
         
@@ -1235,7 +1235,7 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
                      output_format=None, level_ticks=None, title=None, path_to_store=None, plot_colorbar=True,
                      cbar_pos=None, fig_title=None, season_label=None, geosp_data=None, dim=None, left_labels=False, bottom_labels=False,
                      right_labels=False, use_norm=False, use_cbar_norm=False,
-                     data_u =None, data_v=None, plot_winds=False):
+                     data_u =None, data_v=None, plot_winds=False, norm=None):
     
     # extracting coords from data (select up to 200 hPa) [:,:10] y = data.columns.values[:10], data = data.iloc[:, :10]
     x = data.index.values
@@ -1250,7 +1250,9 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
         fig, ax = plt.subplots(nrows=1, ncols=1, sharex= False, sharey= False, figsize=(8, 7))
     
     #ploting with plt.contourf 
-    norm = MidpointNormalize(midpoint=0)
+    if norm is None:
+        norm = MidpointNormalize(midpoint=0)
+        
     
     if all(parameter is not None for parameter in [vmin, vmax, levels, level_ticks]):
         ticks = np.linspace(vmin, vmax, level_ticks)
@@ -1266,7 +1268,8 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
     
     if plot_colorbar == True:
         if use_cbar_norm == True:
-            norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+            if norm is None:
+                norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
             
         if cbar_pos is None:
             cbar_pos = [0.90, 0.30, 0.03, 0.45]
@@ -1283,10 +1286,10 @@ def plot_vertical_section(variable, data, cmap, units, season=None, ax=None, fig
         if level_ticks is not None:
             if use_cbar_norm == True:
                 cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
-                         format="%.2f", ticks = ticks, extend = "neither", pad = 0.05, norm=norm)
+                         format="%.2f", ticks = ticks, extend = "both", pad = 0.05, norm=norm)
             else:
                 cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
-                         format="%.2f", ticks = ticks, extend = "neither", pad = 0.05,)
+                         format="%.2f", ticks = ticks, extend = "both", pad = 0.05,)
         else:
             cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
                      format="%.2f", extend = "neither", pad=0.05, norm=norm)
@@ -1436,7 +1439,7 @@ def plot_hovmoller_space_time(variable, data, cmap, units, ax=None, fig=None, vm
     if plot_contour == True:
         
         c = ax.contour(X,Y,Z, color="black", linewidth=2, levels=10)
-        clb = ax.clabel(c, fmt="%2.0f", use_clabeltext=True, colors="black", fontsize=20)
+        clb = ax.clabel(c, fmt="%2.0f", use_clabeltext=True, colors="black", fontsize=22)
     if bottom_labels == True:
         
         ax.set_xlabel("Months ", fontsize=22, fontweight="bold")
