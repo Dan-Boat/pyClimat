@@ -290,9 +290,9 @@ def plot_vertical_sections():
 
 
 #run for all 
-# plot_PI_JJAS()
-#plot_JJA_anomaly()
-plot_monthly_variability()
+plot_PI_JJAS()
+plot_JJA_anomaly()
+#plot_monthly_variability()
 #plot_vertical_sections()
 #plot_slp()
 
