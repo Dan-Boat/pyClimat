@@ -19,9 +19,9 @@ from pyClimat.plot_utils import *
 # define path 
 path_to_plots = "/home/dboateng/Python_scripts/ClimatPackage_repogit/examples/Africa/plots"
 
-main_path_mh = "/media/dboateng/Boateng/esd02/data/PMIP4/MidHolocene/postprocessed"
+main_path_mh = "/home/dboateng/Model_output_pst/PMIP_postprocessed/MH"
 
-awi_path = os.path.join(main_path_mh, "AWI.AWI-ESM-1-1-LR")
+awi_path = os.path.join(main_path_mh, "AWI-ESM-1-1-LR")
 cesm_path = os.path.join(main_path_mh, "CESM2")
 ec_earth_path = os.path.join(main_path_mh, "EC-Earth3-LR")
 giss_path = os.path.join(main_path_mh, "GISS-E2-1-G")
@@ -92,7 +92,7 @@ for i,label in enumerate(labels):
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout()
 plt.subplots_adjust(left=0.05, right=0.88, top=0.94, bottom=0.06, hspace=0.01)
-#plt.savefig(os.path.join(path_to_plots, "compare_pmip_and_echam_prec.svg"), format= "svg", bbox_inches="tight", dpi=300)
+plt.savefig(os.path.join(path_to_plots, "compare_pmip_mh_and_echam_prec.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 apply_style(fontsize=22, style=None, linewidth=2) 
@@ -124,7 +124,7 @@ for i,label in enumerate(labels):
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout()
 plt.subplots_adjust(left=0.05, right=0.88, top=0.94, bottom=0.06, hspace=0.01)
-#plt.savefig(os.path.join(path_to_plots, "compare_pmip_and_echam_t2m.svg"), format= "svg", bbox_inches="tight", dpi=300)
+plt.savefig(os.path.join(path_to_plots, "compare_pmip_mh_and_echam_t2m.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 plt.show()  
