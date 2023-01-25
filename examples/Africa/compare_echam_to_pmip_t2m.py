@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sat Jan 14 08:41:06 2023
+Created on Tue Jan 24 18:00:15 2023
 
 @author: dboateng
 """
+
+
 import os 
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
@@ -133,25 +135,6 @@ elif flag ==4:
 else:
     print("Define the flag .....")
 
-# echam
-def plot_pr(labels, data, axes, figname):
-    
-    for i,label in enumerate(labels):
-        if label == "ECHAM5-wiso":
-            
-            plot_annual_mean(ax=axes[i], fig=fig, variable="Precipitation", data_alt=data[i], cmap=YlGnBu, units="mm/month", vmax=400, vmin=50, domain="West Africa", 
-                              levels=22, level_ticks=6, title=label, left_labels=True, bottom_labels=True, 
-                              add_colorbar=True, cbar_pos = [0.40, 0.05, 0.25, 0.02], orientation= "horizontal")
-        else:
-            
-            plot_annual_mean(ax=axes[i], fig=fig, variable="Precipitation", data_alt=data[i], cmap=YlGnBu, units="mm/month", vmax=400, vmin=50, domain="West Africa", 
-                              levels=22, level_ticks=6, title=label, left_labels=True, bottom_labels=True, 
-                              add_colorbar=False)
-            
-    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
-    plt.tight_layout()
-    plt.subplots_adjust(left=0.05, right=0.88, top=0.94, bottom=0.06, hspace=0.01)
-    plt.savefig(os.path.join(path_to_plots, figname), format= "svg", bbox_inches="tight", dpi=300)
     
     
 def plot_t2m(labels, data, axes, figname):
@@ -188,15 +171,15 @@ if flag == 1:
                                                                            subplot_kw={"projection": projection})
     axes = [ax1,ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9]
     
-    data_mh = [mh_echam_pr_alt, awi_pr_alt, cesm_pr_alt, ec_earth_pr_alt, giss_pr_alt, hadGEM_pr_alt,
-            ipsl_pr_alt, miroc_pr_alt, mpi_esm_pr_alt]
+    data_mh = [mh_echam_t2m_alt, awi_t2m_alt, cesm_t2m_alt, ec_earth_t2m_alt, giss_t2m_alt, hadGEM_t2m_alt,
+            ipsl_t2m_alt, miroc_t2m_alt, mpi_esm_t2m_alt]
     
     labels_mh = ["ECHAM5-wiso", "AWI-ESM-1-1-LR", "CESM2", "EC-Earth3-LR", "GISS-E2-1-G", 
               "HadGEM3-GC31-LL", "IPSL-CM6A-LR", "MIROC-ES2L", "MPI-ESM1-2-LR"]
     
-    figname = "compare_pmip_mh_and_echam_prec.svg"
+    figname = "compare_pmip_mh_and_echam_t2m.svg"
     
-    plot_pr(labels=labels_mh, data=data_mh, axes=axes, figname=figname)
+    plot_t2m(labels=labels_mh, data=data_mh, axes=axes, figname=figname)
     
     
 elif flag == 2:
@@ -208,20 +191,20 @@ elif flag == 2:
     axes = [ax1,ax2, ax3, ax4, ax5, ax6]
     
     
-    data_lgm = [lgm_echam_pr_alt, awi_pr_alt, cesm_waccm_pr_alt, inm_pr_alt, miroc_pr_alt, mpi_esm_pr_alt]
+    data_lgm = [lgm_echam_t2m_alt, awi_t2m_alt, cesm_waccm_t2m_alt, inm_t2m_alt, miroc_t2m_alt, mpi_esm_t2m_alt]
     
     labels_lgm = ["ECHAM5-wiso", "AWI-ESM-1-1-LR", "CESM2-WACCM-FV2", "INM-CM4-8", "MIROC-ES2L", "MPI-ESM1-2-LR"]
     
-    figname = "compare_pmip_lgm_and_echam_prec.svg"
+    figname = "compare_pmip_lgm_and_echam_t2m.svg"
     
-    plot_pr(labels=labels_lgm, data=data_lgm, axes=axes, figname=figname)
+    plot_t2m(labels=labels_lgm, data=data_lgm, axes=axes, figname=figname)
 
 elif flag == 3:
     
     plio_echam_pr_alt, plio_echam_t2m_alt = read_t2m_tp_from_path(echam=True, data=PLIO_data)
     
-    data_plio = [plio_echam_pr_alt, cesm_pr_alt, ec_earth_pr_alt, giss_pr_alt, hadGEM_pr_alt,
-            ipsl_pr_alt, norESM_pr_alt]
+    data_plio = [plio_echam_t2m_alt, cesm_t2m_alt, ec_earth_t2m_alt, giss_t2m_alt, hadGEM_t2m_alt,
+            ipsl_t2m_alt, norESM_t2m_alt]
     
     fig, ((ax1,ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9)) = plt.subplots(nrows = 3, ncols = 3, figsize=(28, 22), 
                                                                            subplot_kw={"projection": projection})
@@ -231,9 +214,9 @@ elif flag == 3:
               "HadGEM3-GC31-LL", "IPSL-CM6A-LR", "NorESM1-F"]
     
     
-    figname = "compare_pmip_plio_and_echam_prec.svg"
+    figname = "compare_pmip_plio_and_echam_t2m.svg"
     
-    plot_pr(labels=labels_plio, data=data_plio, axes=axes, figname=figname)
+    plot_t2m(labels=labels_plio, data=data_plio, axes=axes, figname=figname)
     
     
     
@@ -241,8 +224,8 @@ elif flag ==4:
     
     pi_echam_pr_alt, pi_echam_t2m_alt = read_t2m_tp_from_path(echam=True, data=PI_data)
     
-    data_pi = [pi_echam_pr_alt, awi_pr_alt, cesm_pr_alt, cesm_pr_alt, ec_earth_pr_alt, giss_pr_alt, hadGEM_pr_alt,
-            ipsl_pr_alt, miroc_pr_alt, mpi_esm_pr_alt, norESM_pr_alt]
+    data_pi = [pi_echam_t2m_alt, awi_t2m_alt, cesm_t2m_alt, cesm_t2m_alt, ec_earth_t2m_alt, giss_t2m_alt, hadGEM_t2m_alt,
+            ipsl_t2m_alt, miroc_t2m_alt, mpi_esm_t2m_alt, norESM_t2m_alt]
 
     labels_pi = ["ECHAM5-wiso", "AWI-ESM-1-1-LR", "CESM2", "CESM2-WACCM-FV2", "EC-Earth3-LR", "GISS-E2-1-G", 
               "HadGEM3-GC31-LL", "IPSL-CM6A-LR", "MIROC-ES2L", "MPI-ESM1-2-LR", "NorESM1-F"]
@@ -253,9 +236,9 @@ elif flag ==4:
 
     axes = [ax1,ax2, ax3, ax4, ax5, ax6, ax7, ax8, ax9, ax10, ax11, ax12]
 
-    figname = "compare_pmip_pi_and_echam_prec.svg"
+    figname = "compare_pmip_pi_and_echam_t2m.svg"
     
-    plot_pr(labels=labels_pi, data=data_pi, axes=axes, figname=figname)
+    plot_t2m(labels=labels_pi, data=data_pi, axes=axes, figname=figname)
     
     
 else:
