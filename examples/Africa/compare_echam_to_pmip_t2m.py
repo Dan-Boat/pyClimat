@@ -62,17 +62,17 @@ elif flag ==3:
 
 else:
     #PI
-    awi_path = os.path.join(main_path_mh, "AWI-ESM-1-1-LR")
-    cesm_path = os.path.join(main_path_mh, "CESM2")
-    cesm_waccm_path = os.path.join(main_path_lgm, "CESM2-WACCM-FV2")
-    ec_earth_path = os.path.join(main_path_mh, "EC-Earth3-LR")
-    giss_path = os.path.join(main_path_mh, "GISS-E2-1-G")
-    hadGEM_path = os.path.join(main_path_mh, "HadGEM3-GC31-LL")
-    inm_cm_path = os.path.join(main_path_lgm, "INM-CM4-8")
-    ipsl_path = os.path.join(main_path_mh, "IPSL-CM6A-LR")
-    miroc_path = os.path.join(main_path_mh, "MIROC-ES2L")
-    mpi_esm_path = os.path.join(main_path_mh, "MPI-ESM1-2-LR")
-    norESM_path = os.path.join(main_path_plio, "NorESM1-F")
+    awi_path = os.path.join(main_path_pi, "AWI-ESM-1-1-LR")
+    cesm_path = os.path.join(main_path_pi, "CESM2")
+    cesm_waccm_path = os.path.join(main_path_pi, "CESM2-WACCM-FV2")
+    ec_earth_path = os.path.join(main_path_pi, "EC-Earth3-LR")
+    giss_path = os.path.join(main_path_pi, "GISS-E2-1-G")
+    hadGEM_path = os.path.join(main_path_pi, "HadGEM3-GC31-LL")
+    inm_cm_path = os.path.join(main_path_pi, "INM-CM4-8")
+    ipsl_path = os.path.join(main_path_pi, "IPSL-CM6A-LR")
+    miroc_path = os.path.join(main_path_pi, "MIROC-ES2L")
+    mpi_esm_path = os.path.join(main_path_pi, "MPI-ESM1-2-LR")
+    norESM_path = os.path.join(main_path_pi, "NorESM1-F")
 
 
 def read_t2m_tp_from_path(path=None, echam=False, data=None):

@@ -85,6 +85,10 @@ PuBu_r = plt.cm.PuBu_r
 plasma = plt.cm.plasma
 hot = plt.cm.hot_r
 
+
+
+
+
 # defining plot styles (which contains fonts and backgrouds)
 # plt.style.use (can be seaborn, dark_background, fivethirtyeight, bmh
 
