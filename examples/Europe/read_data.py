@@ -52,10 +52,10 @@ from1980to2014 = pd.date_range(start="1980-01-01", end="2014-12-31", freq="MS")
 
 #read in postprocessed and analysed data
 
-def read_ERA(): 
-    ERA5_t2m = read_ERA_processed(path=ERA5_t2m_path, varname="t2m")   - 273.15 #°C
-    ERA5_tp = read_ERA_processed(path=ERA5_tp_path, varname="tp") * 1000 * 30  #mm/month
-    ERA5_msl = read_ERA_processed(path=ERA5_msl_path, varname="msl") #m/s
+#def read_ERA(): 
+ERA5_t2m = read_ERA_processed(path=ERA5_t2m_path, varname="t2m")   - 273.15 #°C
+ERA5_tp = read_ERA_processed(path=ERA5_tp_path, varname="tp") * 1000 * 30  #mm/month
+ERA5_msl = read_ERA_processed(path=ERA5_msl_path, varname="msl") / 100 #Pa --> hPa
 
 
 # load GNIP datasets 

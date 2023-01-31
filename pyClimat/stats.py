@@ -310,7 +310,7 @@ class EOF_standard():
             else: 
                 self.explained_variance = self.model.explained_variance()
         
-        return self.explained_variance
+        return self.explained_variance.to_pandas()
     
     
     
@@ -333,9 +333,9 @@ class EOF_standard():
             else: 
                 self.explained_variance_ratio = self.model.explained_variance_ratio()
         
-        return self.explained_variance_ratio
+        return self.explained_variance_ratio.to_pandas()
     
-    def reconstuct_X(self, mode=None):
+    def reconstuct_X(self, mode=1):
         
         if self.method == "Eof":
             X_field = self.solver.reconstructedField(neofs=self.neofs)
@@ -344,35 +344,37 @@ class EOF_standard():
             
             if self.apply_varimax:
                 
-                if mode is not None:
-                    X_field = self.rot_varimax.reconstruct_X(mode=mode)
+                X_field = self.rot_varimax.reconstruct_X(mode=mode)
                     
-                else:
-                    X_field = self.rot_varimax.reconstruct_X(mode=1)
                     
             elif self.apply_promax:
-                if mode is not None:
-                    X_field = self.rot_promax.reconstruct_X(mode=mode)
-                    
-                else:
-                    X_field = self.rot_promax.reconstruct_X(mode=1)
-        
-        pass
+                
+                X_field = self.rot_promax.reconstruct_X(mode=mode)
     
-    def project_X_onto_eofs(self, data, eofscaling=0, weighted=False):
+            else:
+                
+                X_field = self.model.reconstruct_X(mode=mode)
+
+    
+    def project_X_onto_eofs(self, data, eofscaling=0):
         
         if self.method == "Eof":
             self.pcs_projected = self.solver.projectField(array=data, neofs=self.noefs, 
-                                                          eofscaling=eofscaling)
-        
+                                                          eofscaling=eofscaling, weighted=False)
         
         elif self.method == "xeofs":
             
             if self.apply_varimax:
-                self.pcs_projected = self.rot_varimax
+                self.pcs_projected = self.rot_varimax.project_onto_eofs(X=data, scaling=eofscaling)
                 
+            
+            elif self.apply_promax:
                 
-        pass
+                self.pcs_projected = self.rot_promax.project_onto_eofs(X=data, scaling=eofscaling)
+                
+            else:
+                self.pcs_projected = self.model.project_onto_eofs(X=data, scaling=eofscaling)
+            
     
 
 
