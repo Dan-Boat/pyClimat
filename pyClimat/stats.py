@@ -92,26 +92,35 @@ class EOF_standard():
                 elif month == "AMJJAS":
                     data = data.sel(time=data.time.dt.month.isin([4, 5, 6, 7, 8, 9]))
                     
+                elif month == "JA": # July and August for the SNAO
+                    data = data.sel(time=data.time.dt.month.isin([7, 8]))
+                    
                 else:
                     raise ValueError("The define month parameter is not recognized")
         
         self.data = data                
         
     
-    def calculate_anomalies(self, if_return=False):
-        # remove monthly cyle
-        monthly_means = self.data.groupby("time.month").mean(dim="time")
+    def calculate_anomalies(self, if_return=False, monthly_anomalies=True):
         
+        if monthly_anomalies:
+            # remove monthly cyle
+            monthly_means = self.data.groupby("time.month").mean(dim="time")
+            
+            
+            group = self.data.groupby("time.month")
+            
+            
+            anomalies = group.apply(
+                lambda x: x - monthly_means.sel(month=_get_month(x[0].time.values))
+            )
+            
+            self.anomalies = anomalies.drop("month")
+            
+        else:
+            
+            self.anomalies = self.data - self.data.mean(dim="time")
         
-        group = self.data.groupby("time.month")
-        
-        
-        anomalies = group.apply(
-            lambda x: x - monthly_means.sel(month=_get_month(x[0].time.values))
-        )
-        #self.anomalies = self.data - monthly_means
-        
-        self.anomalies = anomalies.drop("month")
         
         if self.standardize:
             self.anomalies /= self.anomalies.std(dim="time")
@@ -181,17 +190,17 @@ class EOF_standard():
             if self.apply_varimax:
                 from xeofs.xarray import Rotator
                 
-                self.rot_varimax = Rotator(self.model, n_rot=50, power=1)
+                self.rot_varimax = Rotator(self.model, n_rot=self.neofs, power=1)
                 
             if self.apply_promax:
                 
                 from xeofs.xarray import Rotator
                 
-                self.rot_promax = Rotator(self.model, n_rot=50, power=4)
+                self.rot_promax = Rotator(self.model, n_rot=self.neofs, power=4)
                 
             
             
-    def eofs(self, eofscaling=0):
+    def eofs(self, eofscaling=1):
         """
         *eofscaling for Eof*
             Sets the scaling of the EOFs. The following values are
@@ -228,7 +237,7 @@ class EOF_standard():
         """
         
         if self.method == "Eof":
-            self.eofs = self.solver.eofs(eofscaling=eofscaling, neofs=self.neofs)
+            self.eofs = self.solver.eofsAsCovariance(pcscaling=eofscaling, neofs=self.neofs)
             
                 
         elif self.method == "xeofs":
@@ -238,7 +247,6 @@ class EOF_standard():
                 
             elif self.apply_promax:
                 self.eofs = self.rot_promax.eofs(scaling=eofscaling) 
-            
             
             else:
                 self.eofs = self.model.eofs(scaling=eofscaling)

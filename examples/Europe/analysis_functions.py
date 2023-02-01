@@ -25,6 +25,8 @@ from pyClimat.stats import EOF_standard
 from pyClimat.plot_utils import *
 from pyClimat.plots import plot_eofsAsCovariance
 
+
+path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/plots"
 # analysis for ERA5 Dataset
 
 from read_data import ERA5_msl
@@ -35,12 +37,12 @@ ERA5_EOF = EOF_standard(data=ERA5_msl, weights=True, standardize=True,
 
 # select the region of interest and season
 ERA5_EOF.select_time_and_region(maxlon=60, minlon=-80, maxlat=80, minlat=20, time="season", 
-                              season="DJF")
+                              season="JJA", month="JA") # month="AMJJAS"
 
 # calculate the anomalies and apply norm
 ERA5_EOF.calculate_anomalies()
 
-method = "Eof"
+method = "xeofs"
 
 # fit the eof with the solver
 ERA5_EOF.eof_solver(method=method, apply_promax=False, apply_varimax=False)
@@ -55,14 +57,29 @@ variance_ratio = ERA5_EOF.explained_variance_ratio()
 apply_style(fontsize=22, style=None, linewidth=2) 
 projection = ccrs.PlateCarree()
 
+
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols=2, 
-                                             figsize=(15, 8), subplot_kw={"projection": projection})
+                                             figsize=(24, 13), subplot_kw={"projection": projection})
 
+# loop through this !!
 
-plot_eofsAsCovariance(variable= "slp", data=eofs.sel(mode=1), mode_var=variance_ratio[0], units="hPa", vmax=10, vmin=-10, cmap=RdBu_r, domain="NH", levels=22,
+plot_eofsAsCovariance(variable= "slp", data=eofs.sel(mode=1), mode_var=variance_ratio[1], units="hPa", vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
                       level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal", use_AlberEqualArea=False,
                       ax=ax1, fig=fig, title="[A]", bottom_labels=False)
 
+plot_eofsAsCovariance(variable= "slp", data=eofs.sel(mode=2), mode_var=variance_ratio[2], units="hPa", vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B]", bottom_labels=False)
+
+plot_eofsAsCovariance(variable= "slp", data=eofs.sel(mode=3), mode_var=variance_ratio[3], units="hPa", vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C]", bottom_labels=True)
+
+plot_eofsAsCovariance(variable= "slp", data=eofs.sel(mode=4), mode_var=variance_ratio[4], units="hPa", vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
+                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D]", bottom_labels=True)
+
+fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+plt.tight_layout()
+plt.subplots_adjust(left=0.05, right=0.88, top=0.94, bottom=0.06, hspace=0.01)
+plt.savefig(os.path.join(path_to_plots, "sNAO_EOF_standard.svg"), format= "svg", bbox_inches="tight", dpi=300)
 plt.show()
 # analysis for echam PD
 
