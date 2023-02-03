@@ -194,7 +194,7 @@ def plot_background(p, domain=None, use_AlbersEqualArea=None,ax=None, left_label
             maxLat = 52
         elif domain == "NH": # Northen Hemisphere
             minLon = -80
-            maxLon = 60
+            maxLon = 30
             minLat = 20
             maxLat = 80
             
@@ -217,8 +217,10 @@ def plot_background(p, domain=None, use_AlbersEqualArea=None,ax=None, left_label
         p.axes.set_extent([-180, 180, -90, 90], ccrs.PlateCarree())
         
     if use_AlbersEqualArea == True:
-        vertices = [(lon, 0) for lon in  range(-100, 31, 1)]
-        vertices += [(lon, 90) for lon in range(30, -101,-1)]
+        vertices = [(lon, 20) for lon in  range(-80, 21, 1)]
+        vertices += [(lon, 80) for lon in range(20, -81,-1)]
+       
+        
         boundary= mpath.Path(vertices)
         p.axes.set_boundary(boundary, transform=ccrs.PlateCarree())
         #ax.set_global()                    # setting global axi

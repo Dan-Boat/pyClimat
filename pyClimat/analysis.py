@@ -199,14 +199,18 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
         var_data = Dataset["wind10"]
     
     # geopotential height at pressure levels
-    elif varname == "geopoth":
+    elif varname == "geopoth": #units in m
+        
         var_data = Dataset["geopoth"]
+        
         if lev_units is not None:
-            if lev_units == "hPa":
-                var_data["lev"] = var_data.lev / 100  #Pa --> hPa
-                var_data["lev"].attrs["units"] = "hPa"
-            else:
-                 raise ValueError("You have defined incorrect units or its not implemented")
+            
+            var_data = vert_coord_convertion(data=var_data, units=lev_units)
+        
+        if lev is not None:
+            
+            var_data = var_data.sel(lev=lev)
+        
     
     # mean sea level pressure or surface pressure  
     elif varname == "slp":

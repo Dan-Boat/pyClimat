@@ -25,86 +25,119 @@ from pyClimat.stats import EOF_standard
 from pyClimat.plot_utils import *
 from pyClimat.plots import plot_eofsAsCovariance
 
+from pyClimat.data import read_ECHAM_processed, read_from_path, read_ERA_processed
 
 path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/plots"
-# analysis for ERA5 Dataset
+main_path = "D:/Datasets/Model_output_pst/"
+ERA5_path = "C:/Users/dboateng/Desktop/Datasets/ERA5/monthly_1950_2021/"
 
-from read_data import ERA5_msl
-
-# initiate the eof instance 
-ERA5_EOF = EOF_standard(data=ERA5_msl, weights=True, standardize=True, 
-                      extract_region=True, extract_season=True, neofs=4)
-
-# select the region of interest and season
-ERA5_EOF.select_time_and_region(maxlon=60, minlon=-80, maxlat=80, minlat=20, time="season", 
-                              season="JJA", month="JA") # month="AMJJAS"
-
-# calculate the anomalies and apply norm
-ERA5_EOF.calculate_anomalies()
-
-method = "xeofs"
-
-# fit the eof with the solver
-ERA5_EOF.eof_solver(method=method, apply_promax=False, apply_varimax=False)
-
-# extract the eofs (as the eigenvectors of the covariance matric of the X field)
-
-eofs = ERA5_EOF.eofs(eofscaling=2) # 2 - multiply by the singular values or square root of the eigen values
-pcs = ERA5_EOF.pcs(pscaling=1)
-variance_ratio = ERA5_EOF.explained_variance_ratio()
-
-# visualize
-apply_style(fontsize=22, style=None, linewidth=2) 
-projection = ccrs.PlateCarree()
+lgm_path = os.path.join(main_path, "LGM")
+plio_path = os.path.join(main_path, "PLIO")
+mh_path = os.path.join(main_path, "MH")
+pi_path = os.path.join(main_path, "PI")
+pd_path = os.path.join(main_path, "PD")
 
 
-fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols=2, 
-                                             figsize=(24, 13), subplot_kw={"projection": projection})
 
-# loop through this !!
+# read data
+PD_data = read_from_path(pd_path, "PD_1980_2014_monthly.nc", decode=True)
+PI_data = read_from_path(pi_path, "PI_1003_1017_monthly.nc", decode=True)
+LGM_data = read_from_path(lgm_path,"LGM_1003_1017_monthly.nc", decode=True)
+PLIO_data = read_from_path(plio_path, "PLIO_1003_1017_monthly.nc", decode=True)
+MH_data = read_from_path(mh_path, "MH_1003_1017_monthly.nc", decode=True)
 
-plot_eofsAsCovariance(variable= "slp", data=eofs.sel(mode=1), mode_var=variance_ratio[1], units="hPa", vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal", use_AlberEqualArea=False,
-                      ax=ax1, fig=fig, title="[A]", bottom_labels=False)
 
-plot_eofsAsCovariance(variable= "slp", data=eofs.sel(mode=2), mode_var=variance_ratio[2], units="hPa", vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B]", bottom_labels=False)
 
-plot_eofsAsCovariance(variable= "slp", data=eofs.sel(mode=3), mode_var=variance_ratio[3], units="hPa", vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C]", bottom_labels=True)
+ERA5_tp_path = os.path.join(ERA5_path, "tp_monthly.nc")
+ERA5_t2m_path = os.path.join(ERA5_path, "t2m_monthly.nc")
+ERA5_msl_path = os.path.join(ERA5_path, "msl_monthly.nc")
+ERA5_z500_path = os.path.join(ERA5_path, "z500_monthly.nc")
 
-plot_eofsAsCovariance(variable= "slp", data=eofs.sel(mode=4), mode_var=variance_ratio[4], units="hPa", vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
-                      level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D]", bottom_labels=True)
 
-fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
-plt.tight_layout()
-plt.subplots_adjust(left=0.05, right=0.88, top=0.94, bottom=0.06, hspace=0.01)
-plt.savefig(os.path.join(path_to_plots, "sNAO_EOF_standard.svg"), format= "svg", bbox_inches="tight", dpi=300)
-plt.show()
+
+
+
+def extract_eofs_data(data, figname, units, variable):
+    # analysis for ERA5 Dataset
+    
+    
+    
+    # initiate the eof instance 
+    EOF = EOF_standard(data=data, weights=True, standardize=True, 
+                          extract_region=True, extract_season=True, neofs=4)
+    
+    # select the region of interest and season
+    EOF.select_time_and_region(maxlon=60, minlon=-80, maxlat=80, minlat=20, time="season", 
+                                  season="DJF", month="JA") # month="AMJJAS"
+    
+    # calculate the anomalies and apply norm
+    EOF.calculate_anomalies()
+    
+    method = "xeofs"
+    
+    # fit the eof with the solver
+    EOF.eof_solver(method=method, apply_promax=False, apply_varimax=True)
+    
+    # extract the eofs (as the eigenvectors of the covariance matric of the X field)
+    
+    eofs = EOF.eofs(eofscaling=2) # 2 - multiply by the singular values or square root of the eigen values
+    pcs = EOF.pcs(pscaling=1)
+    variance = EOF.explained_variance_ratio()
+    
+    # loop through this !!
+    plot_eofs(data=eofs, variance=variance, figname=figname + ".svg", units=units, variable=variable)
+    
+    
+    
+    
+def plot_eofs(data, variance, figname, units="m", variable="slp"):
+    
+    apply_style(fontsize=22, style=None, linewidth=2) 
+    #projection = ccrs.PlateCarree()
+    
+    projection = ccrs.AlbersEqualArea(
+        central_latitude=35, central_longitude=-35, standard_parallels=(20, 80))
+    
+    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols=2, 
+                                                 figsize=(24, 20), subplot_kw={"projection": projection})
+    plot_eofsAsCovariance(variable= variable, data=data.sel(mode=1), mode_var=variance[1], units=units, vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
+                          level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal", use_AlberEqualArea=True,
+                          ax=ax1, fig=fig, title="[A]", bottom_labels=False)
+    
+    plot_eofsAsCovariance(variable= variable, data=data.sel(mode=2), mode_var=variance[2], units=units, vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
+                          level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B]", bottom_labels=False, use_AlberEqualArea=True)
+    
+    plot_eofsAsCovariance(variable= variable, data=data.sel(mode=3), mode_var=variance[3], units=units, vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
+                          level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C]", bottom_labels=True, use_AlberEqualArea=True)
+    
+    plot_eofsAsCovariance(variable= variable, data=data.sel(mode=4), mode_var=variance[4], units=units, vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
+                          level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D]", bottom_labels=True, use_AlberEqualArea=True)
+    
+    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.05, right=0.88, top=0.94, bottom=0.06, hspace=0.01)
+    plt.savefig(os.path.join(path_to_plots, figname + ".svg"), format= "svg", bbox_inches="tight", dpi=300)
+    
+    
+    
+#ERA5
+
+#def read_ERA(): 
+#ERA5_t2m = read_ERA_processed(path=ERA5_t2m_path, varname="t2m")   - 273.15 #°C
+#ERA5_tp = read_ERA_processed(path=ERA5_tp_path, varname="tp") * 1000 * 30  #mm/month
+
+
+ERA5_msl = read_ERA_processed(path=ERA5_msl_path, varname="msl") / 100 #Pa --> hPa
+ERA5_z500 = read_ERA_processed(path=ERA5_z500_path, varname="z500") * 9.81 #--> m
+ERA5_z500 = ERA5_z500.sel(level=500)  # to drop the level dim since it is indexed on it
+
+extract_eofs_data(data=ERA5_z500, figname="ERA_z500_varimax_wNAO", units="m", variable="Geopotential height")
+extract_eofs_data(data=ERA5_msl, figname="ERA_msl_varimax_wNAO", units="hPa", variable="Mean Sea Level Pressure")
+
+
 # analysis for echam PD
+PD_msl = extract_var(Dataset=PD_data, varname="slp", units="hPa")
+PD_h500 = extract_var(Dataset=PD_data, varname="geopoth", lev_units="hPa", lev=500)
 
-
-# analysis of projecting PI to PD eofs
-
-
-
-# from read_data import PD_data, LGM_data, PI_data
-
-# #extract variable from data 
-# PD_slp = extract_var(PD_data, "slp", units="hPa")
-# LGM_slp = extract_var(LGM_data, "slp", units="hPa")
-# PI_slp = extract_var(PI_data, "slp", units="hPa")
-
-
-# #applying EOF class
-
-# PD_EOF = EOF_standard(data=PD_slp, weights=True, standardize=True, 
-#                       extract_region=True, extract_season=True, neofs=4)
-
-# PD_EOF.select_time_and_region(maxlon=60, minlon=-80, maxlat=80, minlat=20, time="season", 
-#                               season="DJF", month="ONDJFM")
-# PD_EOF.calculate_anomalies()
-# #PD_EOF.eof_solver(method="xeofs", apply_promax=True)
-# PD_EOF.eof_solver(method="Eof", apply_promax=True)
-# eofs = PD_EOF.eofs(eofscaling=2)
-# pcs = PD_EOF.pcs(pscaling=1)
+extract_eofs_data(data=PD_h500, figname="PD_z500_varimax_wNAO", units="m", variable="Geopotential height")
+extract_eofs_data(data=PD_msl, figname="PD_msl_varimax_wNAO", units="hPa", variable="Mean Sea Level Pressure")

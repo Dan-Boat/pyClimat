@@ -1195,7 +1195,7 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
             
             p = data.plot.imshow(ax=ax, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, transform = projection,
                                  cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": cbar_orientation, 
-                                               "shrink": 0.5, "format": "%.0f", "ticks":ticks}, extend= "neither", add_colorbar=True, cbar_ax=cbar_ax,
+                                               "shrink": 0.5, "format": "%.0f", "ticks":ticks}, extend= "both", add_colorbar=True, cbar_ax=cbar_ax,
                                  add_labels=False)
             
             
@@ -1208,11 +1208,13 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
     else:
         p = data.plot.imshow(ax =ax, cmap=cmap, transform = projection, 
                                  cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
-                                               "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither")
+                                               "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "both")
         
     # ploting background extent
     
     if use_AlberEqualArea ==True: #!!! Its currently not possible to add labels after set boundary, cartopy >0.18 supports labels aside PlateCarree and Mercator but not after clipping boundaries
+    
+    
     # Alternative is to generate the Map and use any editting software to add the labels
         plot_background(p, domain=domain, use_AlbersEqualArea=True, ax=ax, left_labels=left_labels,
                         bottom_labels=bottom_labels)
