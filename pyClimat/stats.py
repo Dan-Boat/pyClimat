@@ -117,6 +117,7 @@ class EOF_standard():
             
             self.anomalies = anomalies.drop("month")
             
+            
         else:
             
             self.anomalies = self.data - self.data.mean(dim="time")

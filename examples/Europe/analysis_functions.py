@@ -19,6 +19,8 @@ import numpy as np
 import pandas as pd 
 import xarray as xr
 import matplotlib.pyplot as plt 
+from matplotlib.dates import YearLocator
+import matplotlib.dates as mdates
 
 from pyClimat.analysis import extract_var
 from pyClimat.stats import EOF_standard
@@ -57,7 +59,7 @@ ERA5_z500_path = os.path.join(ERA5_path, "z500_monthly.nc")
 
 
 
-def extract_eofs_data(data, figname, units, variable):
+def extract_eofs_data(data, figname, units, variable, vmax=15, vmin=-15, plot_covariance=True, is_era=False):
     # analysis for ERA5 Dataset
     
     
@@ -71,7 +73,7 @@ def extract_eofs_data(data, figname, units, variable):
                                   season="DJF", month="JA") # month="AMJJAS"
     
     # calculate the anomalies and apply norm
-    EOF.calculate_anomalies()
+    EOF.calculate_anomalies(monthly_anomalies=True)
     
     method = "xeofs"
     
@@ -81,16 +83,20 @@ def extract_eofs_data(data, figname, units, variable):
     # extract the eofs (as the eigenvectors of the covariance matric of the X field)
     
     eofs = EOF.eofs(eofscaling=2) # 2 - multiply by the singular values or square root of the eigen values
-    pcs = EOF.pcs(pscaling=1)
+    pcs = EOF.pcs(pscaling=0)
     variance = EOF.explained_variance_ratio()
     
+    if plot_covariance:
     # loop through this !!
-    plot_eofs(data=eofs, variance=variance, figname=figname + ".svg", units=units, variable=variable)
+        plot_eofs(data=eofs, variance=variance, figname=figname + ".svg", units=units, variable=variable, vmax=vmax, 
+                  vmin=vmin, is_era=is_era)
+    
+    
+    return pcs
     
     
     
-    
-def plot_eofs(data, variance, figname, units="m", variable="slp"):
+def plot_eofs(data, variance, figname, units="m", variable="slp", vmax=15, vmin=-15, is_era=False):
     
     apply_style(fontsize=22, style=None, linewidth=2) 
     #projection = ccrs.PlateCarree()
@@ -100,18 +106,27 @@ def plot_eofs(data, variance, figname, units="m", variable="slp"):
     
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols=2, 
                                                  figsize=(24, 20), subplot_kw={"projection": projection})
-    plot_eofsAsCovariance(variable= variable, data=data.sel(mode=1), mode_var=variance[1], units=units, vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
+    plot_eofsAsCovariance(variable= variable, data=data.sel(mode=1), mode_var=variance[1], units=units, vmax=vmax, vmin=vmin, cmap=RdBu_r, domain="NH", levels=22,
                           level_ticks=11, cbar=True, cbar_position= [0.30, 0.07, 0.30, 0.02], cbar_orientation="horizontal", use_AlberEqualArea=True,
                           ax=ax1, fig=fig, title="[A]", bottom_labels=False)
     
-    plot_eofsAsCovariance(variable= variable, data=data.sel(mode=2), mode_var=variance[2], units=units, vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
+    plot_eofsAsCovariance(variable= variable, data=data.sel(mode=2), mode_var=variance[2], units=units, vmax=vmax, vmin=vmin, cmap=RdBu_r, domain="NH", levels=22,
                           level_ticks=11, cbar=False, ax=ax2, fig=fig, title="[B]", bottom_labels=False, use_AlberEqualArea=True)
     
-    plot_eofsAsCovariance(variable= variable, data=data.sel(mode=3), mode_var=variance[3], units=units, vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
-                          level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C]", bottom_labels=True, use_AlberEqualArea=True)
-    
-    plot_eofsAsCovariance(variable= variable, data=data.sel(mode=4), mode_var=variance[4], units=units, vmax=15, vmin=-15, cmap=RdBu_r, domain="NH", levels=22,
-                          level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D]", bottom_labels=True, use_AlberEqualArea=True)
+    if is_era:
+        
+        plot_eofsAsCovariance(variable= variable, data=data.sel(mode=3) *-1, mode_var=variance[3], units=units, vmax=vmax, vmin=vmin, cmap=RdBu_r, domain="NH", levels=22,
+                              level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C]", bottom_labels=True, use_AlberEqualArea=True)
+        
+        plot_eofsAsCovariance(variable= variable, data=data.sel(mode=4) *-1, mode_var=variance[4], units=units, vmax=vmax, vmin=vmin, cmap=RdBu_r, domain="NH", levels=22,
+                              level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D]", bottom_labels=True, use_AlberEqualArea=True)
+        
+    else:
+        plot_eofsAsCovariance(variable= variable, data=data.sel(mode=3), mode_var=variance[3], units=units, vmax=vmax, vmin=vmin, cmap=RdBu_r, domain="NH", levels=22,
+                              level_ticks=11, cbar=False, ax=ax3, fig=fig, title="[C]", bottom_labels=True, use_AlberEqualArea=True)
+        
+        plot_eofsAsCovariance(variable= variable, data=data.sel(mode=4), mode_var=variance[4], units=units, vmax=vmax, vmin=vmin, cmap=RdBu_r, domain="NH", levels=22,
+                              level_ticks=11, cbar=False, ax=ax4, fig=fig, title="[D]", bottom_labels=True, use_AlberEqualArea=True)
     
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
@@ -126,18 +141,71 @@ def plot_eofs(data, variance, figname, units="m", variable="slp"):
 #ERA5_t2m = read_ERA_processed(path=ERA5_t2m_path, varname="t2m")   - 273.15 #°C
 #ERA5_tp = read_ERA_processed(path=ERA5_tp_path, varname="tp") * 1000 * 30  #mm/month
 
-
+from1979to2014 = pd.date_range(start="1979-01-01", end="2014-12-31", freq="MS")
 ERA5_msl = read_ERA_processed(path=ERA5_msl_path, varname="msl") / 100 #Pa --> hPa
-ERA5_z500 = read_ERA_processed(path=ERA5_z500_path, varname="z500") * 9.81 #--> m
-ERA5_z500 = ERA5_z500.sel(level=500)  # to drop the level dim since it is indexed on it
+ERA5_msl = ERA5_msl.sel(time=from1979to2014)
 
-extract_eofs_data(data=ERA5_z500, figname="ERA_z500_varimax_wNAO", units="m", variable="Geopotential height")
-extract_eofs_data(data=ERA5_msl, figname="ERA_msl_varimax_wNAO", units="hPa", variable="Mean Sea Level Pressure")
+
+# ERA5_z500 = read_ERA_processed(path=ERA5_z500_path, varname="z500") * 9.81 #--> m
+# ERA5_z500 = ERA5_z500.sel(level=500)  # to drop the level dim since it is indexed on it
+
+#extract_eofs_data(data=ERA5_z500, figname="ERA_z500_varimax_wNAO", units="m", variable="Geopotential height")
+ERA_pcs = extract_eofs_data(data=ERA5_msl, figname="ERA_msl_varimax_wNAO", units="hPa", variable="Mean Sea Level Pressure", vmax=10, vmin=-10, is_era=True)
+
+
+# select only the years of echam
+#ERA_pcs = ERA_pcs["1980-01-01": "2014-12-01"]
 
 
 # analysis for echam PD
 PD_msl = extract_var(Dataset=PD_data, varname="slp", units="hPa")
-PD_h500 = extract_var(Dataset=PD_data, varname="geopoth", lev_units="hPa", lev=500)
+PI_msl = extract_var(Dataset=PI_data, varname="slp", units="hPa")
+LGM_msl = extract_var(Dataset=LGM_data, varname="slp", units="hPa")
+MH_msl = extract_var(Dataset=MH_data, varname="slp", units="hPa")
+PLIO_msl = extract_var(Dataset=PLIO_data, varname="slp", units="hPa")
+#PD_h500 = extract_var(Dataset=PD_data, varname="geopoth", lev_units="hPa", lev=500)
 
-extract_eofs_data(data=PD_h500, figname="PD_z500_varimax_wNAO", units="m", variable="Geopotential height")
-extract_eofs_data(data=PD_msl, figname="PD_msl_varimax_wNAO", units="hPa", variable="Mean Sea Level Pressure")
+#extract_eofs_data(data=PD_h500, figname="PD_z500_varimax_wNAO", units="m", variable="Geopotential height")
+PD_pcs = extract_eofs_data(data=PD_msl, figname="PD_msl_varimax_wNAO", units="hPa", variable="Mean Sea Level Pressure", vmax=10, vmin=-10)
+PI_pcs = extract_eofs_data(data=PI_msl, figname="PI_msl_varimax_wNAO", units="hPa", variable="Mean Sea Level Pressure", vmax=10, vmin=-10)
+
+LGM_pcs = extract_eofs_data(data=LGM_msl, figname="LGM_msl_varimax_wNAO", units="hPa", variable="Mean Sea Level Pressure", vmax=10, vmin=-10)
+MH_pcs = extract_eofs_data(data=MH_msl, figname="MH_msl_varimax_wNAO", units="hPa", variable="Mean Sea Level Pressure", vmax=10, vmin=-10)
+PLIO_pcs = extract_eofs_data(data=PLIO_msl, figname="PLIO_msl_varimax_wNAO", units="hPa", variable="Mean Sea Level Pressure", vmax=10, vmin=-10)
+
+
+PD_pcs.index = PD_pcs.index.to_datetimeindex()
+# visualize the pcs
+fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize= (20, 15), sharex=True)
+
+line1 = ax1.plot(ERA_pcs[1], "--", color="black")
+line2 = ax2.plot(PD_pcs[1], "--", color="black")
+
+
+
+lines = [line1, line2]
+axes = [ax1, ax2]
+
+for i,line in enumerate(lines):
+    x, y = line[0].get_data()
+    
+    # Fill above and below the zero line
+    axes[i].fill_between(x, y, where=y > 0, color='red', interpolate=True)
+    axes[i].fill_between(x, y, where=y < 0, color='blue', interpolate=True)
+    
+    
+    axes[i].xaxis.set_major_locator(YearLocator(5))
+    axes[i].xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+    axes[i].axhline(y=0, linestyle="--", color=grey, linewidth=2)
+
+# ax1.plot(ERA_pcs[1].rolling(12,min_periods=1, win_type="hann", center=True).mean(), color="black", linewidth=2,)
+# ax2.plot(PD_pcs[1].rolling(12,min_periods=1, win_type="hann", center=True).mean(), color="black", linewidth=2)
+
+plt.tight_layout()
+plt.subplots_adjust(left=0.05, right=0.88, top=0.94, bottom=0.06, hspace=0.01)
+plt.savefig(os.path.join(path_to_plots, "era_echam_pcs" + ".svg"), format= "svg", bbox_inches="tight", dpi=300)
+plt.show()
+
+
+
+
