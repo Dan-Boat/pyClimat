@@ -4,7 +4,7 @@ Created on Fri Feb 10 11:27:11 2023
 
 @author: dboateng
 
-Plot the annual means of the control experiments (and summer means if required)
+1. Plot the annual means of the control experiments (and summer means if required)
 """
 # import models
 import os 
@@ -83,15 +83,62 @@ apply_style(fontsize=22, style=None, linewidth=2)
 projection = ccrs.PlateCarree()
 fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":  projection})
 
-plot_annual_mean(ax=ax1, variable="Precipitation", data_alt=CTL_prec, cmap=YlGnBu, units="mm/month", vmax=200, vmin=50, domain="Europe", 
+plot_annual_mean(ax=ax1, variable="Precipitation", data_alt=CTL_prec, cmap=YlGnBu, units="mm/month", vmax=180, vmin=20, domain="Europe", 
                   levels=22, level_ticks=6, title="CTL (PI)", left_labels=True, bottom_labels=True, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
                   plot_projection=projection, plot_winds=True, data_u=CTL_u10, data_v=CTL_v10,  orientation= "horizontal", fig=fig, plot_coastlines=True)
 
-plot_annual_mean(ax=ax2, variable="Precipitation", data_alt=W1E1_278_prec, cmap=YlGnBu, units="mm/month", vmax=200, vmin=50, domain="Europe", 
+plot_annual_mean(ax=ax2, variable="Precipitation", data_alt=W1E1_278_prec, cmap=YlGnBu, units="mm/month", vmax=180, vmin=20, domain="Europe", 
                   levels=22, level_ticks=6, title="W1E1 (MIO 278ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
                   plot_winds=True, data_u=W1E1_278_u10, data_v=W1E1_278_v10, fig=fig, plot_coastlines=False, 
                   sea_land_mask=slm_mio)
+plot_annual_mean(ax=ax3, variable="Precipitation", data_alt=W1E1_450_prec, cmap=YlGnBu, units="mm/month", vmax=180, vmin=20, domain="Europe", 
+                  levels=22, level_ticks=6, title="W1E1 (MIO 450ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                  plot_winds=True, data_u=W1E1_450_u10, data_v=W1E1_450_v10, fig=fig, plot_coastlines=False, 
+                  sea_land_mask=slm_mio)
 
 
+fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+plt.tight_layout()
+plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
+plt.savefig(os.path.join(path_to_plots, "precipitation_CTL_mio_pi.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
+
+fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":  projection})
+
+plot_annual_mean(ax=ax1, variable="Temperature", data_alt=CTL_temp2, cmap=Spectral_r, units="°C", vmax=22, vmin=-5, domain="Europe", 
+                  levels=22, level_ticks=11, title="CTL (PI)", left_labels=True, bottom_labels=True, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
+                  plot_projection=projection, orientation= "horizontal", fig=fig, plot_coastlines=True, center=False)
+
+plot_annual_mean(ax=ax2, variable="Temperature", data_alt=W1E1_278_temp2, cmap=Spectral_r, units="°C", vmax=22, vmin=-5, domain="Europe", 
+                  levels=22, level_ticks=11, title="W1E1 (MIO 278ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                   fig=fig, plot_coastlines=False, sea_land_mask=slm_mio, center=False)
+plot_annual_mean(ax=ax3, variable="Temperature", data_alt=W1E1_450_temp2, cmap=Spectral_r, units="°C", vmax=22, vmin=-5, domain="Europe", 
+                  levels=22, level_ticks=11, title="W1E1 (MIO 450ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                  fig=fig, plot_coastlines=False, sea_land_mask=slm_mio, center=False)
+
+
+fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+plt.tight_layout()
+plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
+plt.savefig(os.path.join(path_to_plots, "temperature_CTL_mio_pi.svg"), format= "svg", bbox_inches="tight", dpi=300)
+
+
+fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":  projection})
+
+plot_annual_mean(ax=ax1, variable="$\delta^{18}$Op vs SMOW", data_alt=CTL_d18op, cmap=RdYlBu, units="‰", vmax=2, vmin=-16, domain="Europe", 
+                  levels=22, level_ticks=11, title="CTL (PI)", left_labels=True, bottom_labels=True, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
+                  plot_projection=projection, orientation= "horizontal", fig=fig, plot_coastlines=True, center=False)
+
+plot_annual_mean(ax=ax2, variable="$\delta^{18}$Op vs SMOW", data_alt=W1E1_278_d18op, cmap=RdYlBu, units="‰", vmax=2, vmin=-16, domain="Europe", 
+                  levels=22, level_ticks=11, title="W1E1 (MIO 278ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                   fig=fig, plot_coastlines=False, sea_land_mask=slm_mio, center=False)
+plot_annual_mean(ax=ax3, variable="$\delta^{18}$Op vs SMOW", data_alt=W1E1_450_d18op, cmap=RdYlBu, units="‰", vmax=2, vmin=-16, domain="Europe", 
+                  levels=22, level_ticks=11, title="W1E1 (MIO 450ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                  fig=fig, plot_coastlines=False, sea_land_mask=slm_mio, center=False)
+
+
+fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+plt.tight_layout()
+plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
+plt.savefig(os.path.join(path_to_plots, "d18op_CTL_mio_pi.svg"), format= "svg", bbox_inches="tight", dpi=300)
 

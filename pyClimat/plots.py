@@ -170,14 +170,14 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                         p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
                                         levels=levels, transform = projection, 
                                         cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": orientation, 
-                                                      "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither", 
+                                                      "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "both", 
                                         add_colorbar=True, add_labels=False)
                     else:
                         
                         p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
                                         levels=levels, transform = projection, 
                                         cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": orientation, 
-                                                      "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "neither", 
+                                                      "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "both", 
                                         add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
                 else:
                     p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
@@ -220,7 +220,8 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
     
     if plot_coastlines==False:
         if sea_land_mask is not None:
-            sea_land_mask.plot.contour(colors="k", linestyles="-", ax=ax, transform=projection, levels=[0], linewidths=1.0)
+            sea_land_mask.plot.contour(colors="k", linestyles="-", ax=ax, transform=projection, levels=[0], linewidths=1.0,
+                                       add_labels=False)
             
     
     # ploting background extent
@@ -245,7 +246,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
             q = ax.quiver(X[skip], Y[skip], u[skip], v[skip], transform=projection,  pivot= "mid", scale= 100,
                           headwidth=3, headlength=5, headaxislength=4.5)
             
-            qk = ax.quiverkey(q, 0.90, -0.1, 2, r'$2 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
+            qk = ax.quiverkey(q, 0.90, -0.1, 1, r'$1 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
                               {"size": 20, "weight":"bold"})
         
         
@@ -904,7 +905,7 @@ def plot_iso_profiles(df_iso, df_geosp, dim, iso_color, iso_label, ax=None, seas
 def scatter_plot_laspe_rate(reg_params, df_x_y_yhat, color, marker, label, ylabel=None, xlabel=None, ax=None, ax_legend=None,
                             output_name=None, output_format=None, title=None, path_to_store=None,
                             xmax=None, xmin=None, ymax=None, ymin=None, left_labels=True,
-                            bottom_labels=True,):
+                            bottom_labels=True, add_label=False):
     """
     
 
@@ -954,9 +955,17 @@ def scatter_plot_laspe_rate(reg_params, df_x_y_yhat, color, marker, label, ylabe
     
     #ploting scatter points 
     ax.scatter(df_x_y_yhat["X"], df_x_y_yhat["Y"], color=color, marker=marker)
-    ax.plot(df_x_y_yhat["X"], df_x_y_yhat["yhat"], 
-            color=color, label= "ILR = {:.2f} [‰/km], r²={:.2f}".format(reg_params.slope*1000, 
-                                                                      reg_params.rvalue*-1) + " [" + label + "]")
+    
+    if add_label:
+        ax.plot(df_x_y_yhat["X"], df_x_y_yhat["yhat"], 
+                color=color, label= "{:.2f} +/-{:.4f} [‰/km], r²={:.2f}".format(reg_params.slope*1000, reg_params.stderr*1000,
+                                                                          reg_params.rvalue*-1) + " [" + label + "]")
+        
+    else:
+        
+        ax.plot(df_x_y_yhat["X"], df_x_y_yhat["yhat"], 
+                color=color, label= "{:.2f} +/-{:.4f} [‰/km], r²={:.2f}".format(reg_params.slope*1000, reg_params.stderr*1000,
+                                                                          reg_params.rvalue*-1))
     
     #ax.set_aspect("equal", "box")
     
