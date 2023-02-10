@@ -1098,6 +1098,11 @@ def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, 
     
     
     # ploting background extent
+    
+    if plot_coastlines == False:
+        sea_land_mask.plot.contour(colors="k", linestyles="-", ax=ax, transform=projection_p, levels=[0], linewidths=3)
+        
+        
     plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels, 
                     plot_coastlines=plot_coastlines, plot_borders=plot_borders)
     

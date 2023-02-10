@@ -86,10 +86,14 @@ def creat_norm():
 
 CTL_topo, CTL_slm = read_jan_surf_oromea(path=path_to_data, filename=CTL_filename, return_slm=True)
 W1E1_topo, Mio_slm = read_jan_surf_oromea(path=path_to_data, filename=W1E1_filename, return_slm=True)
+W2E1_topo  = read_jan_surf_oromea(path=path_to_data, filename=W2E1_filename,)
+W2E15_topo  = read_jan_surf_oromea(path=path_to_data, filename=W2E15_filename,)
+W2E0_topo  = read_jan_surf_oromea(path=path_to_data, filename=W2E0_filename,)
+W2E2_topo = read_jan_surf_oromea(path=path_to_data, filename=W2E2_filename,)
 
 
-projection = ccrs.EuroPP()
-fig, ((ax1,ax2,ax3), (ax4, ax5,ax6)) = plt.subplots(nrows = 2, ncols = 3, figsize=(26, 20), 
+projection = ccrs.PlateCarree()
+fig, ((ax1,ax2,ax3), (ax4, ax5,ax6)) = plt.subplots(nrows = 2, ncols = 3, figsize=(26, 17), 
                                                     subplot_kw={"projection": projection})
 
 norm, terrain = creat_norm()
@@ -103,9 +107,29 @@ plot_echam_topo(variable="Elevation", data=CTL_topo, cmap=terrain, units="m",
 plot_echam_topo(variable="Elevation", data=W1E1_topo, cmap=terrain, units="m", 
                 vmax=4000, vmin=-100, levels=31, level_ticks=6,
                 domain="Europe", cbar=False, projection=projection, norm=norm, plot_coastlines=False, plot_borders=False, 
-                ax=ax2, title="W1E1 (MIO)", bottom_labels=False, left_labels=False)
+                ax=ax2, title="W1E1 (MIO)", bottom_labels=False, left_labels=False, sea_land_mask= Mio_slm)
+plot_echam_topo(variable="Elevation", data=W2E2_topo, cmap=terrain, units="m", 
+                vmax=4000, vmin=-100, levels=31, level_ticks=6,
+                domain="Europe", cbar=False, projection=projection, norm=norm, plot_coastlines=False, plot_borders=False, 
+                ax=ax3, title="W2E2 (MIO)", bottom_labels=False, left_labels=False, sea_land_mask= Mio_slm)
+
+plot_echam_topo(variable="Elevation", data=W2E0_topo, cmap=terrain, units="m", 
+                vmax=4000, vmin=-100, levels=31, level_ticks=6,
+                domain="Europe", cbar=False, projection=projection, norm=norm, plot_coastlines=False, plot_borders=False, 
+                ax=ax4, title="W2E0 (MIO)", bottom_labels=True, left_labels=True, sea_land_mask= Mio_slm)
+
+plot_echam_topo(variable="Elevation", data=W2E1_topo, cmap=terrain, units="m", 
+                vmax=4000, vmin=-100, levels=31, level_ticks=6,
+                domain="Europe", cbar=False, projection=projection, norm=norm, plot_coastlines=False, plot_borders=False, 
+                ax=ax5, title="W2E1 (MIO)", bottom_labels=True, left_labels=False, sea_land_mask= Mio_slm)
+
+plot_echam_topo(variable="Elevation", data=W2E15_topo, cmap=terrain, units="m", 
+                vmax=4000, vmin=-100, levels=31, level_ticks=6,
+                domain="Europe", cbar=False, projection=projection, norm=norm, plot_coastlines=False, plot_borders=False, 
+                ax=ax6, title="W2E1.5 (MIO)", bottom_labels=True, left_labels=False, sea_land_mask= Mio_slm)
+
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
-plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.01, hspace=0.06)
+plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05, hspace=0.06)
 plt.show()
