@@ -148,9 +148,9 @@ def plot_background(p, domain=None, use_AlbersEqualArea=None,ax=None, left_label
     #setting domain size
     if domain is not None: 
         if domain == "Europe":   # Europe
-            minLon = -15
+            minLon = -25
             maxLon = 40
-            minLat = 35
+            minLat = 40
             maxLat = 65
         elif domain == "South America":   # South America
             minLon = -83
