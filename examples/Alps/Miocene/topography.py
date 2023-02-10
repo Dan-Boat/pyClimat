@@ -29,6 +29,7 @@ from pyClimat.plots import plot_echam_topo
 
 # set paths to data and store 
 path_to_data = "D:/Datasets/topo/Miotopofiles/CTL_Mio_Herold/jan_surf_files"
+path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Alps/Miocene/plots"
 W1E1_filename = "T159_MIO_W1E1_jan_surf_Herold.nc"
 W2E1_filename = "T159_MIO_W2E1_jan_surf_Herold.nc"
 W2E0_filename = "T159_MIO_W2E0_jan_surf_Herold.nc"
@@ -131,5 +132,6 @@ plot_echam_topo(variable="Elevation", data=W2E15_topo, cmap=terrain, units="m",
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
-plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05, hspace=0.06)
+plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
+plt.savefig(os.path.join(path_to_plots, "topography_mio.svg"), format= "svg", bbox_inches="tight", dpi=300)
 plt.show()

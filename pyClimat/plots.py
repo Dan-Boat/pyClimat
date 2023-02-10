@@ -37,7 +37,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                      output_format=None, level_ticks=None, title=None, path_to_store=None, data_v=None, data_u=None, GNIP_data=None,
                      left_labels= True, bottom_labels=True, add_colorbar=True, plot_stats= False, compare_data1=None, compare_data2=None, max_pvalue=None,
                      hatches=None, fig=None, cbar_pos=None, use_colorbar_default=False, plot_winds=False,
-                     orientation = "horizontal", time=None, plot_projection=None):
+                     orientation = "horizontal", time=None, plot_projection=None, plot_coastlines=True, sea_land_mask=None):
     """
     
 
@@ -218,8 +218,14 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
         p.colorbar.set_label(label=variable + " [" + units + "]", size= 20, fontweight="bold")
         p.colorbar.ax.tick_params(labelsize=20, size=0,)
     
+    if plot_coastlines==False:
+        if sea_land_mask is not None:
+            sea_land_mask.plot.contour(colors="k", linestyles="-", ax=ax, transform=projection, levels=[0], linewidths=1.0)
+            
+    
     # ploting background extent
-    plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels)
+    plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels,
+                    plot_coastlines=plot_coastlines)
     
     
     if plot_winds == True: 
@@ -239,7 +245,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
             q = ax.quiver(X[skip], Y[skip], u[skip], v[skip], transform=projection,  pivot= "mid", scale= 100,
                           headwidth=3, headlength=5, headaxislength=4.5)
             
-            qk = ax.quiverkey(q, 0.90, -0.1, 5, r'$5 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
+            qk = ax.quiverkey(q, 0.90, -0.1, 2, r'$2 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
                               {"size": 20, "weight":"bold"})
         
         
@@ -1100,7 +1106,9 @@ def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, 
     # ploting background extent
     
     if plot_coastlines == False:
-        sea_land_mask.plot.contour(colors="k", linestyles="-", ax=ax, transform=projection_p, levels=[0], linewidths=3)
+        
+        if sea_land_mask is not None:
+            sea_land_mask.plot.contour(colors="k", linestyles="-", ax=ax, transform=projection_p, levels=[0], linewidths=1.0)
         
         
     plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels, 
