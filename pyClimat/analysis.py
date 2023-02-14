@@ -342,7 +342,10 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
             
             
     elif varname == "latent heat":
-        var_data = Dataset["ahfl"] * -1 #positive values
+        var_data = Dataset["ahfl"] #positive values
+        
+    elif varname == "sensible heat":
+        var_data = Dataset["ahfs"]
         
     elif varname =="qvi":
         var_data = Dataset["qvi"] # vertical integrated water vapor

@@ -148,7 +148,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                         p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
                                         levels=levels, transform = projection, norm=norm, 
                                         cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": orientation, 
-                                                      "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither",
+                                                      "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "both",
                                         add_colorbar=True, add_labels=False)
                     else:
                         
@@ -156,7 +156,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                          p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
                                          levels=levels, transform = projection, norm=norm, 
                                          cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": orientation, 
-                                                       "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "neither",
+                                                       "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "both",
                                          add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
                 else:
                     p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
