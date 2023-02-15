@@ -37,7 +37,8 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                      output_format=None, level_ticks=None, title=None, path_to_store=None, data_v=None, data_u=None, GNIP_data=None,
                      left_labels= True, bottom_labels=True, add_colorbar=True, plot_stats= False, compare_data1=None, compare_data2=None, max_pvalue=None,
                      hatches=None, fig=None, cbar_pos=None, use_colorbar_default=False, plot_winds=False,
-                     orientation = "horizontal", time=None, plot_projection=None, plot_coastlines=True, sea_land_mask=None):
+                     orientation = "horizontal", time=None, plot_projection=None, plot_coastlines=True, sea_land_mask=None,
+                     show_arrow_scale=False, wind_scale=50):
     """
     
 
@@ -243,11 +244,12 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
             skip = (slice(None, None, 3), slice(None, None, 3))  #for extracting the data on interval or use data[::3, ::3]
             
             # ploting winds using quiver 
-            q = ax.quiver(X[skip], Y[skip], u[skip], v[skip], transform=projection,  pivot= "mid", scale= 100,
+            q = ax.quiver(X[skip], Y[skip], u[skip], v[skip], transform=projection,  pivot= "mid", scale=wind_scale,
                           headwidth=3, headlength=5, headaxislength=4.5)
             
-            qk = ax.quiverkey(q, 0.90, -0.1, 1, r'$1 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
-                              {"size": 20, "weight":"bold"})
+            if show_arrow_scale:
+                qk = ax.quiverkey(q, 0.90, -0.1, 2, r'$2 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
+                                  {"size": 20, "weight":"bold"})
         
         
     if plot_stats == True:
