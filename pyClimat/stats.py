@@ -294,9 +294,13 @@ class EOF_standard():
                 self.eofsAsCorrelation = self.model.eofs_as_correlation()
         
         
-        self.eofsAsCorrelation = self.eofsAsCorrelation.sortby(self.eofsAsCorrelation.lon)
+        self.corr = self.eofsAsCorrelation[0]
+        self.pvals = self.eofsAsCorrelation[1]
         
-        return self.eofsAsCorrelation
+        self.corr = self.corr.sortby(self.corr.lon)
+        self.pvals = self.pvals.sortby(self.pvals.lon)
+        
+        return self.corr, self.pvals
     
     
     

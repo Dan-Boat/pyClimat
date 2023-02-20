@@ -59,7 +59,8 @@ ERA5_z500_path = os.path.join(ERA5_path, "z500_monthly.nc")
 
 
 
-def extract_eofs_data(data, figname, units, variable, vmax=15, vmin=-15, plot_covariance=True, is_era=False):
+def extract_eofs_data(data, figname, units, variable, vmax=15, vmin=-15, plot_covariance=True, is_era=False,
+                      path_to_plots=None):
     # analysis for ERA5 Dataset
     
     
@@ -89,14 +90,15 @@ def extract_eofs_data(data, figname, units, variable, vmax=15, vmin=-15, plot_co
     if plot_covariance:
     # loop through this !!
         plot_eofs(data=eofs, variance=variance, figname=figname + ".svg", units=units, variable=variable, vmax=vmax, 
-                  vmin=vmin, is_era=is_era)
+                  vmin=vmin, is_era=is_era, path_to_plots=path_to_plots)
     
     
     return pcs
     
     
     
-def plot_eofs(data, variance, figname, units="m", variable="slp", vmax=15, vmin=-15, is_era=False):
+def plot_eofs(data, variance, figname, units="m", variable="slp", vmax=15, vmin=-15, is_era=False,
+              path_to_plots=None):
     
     apply_style(fontsize=22, style=None, linewidth=2) 
     #projection = ccrs.PlateCarree()

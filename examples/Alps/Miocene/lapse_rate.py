@@ -48,6 +48,18 @@ W1E1_278_data, W1E1_278_wiso = read_ECHAM_processed(main_path=path_to_data, exp_
 W1E1_450_data, W1E1_450_wiso = read_ECHAM_processed(main_path=path_to_data, exp_name=W1E1_450_filename, years=years, 
                                           period=period, read_wiso=True)
 
+
+W2E1_PI_data, W2E1_PI_wiso = read_ECHAM_processed(main_path=path_to_data, exp_name=W2E1_PI_filename, years=years, 
+                                          period=period, read_wiso=True)
+
+W2E1_278_data, W2E1_278_wiso = read_ECHAM_processed(main_path=path_to_data, exp_name=W2E1_Mio278_filename, years=years, 
+                                          period=period, read_wiso=True)
+
+W2E1_450_data, W2E1_450_wiso = read_ECHAM_processed(main_path=path_to_data, exp_name=W2E1_Mio450_filename, years=years, 
+                                          period=period, read_wiso=True)
+
+
+
 def extract_relevant_vars_sections(data, wiso):
 
     d18op = extract_var(Dataset=data , varname="d18op", units="per mil", Dataset_wiso= wiso)
@@ -155,6 +167,8 @@ def plot_lape_rate_per_section():
     plt.tight_layout()
     plt.subplots_adjust(left=0.15, right=0.88, top=0.97, bottom=0.05)
     plt.savefig(os.path.join(path_to_plots, "lapse_rate_CTL_pi_mio.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    
+    
  
     
 if __name__ == '__main__':
