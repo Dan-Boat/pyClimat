@@ -42,3 +42,45 @@ def vert_coord_convertion(data, units):
     return data
 
 
+def extract_region(data, maxlon=60, minlon=-80, maxlat=80, minlat=10, time="season", 
+                              season="DJF", month=None):
+    if hasattr(data, "longitude"):
+        data = data.rename({"longitude":"lon", "latitude":"lat"})
+        
+    
+    data = data.assign_coords({"lon": (((data.lon + 180) % 360) - 180)})
+
+    data = data.where((data.lat >= minlat) & (data.lat <= maxlat), drop=True)
+    data = data.where((data.lon >= minlon) & (data.lon <= maxlon), drop=True)
+    
+  
+        
+    if time =="season":
+        data_group = data.groupby("time.season")
+        
+        if season is not None:
+            data = data_group[season]
+            
+        else:
+            data = data_group["DJF"]  # set to NH Winter as default
+            
+    elif time == "month":
+        
+        data_group = data.groupby("time.month")
+        
+        if isinstance(month, int):
+            data = data_group.get(month)
+        
+        elif month == "ONDJFM":
+            data = data.sel(time=data.time.dt.month.isin([1, 2, 3, 10, 11, 12]))
+            
+        elif month == "AMJJAS":
+            data = data.sel(time=data.time.dt.month.isin([4, 5, 6, 7, 8, 9]))
+            
+        elif month == "JA": # July and August for the SNAO
+            data = data.sel(time=data.time.dt.month.isin([7, 8]))
+            
+        else:
+            raise ValueError("The define month parameter is not recognized")
+
+    return data   

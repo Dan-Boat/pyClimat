@@ -61,7 +61,7 @@ def extract_eofs_data(data, figname, units, variable, vmax=15, vmin=-15, plot_co
         
     if plot_covariance:
     # loop through this !!
-        plot_eofs(data=eofs, variance=variance, figname=figname + ".svg", units=units, variable=variable, vmax=vmax, 
+        plot_eofs(data=eofs, variance=variance, figname=figname, units=units, variable=variable, vmax=vmax, 
                   vmin=vmin, is_era=is_era, path_to_plots=path_to_plots)
     
     
