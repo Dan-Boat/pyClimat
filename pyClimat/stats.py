@@ -18,6 +18,7 @@ import os
 import pandas as pd
 import numpy as np
 from scipy import stats
+from xarray import DataArray
 from eofs.xarray import Eof
 import scipy as sc
 from sklearn.decomposition import PCA
@@ -390,5 +391,79 @@ class EOF_standard():
             
     
 
+def StackArray(x,dim):
+	'''return stacked array with only one dimension left
+	INPUTS:
+	   x  : xarray.DataArray or Dataset to be stacked
+	   dim: sole dimension to remain after stacking
+	OUTPUTS:
+	   stacked: same as x, but stacked
+	'''
+	dims = []
+	for d in x.dims:
+		if d != dim:
+			dims.append(d)
+	return x.stack(stacked=dims)
+
+
+
+def ComputeCorr(i, x, y, method="Spearmanr"):
+    
+    if x.shape == y.shape:
+        
+        if method == "Spearmanr":
+            sloc,ploc = stats.spearmanr(x.isel(stacked=i), y.isel(stacked=i))
+            
+        elif method == "pearsonr":
+            sloc,ploc = stats.pearsonr(x.isel(stacked=i), y.isel(stacked=i))
+            
+    else:
+        
+        if method == "Spearmanr":
+            sloc,ploc = stats.spearmanr(x.isel(stacked=i), y.isel(stacked=0))
+            
+        elif method == "pearsonr":
+            sloc,ploc = stats.pearsonr(x.isel(stacked=i), y.isel(stacked=0))
+        
+    return sloc, ploc
+    
+def StatCorr(x,y,dim=None, return_sig=True):
+    
+    if len(y.dims) ==1:
+        
+        sy = y.expand_dims(stacked=[0])
+    else:
+        if dim is not None:
+            sy = StackArray(x=y, dim=dim)
+    
+    if dim is None or len(x.dims) == 1:
+        sx = x.expand_dims(stacked=[0])
+    else:
+        sx = StackArray(x,dim)
+        
+    nspace = len(sx.stacked)
+    sval, pval = np.zeros(sx.stacked.shape), np.zeros(sx.stacked.shape)
+    for i in range(nspace):
+        sval[i], pval[i] = ComputeCorr(i, sx, sy)
+        
+    if nspace > 1:
+        pvalx = DataArray(pval, coords=[sx.stacked],name='pval').unstack('stacked')
+        svalx = DataArray(sval,coords=[sx.stacked],name='sval').unstack('stacked')
+        
+    else:
+        svalx, pvalx = pval[0], sval[0]
+        
+    sig_loc  = xr.where(pvalx < 0.05, pvalx, pvalx*np.nan)
+    
+    sig_loc = sig_loc.sortby("lon")
+    
+    svalx, pvalx = svalx.sortby("lon"), pvalx.sortby("lon")
+    
+    
+    if return_sig:
+        return svalx, pvalx, sig_loc
+        
+    else:
+        return svalx, pvalx
 
     
