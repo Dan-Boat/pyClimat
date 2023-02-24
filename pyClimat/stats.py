@@ -507,7 +507,90 @@ def StatCrossCorr(x,y, dim=None, plot=False, sample_rate=3, apply_standardize=Fa
         
     return coefs
         
+class GrangerCausality():
+    """
+    Note that this class is for spatial data at the monemt (station data would be implemented 
+                                                            in a differnt class or adjust this
+                                                            one)
+    """
+    
+    def __init__(self, maxlag=3, test="params_ftest"):
+        self.maxlag = maxlag
+        self.test = test
         
+    def prepare_data(self, X, Y, dim="time", ):
+        
+        if isinstance(Y, xr.DataArray):
+            if len(Y.dims) ==1 or dim is None:
+                sy = Y.expand_dims(stacked=[0])
+            else:
+                sy = StackArray(x=Y, dim=dim)
+        
+        if isinstance(X, xr.DataArray):
+            
+            if dim is None or len(X.dims) == 1:
+                sx = X.expand_dims(stacked=[0])
+            else:
+                sx = StackArray(x=X,dim=dim)
+        
+        return sx, sy
+    
+    def compute_granger(self, i, x, y, apply_standardize=False, 
+                             interchange=False):
+        if x.shape == y.shape:
+            xi = x.isel(stacked=i)
+            yi = y.isel(stacked=i)
+        else:
+            xi = x.isel(stacked=i)
+            yi = y.isel(stacked=0)
+            
+        if apply_standardize == True:
+            xi = xi.values.reshape(-1,1)
+            yi = yi.values.reshape(-1,1)
+            
+            scaler = StandardScaler()
+            
+            scaler_x = scaler.fit(xi)
+            scaler_y = scaler.fit(yi)
+            
+            xi = scaler_x.transform(xi)
+            yi = scaler_y.transform(yi)
+            
+        if interchange:
+            data = np.column_stack([xi, yi])  # for checking the reverse order of causing
+        else:
+            data = np.column_stack([yi, xi])
+            
+        stats = grangercausalitytests(x=data, maxlag=self.maxlag, verbose=False)
+        
+        return stats   
+        
+            
+            
+            
+                
+    def perform_granger_test(self, X, Y, dim="time", apply_standardize=False, 
+                             interchange=False):
+        
+        x,y = self.prepare_data(X, Y, dim)
+        
+        nspace = len(x.stacked)
+        pval = np.zeros(x.stacked.shape)
+        
+        for i in range(nspace):
+            stats = self.compute_granger(i, x, y, apply_standardize, interchange)
+            
+            pvalues = [round(stats[i+1][0][self.test][1], 4) for i in range(self.maxlag)]
+            pvalue = np.min(pvalues)
+            pval[i] = pvalue
+            
+        if nspace > 1:
+            pvalx = DataArray(pval, coords=[x.stacked],name='pval').unstack('stacked')
+            pvalx = pvalx.sortby("lon")
+        else:
+            pvalx = pval[0]
+            
+        return pvalx        
     
     
     

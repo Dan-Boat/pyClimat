@@ -41,6 +41,42 @@ ea_index = xr.DataArray(df_era_pcs[str(3)], dims="time", coords={"time": df_era_
 nao_index_echam = xr.DataArray(df_echam_pcs[str(1)], dims="time", coords={"time": df_echam_pcs["time"]})
 ea_index_echam = xr.DataArray(df_echam_pcs[str(4)], dims="time", coords={"time": df_echam_pcs["time"]})
 
+import scipy.special as special
+from scipy.ndimage import uniform_filter
+
+def sliding_corr1(a,b,W):
+    # a,b are input arrays; W is window length
+
+    am = uniform_filter(a.astype(float),W)
+    bm = uniform_filter(b.astype(float),W)
+
+    amc = am[W//2:-W//2+1]
+    bmc = bm[W//2:-W//2+1]
+
+    da = a[:,None]-amc
+    db = b[:,None]-bmc
+
+    # Get sliding mask of valid windows
+    m,n = da.shape
+    mask1 = np.arange(m)[:,None] >= np.arange(n)
+    mask2 = np.arange(m)[:,None] < np.arange(n)+W
+    mask = mask1 & mask2
+    dam = (da*mask)
+    dbm = (db*mask)
+
+    ssAs = np.einsum('ij,ij->j',dam,dam)
+    ssBs = np.einsum('ij,ij->j',dbm,dbm)
+    D = np.einsum('ij,ij->j',dam,dbm)
+    coeff = D/np.sqrt(ssAs*ssBs)
+
+    n = W
+    ab = n/2 - 1
+    pval = 2*special.btdtr(ab, ab, 0.5*(1 - abs(np.float64(coeff))))
+    return coeff,pval
+
+out = sliding_corr1(nao_index,ea_index,10)
+
+out = sliding_corr1(df_era_pcs['1'].to_numpy(copy=False),df_era_pcs['2'].to_numpy(copy=False),10)
 
 # read era temperature
 ERA5_t2m_path = os.path.join(ERA5_path, "t2m_monthly.nc")
@@ -92,93 +128,10 @@ from sklearn.preprocessing import StandardScaler
 # pvalues = [round(stats[i+1][0]['params_ftest'][1], 4) for i in range(lag)]
 # pvalue = np.min(pvalues)
     
-class GrangerCausality():
-    """
-    Note that this class is for spatial data at the monemt (station data would be implemented 
-                                                            in a differnt class or adjust this
-                                                            one)
-    """
-    
-    def __init__(self, maxlag=3, test="params_ftest"):
-        self.maxlag = maxlag
-        self.test = test
-        
-    def prepare_data(self, X, Y, dim="time", ):
-        
-        if isinstance(Y, xr.DataArray):
-            if len(Y.dims) ==1 or dim is None:
-                sy = Y.expand_dims(stacked=[0])
-            else:
-                sy = StackArray(x=Y, dim=dim)
-        
-        if isinstance(X, xr.DataArray):
-            
-            if dim is None or len(X.dims) == 1:
-                sx = X.expand_dims(stacked=[0])
-            else:
-                sx = StackArray(x=X,dim=dim)
-        
-        return sx, sy
-    
-    def compute_granger(self, i, x, y, apply_standardize=False, 
-                             interchange=False):
-        if x.shape == y.shape:
-            xi = x.isel(stacked=i)
-            yi = y.isel(stacked=i)
-        else:
-            xi = x.isel(stacked=i)
-            yi = y.isel(stacked=0)
-            
-        if apply_standardize == True:
-            xi = xi.values.reshape(-1,1)
-            yi = yi.values.reshape(-1,1)
-            
-            scaler = StandardScaler()
-            
-            scaler_x = scaler.fit(xi)
-            scaler_y = scaler.fit(yi)
-            
-            xi = scaler_x.transform(xi)
-            yi = scaler_y.transform(yi)
-            
-        if interchange:
-            data = np.column_stack([xi, yi])  # for checking the reverse order of causing
-        else:
-            data = np.column_stack([yi, xi])
-            
-        stats = grangercausalitytests(x=data, maxlag=self.maxlag, verbose=False)
-        
-        return stats   
-        
+
             
             
-            
-                
-    def perform_granger_test(self, X, Y, dim="time", apply_standardize=False, 
-                             interchange=False):
-        
-        x,y = self.prepare_data(X, Y, dim)
-        
-        nspace = len(x.stacked)
-        pval = np.zeros(x.stacked.shape)
-        
-        for i in range(nspace):
-            stats = self.compute_granger(i, x, y, apply_standardize, interchange)
-            
-            pvalues = [round(stats[i+1][0][self.test][1], 4) for i in range(self.maxlag)]
-            pvalue = np.min(pvalues)
-            pval[i] = pvalue
-            
-        if nspace > 1:
-            pvalx = DataArray(pval, coords=[x.stacked],name='pval').unstack('stacked')
-            pvalx = pvalx.sortby("lon")
-        else:
-            pvalx = pval[0]
-            
-        return pvalx
-            
-            
-from pyClimat.stats import StatCrossCorr 
+from pyClimat.stats import StatCrossCorr, GrangerCausality
  
 coefs = StatCrossCorr(x=ea_index_echam, y=nao_index_echam, plot=True, sample_rate=1,
                       apply_standardize=True)         
