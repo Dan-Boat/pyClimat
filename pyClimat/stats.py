@@ -22,6 +22,10 @@ from xarray import DataArray
 from eofs.xarray import Eof
 import scipy as sc
 from sklearn.decomposition import PCA
+from statsmodels.tsa.stattools import acf, adfuller, ccf, grangercausalitytests
+import matplotlib.pyplot as plt
+
+from sklearn.preprocessing import StandardScaler
 
 def _get_month(npdatetime64):
     
@@ -429,12 +433,11 @@ def ComputeCorr(i, x, y, method="Spearmanr"):
     
 def StatCorr(x,y,dim=None, return_sig=True):
     
-    if len(y.dims) ==1:
+    if len(y.dims) ==1 or dim is None:
         
         sy = y.expand_dims(stacked=[0])
     else:
-        if dim is not None:
-            sy = StackArray(x=y, dim=dim)
+        sy = StackArray(x=y, dim=dim)
     
     if dim is None or len(x.dims) == 1:
         sx = x.expand_dims(stacked=[0])
@@ -449,15 +452,16 @@ def StatCorr(x,y,dim=None, return_sig=True):
     if nspace > 1:
         pvalx = DataArray(pval, coords=[sx.stacked],name='pval').unstack('stacked')
         svalx = DataArray(sval,coords=[sx.stacked],name='sval').unstack('stacked')
+        svalx, pvalx = svalx.sortby("lon"), pvalx.sortby("lon")
         
     else:
         svalx, pvalx = pval[0], sval[0]
         
     sig_loc  = xr.where(pvalx < 0.05, pvalx, pvalx*np.nan)
     
-    sig_loc = sig_loc.sortby("lon")
+    #sig_loc = sig_loc.sortby("lon")
     
-    svalx, pvalx = svalx.sortby("lon"), pvalx.sortby("lon")
+    
     
     
     if return_sig:
@@ -466,4 +470,45 @@ def StatCorr(x,y,dim=None, return_sig=True):
     else:
         return svalx, pvalx
 
+def StatCrossCorr(x,y, dim=None, plot=False, sample_rate=3, apply_standardize=False):
+    if x.shape != y.shape:
+        raise ValueError("Both data should have the same time axis")
+        
+    sy = y.expand_dims(stacked=[0]).isel(stacked=0)
+    sx = x.expand_dims(stacked=[0]).isel(stacked=0)
+    
+    if apply_standardize == True:
+        sx = sx.values.reshape(-1,1)
+        sy = sy.values.reshape(-1,1)
+        
+        scaler = StandardScaler()
+        
+        scaler_x = scaler.fit(sx)
+        scaler_y = scaler.fit(sy)
+        
+        sx = scaler_x.transform(sx)
+        sy = scaler_y.transform(sy)
+    
+    coefs = ccf(sx, sy, adjusted=False)
+    
+    # remove padding and reverse order 
+    #coefs = coefs[0:(len(x) + 1)][::-1]
+    
+    if plot:
+        plt.subplots(figsize=(15, 4))
+        plt.ylabel('Correlation Coefficient')
+        plt.xlabel('Lag [time] $h$')
+        plt.stem(np.linspace(0, len(x), sample_rate*len(x)), coefs)
+        peak = np.argmax(coefs/sample_rate)
+        plt.axvline(peak, c='r')
+        print('Maximum at:', peak, '(in $s$)')
+        plt.show()
+        
+        
+    return coefs
+        
+        
+    
+    
+    
     
