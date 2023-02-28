@@ -1246,7 +1246,7 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
         else:
             clevs = np.linspace(vmin, vmax, levels)
         c = data.plot.contour(ax=ax, levels=clevs, transform=projection, linewidth=1, colors="black",
-                              add_label=False)
+                              add_labels=False)
     # ploting background extent
     
     if use_AlberEqualArea ==True: #!!! Its currently not possible to add labels after set boundary, cartopy >0.18 supports labels aside PlateCarree and Mercator but not after clipping boundaries
