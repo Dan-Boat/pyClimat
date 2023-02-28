@@ -41,42 +41,19 @@ ea_index = xr.DataArray(df_era_pcs[str(3)], dims="time", coords={"time": df_era_
 nao_index_echam = xr.DataArray(df_echam_pcs[str(1)], dims="time", coords={"time": df_echam_pcs["time"]})
 ea_index_echam = xr.DataArray(df_echam_pcs[str(4)], dims="time", coords={"time": df_echam_pcs["time"]})
 
-import scipy.special as special
-from scipy.ndimage import uniform_filter
 
-def sliding_corr1(a,b,W):
-    # a,b are input arrays; W is window length
+from pyClimat.stats import sliding_correlation
 
-    am = uniform_filter(a.astype(float),W)
-    bm = uniform_filter(b.astype(float),W)
+df_era_pcs = df_era_pcs.set_index("time")
 
-    amc = am[W//2:-W//2+1]
-    bmc = bm[W//2:-W//2+1]
+df_echam_pcs = df_echam_pcs.set_index("time")
 
-    da = a[:,None]-amc
-    db = b[:,None]-bmc
+coeff, coef_sig = sliding_correlation(df_echam_pcs['1'],df_echam_pcs['2'],10, 
+                    sig=40, method="df_corr", plot=True)
 
-    # Get sliding mask of valid windows
-    m,n = da.shape
-    mask1 = np.arange(m)[:,None] >= np.arange(n)
-    mask2 = np.arange(m)[:,None] < np.arange(n)+W
-    mask = mask1 & mask2
-    dam = (da*mask)
-    dbm = (db*mask)
 
-    ssAs = np.einsum('ij,ij->j',dam,dam)
-    ssBs = np.einsum('ij,ij->j',dbm,dbm)
-    D = np.einsum('ij,ij->j',dam,dbm)
-    coeff = D/np.sqrt(ssAs*ssBs)
+#You can then apply this function to the correlation values you already have.
 
-    n = W
-    ab = n/2 - 1
-    pval = 2*special.btdtr(ab, ab, 0.5*(1 - abs(np.float64(coeff))))
-    return coeff,pval
-
-out = sliding_corr1(nao_index,ea_index,10)
-
-out = sliding_corr1(df_era_pcs['1'].to_numpy(copy=False),df_era_pcs['2'].to_numpy(copy=False),10)
 
 # read era temperature
 ERA5_t2m_path = os.path.join(ERA5_path, "t2m_monthly.nc")
@@ -98,37 +75,6 @@ d18op_echam = extract_var(Dataset=echam_data, varname="d18op", units="per mil", 
 d18op = extract_region(data=d18op_echam, time="season", season="DJF")
 
 # test for performing causality and stationarity testing
-
-from statsmodels.tsa.stattools import adfuller, kpss, grangercausalitytests
-from pyClimat.stats import StackArray
-from sklearn.preprocessing import StandardScaler
-
-
-#prepare data 
-# X = StackArray(x=d18op, dim="time")
-# Y = nao_index_echam.expand_dims(stacked=[0]).isel(stacked=0)
-
-# # select one (but would require loop through all the stacks)
-
-# X1 = X.isel(stacked=1)
-
-# # standardize X
-
-# X1 = X1.values.reshape(-1,1)
-# scaler = StandardScaler()
-# scaler = scaler.fit(X1)
-# X1 = scaler.transform(X1)
-
-# # prepare data for the statsmodel test
-
-# lag=3
-# data = np.column_stack([Y, X1])
-# stats = grangercausalitytests(x=data, maxlag=lag)
-
-# pvalues = [round(stats[i+1][0]['params_ftest'][1], 4) for i in range(lag)]
-# pvalue = np.min(pvalues)
-    
-
             
             
 from pyClimat.stats import StatCrossCorr, GrangerCausality

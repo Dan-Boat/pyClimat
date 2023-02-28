@@ -1134,7 +1134,8 @@ def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, 
     
 def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=None, units=None, ax=None, domain=None, output_name=None, 
                      output_format=None, level_ticks=None, title=None, path_to_store=None, cbar = None, cbar_orientation=None, cbar_position = None,
-                     fig=None, use_AlberEqualArea=None, vmax=None, vmin=None, left_labels= True, bottom_labels=True):
+                     fig=None, use_AlberEqualArea=None, vmax=None, vmin=None, left_labels= True, bottom_labels=True,
+                     plot_contour=True):
     """
     
 
@@ -1235,7 +1236,17 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
         p = data.plot.imshow(ax =ax, cmap=cmap, transform = projection, 
                                  cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
                                                "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "both")
+    
         
+    #plot contour 
+    
+    if plot_contour:
+        if level_ticks is not None:
+            clevs = np.linspace(vmin, vmax, level_ticks)
+        else:
+            clevs = np.linspace(vmin, vmax, levels)
+        c = data.plot.contour(ax=ax, levels=clevs, transform=projection, linewidth=1, colors="black",
+                              add_label=False)
     # ploting background extent
     
     if use_AlberEqualArea ==True: #!!! Its currently not possible to add labels after set boundary, cartopy >0.18 supports labels aside PlateCarree and Mercator but not after clipping boundaries
@@ -1249,8 +1260,11 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
     
     if title is not None:
         if mode_var is not None:
-            
-            ax.set_title(title + " ({:.2f})".format(mode_var) , fontsize=22, weight="bold", loc="left")
+            if isinstance(mode_var, pd.Series):
+                ax.set_title(title + " ({:.2f})".format(float(mode_var)) , fontsize=22, weight="bold", loc="left")
+                
+            else:
+                ax.set_title(title + " ({:.2f})".format(mode_var) , fontsize=22, weight="bold", loc="left")
         else:
             ax.set_title(title, fontsize=22, weight="bold", loc="left")
         

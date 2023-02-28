@@ -4,7 +4,8 @@ Created on Mon Jan 30 17:35:52 2023
 
 @author: dboateng
 
-This module contains all the statistic functions used in pyClimat (eg. EOF, lingress, t-test)
+This module contains all the statistical functions used in pyClimat (eg. EOF, lingress, t-test,
+                                                                     causality, cross-correlation)
 """
 
 # To do list
@@ -24,8 +25,13 @@ import scipy as sc
 from sklearn.decomposition import PCA
 from statsmodels.tsa.stattools import acf, adfuller, ccf, grangercausalitytests
 import matplotlib.pyplot as plt
-
+from matplotlib.dates import YearLocator
+import matplotlib.dates as mdates 
 from sklearn.preprocessing import StandardScaler
+import scipy.special as special
+from scipy.ndimage import uniform_filter
+
+
 
 def _get_month(npdatetime64):
     
@@ -189,7 +195,7 @@ class EOF_standard():
             
             from xeofs.xarray import EOF
             
-            self.model = EOF(self.anomalies, n_modes=self.neofs, dim="time", norm=False)
+            self.model = EOF(self.anomalies, n_modes=self.neofs, dim="time", norm=True)
             
             self.model.solve()
             
@@ -206,7 +212,7 @@ class EOF_standard():
                 
             
             
-    def eofs(self, eofscaling=1):
+    def eofs(self):
         """
         *eofscaling for Eof*
             Sets the scaling of the EOFs. The following values are
@@ -243,40 +249,42 @@ class EOF_standard():
         """
         
         if self.method == "Eof":
-            self.eofs = self.solver.eofsAsCovariance(pcscaling=eofscaling, neofs=self.neofs)
+            self.eofs = self.solver.eofsAsCovariance(pcscaling=1, neofs=self.neofs)
             
                 
         elif self.method == "xeofs":
             
             if self.apply_varimax:
-                self.eofs = self.rot_varimax.eofs(scaling=eofscaling)   
+                self.eofs = self.rot_varimax.eofs(scaling=2)   
                 
             elif self.apply_promax:
-                self.eofs = self.rot_promax.eofs(scaling=eofscaling) 
+                self.eofs = self.rot_promax.eofs(scaling=2) 
             
             else:
-                self.eofs = self.model.eofs(scaling=eofscaling)
+                self.eofs = self.model.eofs(scaling=2)
                 
         self.eofs = self.eofs.sortby(self.eofs.lon)    # fix the change of +-180 changes
         
         return self.eofs
     
     
-    def pcs(self, pscaling=0):
+    def pcs(self):
         
         if self.method == "Eof":
-            self.pcs = self.solver.pcs(pcscaling=pscaling, npcs=self.neofs)
+            self.pcs = self.solver.pcs(pcscaling=1, npcs=self.neofs)
                 
         elif self.method == "xeofs":
             
             if self.apply_varimax:
-                self.pcs = self.rot_varimax.pcs(scaling=pscaling)   
+                self.pcs = self.rot_varimax.pcs(scaling=1)   
                 
             elif self.apply_promax:
-                self.pcs = self.rot_promax.pcs(scaling=pscaling) 
+                self.pcs = self.rot_promax.pcs(scaling=1) 
             
             else:
-                self.pcs = self.model.pcs(scaling=pscaling)
+                self.pcs = self.model.pcs(scaling=1)
+                
+            self.pcs = self.pcs / self.pcs.std(dim="time")
          
                 
         return self.pcs.to_pandas()
@@ -593,5 +601,73 @@ class GrangerCausality():
         return pvalx        
     
     
+
+def sliding_correlation(a,b,W, method="df_corr", sig=10, plot=False):
     
+    
+    if method == "df_corr":
+        
+        df_coef = a.rolling(W).corr(b)
+        deg_of_free = W - 2
+        t_squared = df_coef**2 * (deg_of_free / ((1.0 - df_coef) * (1.0 + df_coef)))
+        pval = special.betainc(0.5*deg_of_free, 0.5, deg_of_free/(deg_of_free + t_squared))
+        
+        if sig is not None:
+            coef_sig = df_coef[pval < sig/100].max()
+            
+    else:
+        # a,b are input arrays; W is window length
+        time = a.index
+        
+        a = a.to_numpy(copy=False)
+        b = b.to_numpy(copy=False)
+        
+        df_coef = pd.DataFrame(index=time, columns= ["coef"])
+        am = uniform_filter(a.astype(float),W)
+        bm = uniform_filter(b.astype(float),W)
+    
+        amc = am[W//2:-W//2+1]
+        bmc = bm[W//2:-W//2+1]
+    
+        da = a[:,None]-amc
+        db = b[:,None]-bmc
+    
+        # Get sliding mask of valid windows
+        m,n = da.shape
+        mask1 = np.arange(m)[:,None] >= np.arange(n)
+        mask2 = np.arange(m)[:,None] < np.arange(n)+W
+        mask = mask1 & mask2
+        dam = (da*mask)
+        dbm = (db*mask)
+    
+        ssAs = np.einsum('ij,ij->j',dam,dam)
+        ssBs = np.einsum('ij,ij->j',dbm,dbm)
+        D = np.einsum('ij,ij->j',dam,dbm)
+        coeff = D/np.sqrt(ssAs*ssBs)
+    
+        n = W
+        ab = n/2 - 1
+        pval = 2*special.btdtr(ab, ab, 0.5*(1 - abs(np.float64(coeff))))
+        df_coef.iloc[W-1:, 0] = coeff
+        
+        if sig is not None:
+            coef_sig = np.min(coeff[pval < sig/100])
+            
+    
+    if plot:
+        fig, ax = plt.subplots(figsize=(15, 4))
+        ax.set_ylabel('Correlation Coefficient', fontweight="bold", fontsize=20)
+        ax.plot(df_coef, color="black")
+        ax.xaxis.set_major_locator(YearLocator(5))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+        ax.axhline(y=np.abs(coef_sig), linestyle="--", color="red", linewidth=2)
+        ax.axhline(y=0, linestyle="--", color="grey", linewidth=2)
+        ax.axhline(y=np.abs(coef_sig)*-1, linestyle="--", color="red", linewidth=2)
+        plt.show()
+            
+    if sig is not None:
+        return df_coef, np.abs(coef_sig)
+    
+    else:
+        return df_coef
     

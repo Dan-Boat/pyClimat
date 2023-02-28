@@ -55,7 +55,7 @@ def preprocess_to_long_records():
             data_to_save = data_to_save.set_index(["Date"], drop=True)
             
         
-        if len(data_to_save)/12 >= 5:
+        if len(data_to_save)/12 >= 30:
             
             df_info["Name"][i] = name
             df_info["lat"][i] = lat
@@ -71,8 +71,14 @@ def preprocess_to_long_records():
             
             data_to_save.to_csv(os.path.join(path_to_processed_all, name + ".csv"), index=True)
     
+    
+    df_info = df_info.rename(columns = {"lon":"Longitude",
+                                        "lat":"Latitude","elev":"Elevation"})
+    
+    
+    df_info = df_info.sort_values(by=["Name"], ascending=True)
     df_info = df_info.reset_index().dropna().set_index('index')
-    df_info.to_csv(os.path.join(path_to_processed_all, "station_info.csv"), index=False)
+    df_info.to_csv(os.path.join(path_to_processed, "station_info.csv"), index=False)
 
 
 def process_data_for_variable(path_to_data, path_to_store):
