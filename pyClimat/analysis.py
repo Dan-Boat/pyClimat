@@ -116,7 +116,24 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
         var_data_echam = Dataset["aprl"] + Dataset["aprc"]
         if Dataset_wiso is not None:
              var_data_wiso = Dataset_wiso["wisoaprl"][:,1,:,:] + Dataset_wiso["wisoaprc"][:,1,:,:]
-        SMOW = 0.2228
+        SMOW = 0.2228  #20./18*2005.2e-4
+        wiso_wtgs = var_data_wiso / var_data_echam
+        var_data = ((wiso_wtgs/SMOW) -1)
+        
+        if units is not None:
+            if units == "per mil":
+                var_data = var_data *1000 # convert to permil
+                var_data.attrs["units"] = units
+            else:
+                print("Define unit well or the default is isotopic ratio")
+                
+                
+    # dD in Precipitation
+    elif varname == "dDp":
+        var_data_echam = Dataset["aprl"] + Dataset["aprc"]
+        if Dataset_wiso is not None:
+             var_data_wiso = Dataset_wiso["wisoaprl"][:,3,:,:] + Dataset_wiso["wisoaprc"][:,3,:,:]
+        SMOW = 0.3288  #19./18.*2.*155.76e-3
         wiso_wtgs = var_data_wiso / var_data_echam
         var_data = ((wiso_wtgs/SMOW) -1)
         

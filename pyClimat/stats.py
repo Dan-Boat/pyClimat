@@ -439,7 +439,7 @@ def ComputeCorr(i, x, y, method="Spearmanr"):
         
     return sloc, ploc
     
-def StatCorr(x,y,dim=None, return_sig=True):
+def StatCorr(x,y,dim=None, return_sig=True, sig=0.1):
     
     if len(y.dims) ==1 or dim is None:
         
@@ -465,7 +465,7 @@ def StatCorr(x,y,dim=None, return_sig=True):
     else:
         svalx, pvalx = pval[0], sval[0]
         
-    sig_loc  = xr.where(pvalx < 0.05, pvalx, pvalx*np.nan)
+    sig_loc  = xr.where(pvalx < sig, pvalx, pvalx*np.nan)
     
     #sig_loc = sig_loc.sortby("lon")
     
