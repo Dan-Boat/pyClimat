@@ -121,7 +121,7 @@ def apply_style(fontsize=20, style=None, linewidth=2):
 
 # defining function for selecting background domain for cartopy
 
-def plot_background(p, domain=None, use_AlbersEqualArea=None,ax=None, left_labels=True,
+def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labels=True,
                     bottom_labels=True, plot_coastlines=True, plot_borders=False):
     """
     This funtion defines the plotting domain and also specifies the background. It requires 
@@ -209,6 +209,12 @@ def plot_background(p, domain=None, use_AlbersEqualArea=None,ax=None, left_label
             maxLon = 40
             minLat = 0
             maxLat = 45
+            
+        elif domain == "Europe Wide":
+            minLon = -35
+            maxLon = 35
+            minLat = 32
+            maxLat = 75
             
         else:
             print("ERROR: invalid geographical domain passed in options")

@@ -440,7 +440,11 @@ def ComputeCorr(i, x, y, method="Spearmanr"):
     return sloc, ploc
     
 def StatCorr(x,y,dim=None, return_sig=True, sig=0.1):
-    
+    if len(x.time) != len(y.time):
+        x = x.drop_duplicates(dim="time")
+        y = y.drop_duplicates(dim="time")
+        
+        
     if len(y.dims) ==1 or dim is None:
         
         sy = y.expand_dims(stacked=[0])
@@ -522,11 +526,11 @@ class GrangerCausality():
                                                             one)
     """
     
-    def __init__(self, maxlag=3, test="params_ftest"):
+    def __init__(self, maxlag=10, test="params_ftest"):
         self.maxlag = maxlag
         self.test = test
         
-    def prepare_data(self, X, Y, dim="time", ):
+    def prepare_data(self, X, Y, Z=None, dim="time", ):
         
         if isinstance(Y, xr.DataArray):
             if len(Y.dims) ==1 or dim is None:
@@ -541,35 +545,79 @@ class GrangerCausality():
             else:
                 sx = StackArray(x=X,dim=dim)
         
-        return sx, sy
+        if Z is not None:
+            if isinstance(Z, xr.DataArray):
+                if dim is None or len(Z.dims) == 1:
+                    sz = Z.expand_dims(stacked=[0])
+                else:
+                    sz = StackArray(x=Z,dim=dim)
+                    
+                return sx, sy, sz
+            else:
+                raise ValueError("The alternative variable should be dataaray")
+        else:
+                
+            return sx, sy
     
-    def compute_granger(self, i, x, y, apply_standardize=False, 
+    def compute_granger(self, i, x, y, z=None, apply_standardize=False, 
                              interchange=False):
+        
         if x.shape == y.shape:
             xi = x.isel(stacked=i)
             yi = y.isel(stacked=i)
         else:
             xi = x.isel(stacked=i)
             yi = y.isel(stacked=0)
-            
+        
+        if z is not None:
+            if x.shape == y.shape:
+                zi = z.isel(stacked=i)
+            else:
+                zi = z.isel(stacked=0)
+                
+                
         if apply_standardize == True:
-            xi = xi.values.reshape(-1,1)
-            yi = yi.values.reshape(-1,1)
-            
             scaler = StandardScaler()
             
+            xi = xi.values.reshape(-1,1)
             scaler_x = scaler.fit(xi)
-            scaler_y = scaler.fit(yi)
-            
             xi = scaler_x.transform(xi)
+            
+            
+            yi = yi.values.reshape(-1,1)
+            scaler_y = scaler.fit(yi)
             yi = scaler_y.transform(yi)
             
-        if interchange:
-            data = np.column_stack([xi, yi])  # for checking the reverse order of causing
-        else:
-            data = np.column_stack([yi, xi])
+            if z is not None:
+                zi = zi.values.reshape(-1,1)
+                scaler_z = scaler.fit(zi)
+                zi = scaler_z.transform(zi)
+                
             
-        stats = grangercausalitytests(x=data, maxlag=self.maxlag, verbose=False)
+        if interchange:
+            if z is not None:
+                data = np.column_stack([yi, xi, zi])  # for checking the reverse order of causing
+                
+            else:
+                data = np.column_stack([yi, xi])
+        else:
+            if z is not None:
+                data = np.column_stack([xi, yi, zi])
+                
+            else:
+                data = np.column_stack([xi, yi])
+                
+                
+        # if alternative is provided, then the VAR model should be used directly
+        if z is not None:
+            
+            from statsmodels.tsa.api import VAR
+            model = VAR(data)
+            model = model.fit(maxlags=self.maxlag, method="bic")
+            stats = model.test_causality(caused=0, causing=[1,2], signif=0.05)
+        else:
+            
+            stats = grangercausalitytests(x=data, maxlag=self.maxlag, verbose=False)
         
         return stats   
         
@@ -577,20 +625,30 @@ class GrangerCausality():
             
             
                 
-    def perform_granger_test(self, X, Y, dim="time", apply_standardize=False, 
+    def perform_granger_test(self, X, Y, Z=None, dim="time", apply_standardize=False, 
                              interchange=False):
         
-        x,y = self.prepare_data(X, Y, dim)
+        if Z is not None:
+            x,y,z = self.prepare_data(X, Y, Z, dim)
+            
+        else:
+            x,y = self.prepare_data(X, Y, Z, dim)
+            z = None
         
         nspace = len(x.stacked)
         pval = np.zeros(x.stacked.shape)
         
         for i in range(nspace):
-            stats = self.compute_granger(i, x, y, apply_standardize, interchange)
+                
+            stats = self.compute_granger(i, x, y, z, apply_standardize, interchange)
             
-            pvalues = [round(stats[i+1][0][self.test][1], 4) for i in range(self.maxlag)]
-            pvalue = np.min(pvalues)
-            pval[i] = pvalue
+            if Z is not None:
+                pval[i] = stats.pvalue
+                
+            else:
+                pvalues = [round(stats[i+1][0][self.test][1], 4) for i in range(self.maxlag)]
+                pvalue = np.min(pvalues)
+                pval[i] = pvalue
             
         if nspace > 1:
             pvalx = DataArray(pval, coords=[x.stacked],name='pval').unstack('stacked')

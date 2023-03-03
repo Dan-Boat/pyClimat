@@ -26,8 +26,8 @@ ERA5_path = "C:/Users/dboateng/Desktop/Datasets/ERA5/monthly_1950_2021"
 path_to_other_vars_echam = "D:/Datasets/Model_output_pst/PD"
 
 
-filename_era_pcs="ERA5_varimax_eof_pcs.csv"
-filename_echam_pcs="ECHAM5-wiso_varimax_eof_pd_pcs.csv"
+filename_era_pcs="ERA5_standard_eof_DJF_pcs.csv"
+filename_echam_pcs="ECHAM5-wiso_standard_eof_pd_DJF_pcs.csv"
 
 
 df_era_pcs = pd.read_csv(os.path.join(path_to_save_files, filename_era_pcs), parse_dates=["time"])
@@ -35,21 +35,22 @@ df_echam_pcs = pd.read_csv(os.path.join(path_to_save_files, filename_echam_pcs),
 
 #select the node ands convert to xarray
 
-nao_index = xr.DataArray(df_era_pcs[str(2)], dims="time", coords={"time": df_era_pcs["time"]})
+nao_index = xr.DataArray(df_era_pcs[str(1)]*-1, dims="time", coords={"time": df_era_pcs["time"]})
 ea_index = xr.DataArray(df_era_pcs[str(3)], dims="time", coords={"time": df_era_pcs["time"]})
 
-nao_index_echam = xr.DataArray(df_echam_pcs[str(1)], dims="time", coords={"time": df_echam_pcs["time"]})
-ea_index_echam = xr.DataArray(df_echam_pcs[str(4)], dims="time", coords={"time": df_echam_pcs["time"]})
+nao_index_echam = xr.DataArray(df_echam_pcs[str(1)]*-1, dims="time", coords={"time": df_echam_pcs["time"]})
+ea_index_echam = xr.DataArray(df_echam_pcs[str(2)], dims="time", coords={"time": df_echam_pcs["time"]})
+scan_index_echam = xr.DataArray(df_echam_pcs[str(3)], dims="time", coords={"time": df_echam_pcs["time"]})
 
 
-from pyClimat.stats import sliding_correlation
+# from pyClimat.stats import sliding_correlation
 
-df_era_pcs = df_era_pcs.set_index("time")
+# df_era_pcs = df_era_pcs.set_index("time")
 
-df_echam_pcs = df_echam_pcs.set_index("time")
+# df_echam_pcs = df_echam_pcs.set_index("time")
 
-coeff, coef_sig = sliding_correlation(df_echam_pcs['1'],df_echam_pcs['2'],10, 
-                    sig=40, method="df_corr", plot=True)
+# coeff, coef_sig = sliding_correlation(df_echam_pcs['1'],df_echam_pcs['2'],10, 
+#                     sig=40, method="df_corr", plot=True)
 
 
 #You can then apply this function to the correlation values you already have.
@@ -79,14 +80,15 @@ d18op = extract_region(data=d18op_echam, time="season", season="DJF")
             
 from pyClimat.stats import StatCrossCorr, GrangerCausality
  
-coefs = StatCrossCorr(x=ea_index_echam, y=nao_index_echam, plot=True, sample_rate=1,
-                      apply_standardize=True)         
+# coefs = StatCrossCorr(x=ea_index_echam, y=nao_index_echam, plot=True, sample_rate=1,
+#                       apply_standardize=True)         
         
-sval,pval,sig = StatCorr(x=ea_index_echam, y=nao_index_echam, dim="time")      
+# sval,pval,sig = StatCorr(x=ea_index_echam, y=nao_index_echam, dim="time")      
 
 
 G = GrangerCausality(maxlag=3, test="params_ftest")
-pval = G.perform_granger_test(X=ea_index_echam, Y=nao_index_echam, apply_standardize=True)
+pval = G.perform_granger_test(X=ea_index_echam, Y=nao_index_echam, apply_standardize=True,
+                              Z=scan_index_echam)
 pval_e = G.perform_granger_test(X=nao_index_echam, Y=ea_index_echam, apply_standardize=True)
 
 era_pval = G.perform_granger_test(X=ea_index, Y=nao_index, apply_standardize=True)

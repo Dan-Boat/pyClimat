@@ -38,7 +38,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                      left_labels= True, bottom_labels=True, add_colorbar=True, plot_stats= False, compare_data1=None, compare_data2=None, max_pvalue=None,
                      hatches=None, fig=None, cbar_pos=None, use_colorbar_default=False, plot_winds=False,
                      orientation = "horizontal", time=None, plot_projection=None, plot_coastlines=True, sea_land_mask=None,
-                     show_arrow_scale=False, wind_scale=50):
+                     show_arrow_scale=False, wind_scale=50, label_format="%.0f"):
     """
     
 
@@ -149,7 +149,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                         p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
                                         levels=levels, transform = projection, norm=norm, 
                                         cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": orientation, 
-                                                      "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "both",
+                                                      "shrink": 0.70, "format": label_format, "ticks":ticks}, extend= "both",
                                         add_colorbar=True, add_labels=False)
                     else:
                         
@@ -157,7 +157,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                          p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
                                          levels=levels, transform = projection, norm=norm, 
                                          cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": orientation, 
-                                                       "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "both",
+                                                       "shrink": 0.30, "format": label_format, "ticks":ticks}, extend= "both",
                                          add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
                 else:
                     p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
@@ -171,14 +171,14 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                         p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
                                         levels=levels, transform = projection, 
                                         cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": orientation, 
-                                                      "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "both", 
+                                                      "shrink": 0.70, "format": label_format, "ticks":ticks}, extend= "both", 
                                         add_colorbar=True, add_labels=False)
                     else:
                         
                         p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
                                         levels=levels, transform = projection, 
                                         cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": orientation, 
-                                                      "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "both", 
+                                                      "shrink": 0.30, "format": label_format, "ticks":ticks}, extend= "both", 
                                         add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
                 else:
                     p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
@@ -191,7 +191,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                     p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
                                          levels=levels, transform = projection, 
                                          cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": orientation, 
-                                                       "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "both",
+                                                       "shrink": 0.70, "format": label_format, "ticks":ticks}, extend= "both",
                                          add_colorbar=True, add_labels=False)
                 else:
                     
@@ -200,7 +200,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                     p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
                                          levels=levels, transform = projection, 
                                          cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": orientation, 
-                                                       "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "both",
+                                                       "shrink": 0.70, "format": label_format, "ticks":ticks}, extend= "both",
                                          add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
             else:
                 p = data_alt.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, 
@@ -210,7 +210,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
     else:
         p = data_alt.plot.imshow(ax =ax, cmap=cmap, transform = projection, 
                                  cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": orientation, 
-                                               "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "neither", 
+                                               "shrink": 0.70, "format": label_format, "ticks":ticks}, extend= "neither", 
                                  add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
     
     
@@ -1516,7 +1516,82 @@ def plot_hovmoller_space_time(variable, data, cmap, units, ax=None, fig=None, vm
         plt.savefig(os.path.join(path_to_store, output_name + "." + output_format), format= output_format, bbox_inches="tight")
         
         
+def plot_correlation(variable, data, cmap = None, levels=None, units=None, ax=None, domain=None, output_name=None, 
+                     output_format=None, level_ticks=None, title=None, path_to_store=None, cbar = None, cbar_orientation=None, 
+                     cbar_pos = None,plot_pvalues=False, pvalue_data=None,use_AlbersEqualArea=False,
+                     fig=None, vmax=None, vmin=None, left_labels= True, bottom_labels=True,
+                     ):
+    import cartopy.crs as ccrs
+    import cartopy.feature as cfeature
+    from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
+    from cartopy.mpl.ticker import (LatitudeLocator, LongitudeLocator) 
+    from cartopy.util import add_cyclic_point
+    
+    norm = MidpointNormalize(midpoint=0)
+    projection = ccrs.PlateCarree()
+    
+    # defining axis
+    if ax is None:
+    
+        fig, ax = plt.subplots(1, 1, sharex=False, figsize= (15, 13), subplot_kw= {"projection":projection})
+             
+    if all(parameter is not None for parameter in [vmin, vmax, levels, level_ticks]):
+        ticks = np.linspace(vmin, vmax, level_ticks)
+        if cbar==True:
+            if cbar_pos is None:
+                cbar_pos = [0.90, 0.30, 0.03, 0.45]
+                
+            
+            cbar_ax = fig.add_axes(cbar_pos)   # axis for subplot colorbar # left, bottom, width, height
+            if cbar_orientation == "vertical":
+                cbar_ax.get_xaxis().set_visible(False)
+                cbar_ax.yaxis.set_ticks_position('right')
+            else:
+                cbar_ax.get_yaxis().set_visible(False)
+                cbar_ax.xaxis.set_ticks_position('bottom')
+                
+            cbar_ax.set_yticklabels([])
+            cbar_ax.tick_params(size=0)
+            
+            p = data.plot.imshow(ax=ax, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, transform = projection,
+                                 cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": cbar_orientation, 
+                                               "shrink": 0.7, "format": "%.1f", "ticks":ticks}, extend= "both", 
+                                 add_colorbar=True, cbar_ax=cbar_ax,
+                                 add_labels=False)
+            
+            
+            p.colorbar.set_label(label=variable + " [" + units + "]", size= 22, fontweight="bold")
+            p.colorbar.ax.tick_params(labelsize=22, size=0,)
+            
+        elif cbar == False:
+            p = data.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, transform = projection, 
+                                 add_colorbar=False, add_labels=False)
+                                 
+    else:
+        p = data.plot.imshow(ax =ax, cmap=cmap, transform = projection, 
+                                 cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": cbar_orientation, 
+                                               "shrink": 0.50, "format": "%.1f", "ticks":ticks}, extend= "both")
+    
         
+    
+
+    plot_background(p, domain= domain, bottom_labels=bottom_labels, left_labels=left_labels,
+                    use_AlbersEqualArea=use_AlbersEqualArea)
+    
+    if plot_pvalues:
+        if pvalue_data is not None:
+            pvalue_data.plot.contourf(ax=ax, colors="none", hatches=["."], add_colorbar=False,
+                                      add_labels=False)
+    
+    if title is not None:
+        ax.set_title(title , fontsize=22, weight="bold", loc="left")
+                
+
+        
+    #optional if one plot is required, alternatively save from the control script
+    if all(parameter is not None for parameter in [output_format, output_name, path_to_store]):
+        plt.savefig(os.path.join(path_to_store, output_name + "." + output_format), format= output_format, bbox_inches="tight")
+                
 def plot_wind_streamlines():
     pass
 

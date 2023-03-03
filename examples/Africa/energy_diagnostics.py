@@ -88,6 +88,33 @@ projection = ccrs.PlateCarree()
 # plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
 # plt.savefig(os.path.join(path_to_store, "lf_anomalies.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
+fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(24, 18), 
+                                    subplot_kw={"projection": projection})
+
+plot_annual_mean(variable="Latent heat flux", data_alt=PI_lf , cmap=Spectral_r, units="W/m²", ax=ax1, fig=fig, vmax=30, vmin=-150,
+                    levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
+                              title= ["(a) PI"], bottom_labels=True, left_labels=True, time="JJAS", center=False)
+
+plot_annual_mean(variable="Latent heat flux ", data_alt=MH_lf, cmap=Spectral_r, units="W/m²", ax=ax2, fig=fig, vmax=30, vmin=-150,
+                    levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
+                              title= ["(b) MH"], bottom_labels=True, left_labels=True, time="JJAS", center=False)
+
+plot_annual_mean(variable="Latent Heat Flux", data_alt=LGM_lf, cmap=Spectral_r, units="W/m²", ax=ax3, fig=fig, vmax=30, vmin=-150,
+                    levels=22, domain="West Africa", level_ticks=11, add_colorbar=True, cbar_pos = [0.35, 0.01, 0.25, 0.02],
+                              title= ["(c) LGM"], bottom_labels=True, left_labels=False, orientation= "horizontal", time="JJAS", 
+                              center=False) 
+
+plot_annual_mean(variable="Latent heat flux", data_alt=PLIO_lf, cmap=Spectral_r, units="W/m²", ax=ax4, fig=fig, vmax=10, vmin=-150,
+                    levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
+                              title= ["(d) mPLIO"], bottom_labels=True, left_labels=True, time="JJAS", 
+                              center=False)
+    
+    
+fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+plt.tight_layout()
+plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
+plt.savefig(os.path.join(path_to_store, "lf_magnitudes.png"), format= "png", bbox_inches="tight", dpi=300)
+
 fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), 
                                    subplot_kw={"projection": projection})
 
