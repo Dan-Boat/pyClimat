@@ -40,7 +40,15 @@ labels_EA = ["(a) Y($\delta^{18}$Op) to X(EA)", "(b) Y(Temperature) to X(EA)", "
 
 filenames_NAO_EA = ["d18op_caused_by_NAO_EA.nc", "t2m_caused_by_NAO_EA.nc", "prec_caused_by_NAO_EA.nc"]
 
-labels_NAO_EA = ["(a) Y(NAO,EA) to X($\delta^{18}$Op)", "(b) Y(NAO,EA) to X(Temperature)", "(c) Y(NAO,EA) to X(Precipitation)"]
+labels_NAO_EA = ["(a) Y(NAO,EA) to X($\delta^{18}$Op)", "(b) Y(NAO,EA) to X(Temperature)",
+                 "(c) Y(NAO,EA) to X(Precipitation)"]
+
+
+filenames_d18op = ["d18op_caused_by_t2m.nc", "d18op_caused_by_prec.nc", "d18op_caused_by_t2m_NAO.nc", 
+                   "d18op_caused_by_t2m_prec.nc"]
+
+labels_d18op = ["(a) Y(Temperature) to X($\delta^{18}$Op)", "(b) Y(Precipitation) to X($\delta^{18}$Op)", 
+                "(a) Y(Temperature, NAO) to X($\delta^{18}$Op)", "(d) Y(Temperature, Precipitation) to X($\delta^{18}$Op)"]
 
 def plot_causal(filenames, labels, figname):
 
@@ -59,6 +67,11 @@ def plot_causal(filenames, labels, figname):
                                                                                   subplot_kw={"projection": projection})
         axes = [ax1,ax2, ax3]
         
+    elif len(labels) == 4:
+        
+        fig, ((ax1,ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(24, 18), 
+                                                                                  subplot_kw={"projection": projection})
+        axes = [ax1,ax2, ax3, ax4]
     
     for i,filename in enumerate(filenames):
         
@@ -82,6 +95,8 @@ def plot_causal(filenames, labels, figname):
     
 
 
-plot_causal(filenames=filenames_NAO, labels=labels_NAO, figname="causal_NAO_climate")
-plot_causal(filenames=filenames_EA, labels=labels_EA, figname="causal_EA_climate")
-plot_causal(filenames=filenames_NAO_EA, labels=labels_NAO_EA, figname="causal_NAO_EA_climate")
+# plot_causal(filenames=filenames_NAO, labels=labels_NAO, figname="causal_NAO_climate")
+# plot_causal(filenames=filenames_EA, labels=labels_EA, figname="causal_EA_climate")
+# plot_causal(filenames=filenames_NAO_EA, labels=labels_NAO_EA, figname="causal_NAO_EA_climate")
+
+plot_causal(filenames=filenames_d18op, labels=labels_d18op, figname="causal_d18op")

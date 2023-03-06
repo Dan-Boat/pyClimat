@@ -36,7 +36,19 @@ CTL_filename = "a002_hpc-bw_e5w2.3_t159_PI_Alps_east_100_t159l31.6h"
 W1E1_278_filename = "a015_hpc-bw_e5w2.3_t159_MIO_W1E1_278ppm_t159l31.6h"
 W1E1_450_filename = "a014_hpc-bw_e5w2.3_t159_MIO_W1E1_450ppm_t159l31.6h"
 
+W2E1_PI_filename = "a009_hpc-bw_e5w2.3_t159_PI_AW200E100_t159l31.6h"
+W2E1_Mio278_filename = "a017_hpc-bw_e5w2.3_t159_MIO_W2E1_278ppm_t159l31.6h"
+W2E1_Mio450_filename = "a016_hpc-bw_e5w2.3_t159_MIO_W2E1_450ppm_t159l31.6h"
+
+W2E0_PI_filename="a010_hpc-bw_e5w2.3_t159_PI_AW200E0_t159l31.6h"
+W2E0_Mio278_filename="a019_hpc-bw_e5w2.3_t159_MIO_W2E0_278ppm_t159l31.6h"
+W2E0_Mio450_filename="a018_hpc-bw_e5w2.3_t159_MIO_W2E0_450ppm_t159l31.6h"
+
 years = "1003_1017"
+
+years_not_complete="1003_1010"
+
+
 period = "1m"
 
 CTL_data, CTL_wiso = read_ECHAM_processed(main_path=path_to_data, exp_name=CTL_filename, years=years, 
@@ -56,6 +68,15 @@ W2E1_278_data, W2E1_278_wiso = read_ECHAM_processed(main_path=path_to_data, exp_
                                           period=period, read_wiso=True)
 
 W2E1_450_data, W2E1_450_wiso = read_ECHAM_processed(main_path=path_to_data, exp_name=W2E1_Mio450_filename, years=years, 
+                                          period=period, read_wiso=True)
+
+W2E0_PI_data, W2E0_PI_wiso = read_ECHAM_processed(main_path=path_to_data, exp_name=W2E0_PI_filename, years=years, 
+                                          period=period, read_wiso=True)
+
+W2E0_278_data, W2E0_278_wiso = read_ECHAM_processed(main_path=path_to_data, exp_name=W2E0_Mio278_filename, 
+                                                    years=years_not_complete, period=period, read_wiso=True)
+
+W2E0_450_data, W2E0_450_wiso = read_ECHAM_processed(main_path=path_to_data, exp_name=W2E0_Mio450_filename, years=years, 
                                           period=period, read_wiso=True)
 
 
@@ -117,64 +138,178 @@ def extract_relevant_vars_sections(data, wiso):
 
 apply_style(fontsize=22, style=None, linewidth=2)
 
-def plot_lape_rate_per_section():
-
-    fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 8))
+def plot_lape_rate_per_section(case=1):
     
-    #ax1 (west)
+    if case==1:
     
-    scatter_plot_laspe_rate(ax=ax1, reg_params= CTL_reg_west , df_x_y_yhat=CTL_df_west , color=black, marker= "*", label= "CTL (PI)",
-                           title="[A] West", xmax=1500, xmin=0,
-                            ymax=-2, ymin= -12, bottom_labels=True)
-    scatter_plot_laspe_rate(ax=ax1, reg_params= W1E1_278_reg_west , df_x_y_yhat=W1E1_278_df_west , color=red, marker= "D", label= "W1E1 (MIO 278ppm)",
-                           bottom_labels=True)
-    scatter_plot_laspe_rate(ax=ax1, reg_params= W1E1_450_reg_west , df_x_y_yhat=W1E1_450_df_west , color=green, marker= "^", label= "W1E1 (MIO 450ppm)",
-                           bottom_labels=True)
+        CTL_reg_north, CTL_df_north, CTL_reg_south, CTL_df_south, CTL_reg_west, CTL_df_west = extract_relevant_vars_sections(data=CTL_data, wiso=CTL_wiso)
+        W1E1_278_reg_north, W1E1_278_df_north, W1E1_278_reg_south, W1E1_278_df_south, W1E1_278_reg_west, W1E1_278_df_west = extract_relevant_vars_sections(data=W1E1_278_data, wiso=W1E1_278_wiso)
+        W1E1_450_reg_north, W1E1_450_df_north, W1E1_450_reg_south, W1E1_450_df_south, W1E1_450_reg_west, W1E1_450_df_west = extract_relevant_vars_sections(data=W1E1_450_data, wiso=W1E1_450_wiso)
     
+        fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 8))
+        
+        #ax1 (west)
+        
+        scatter_plot_laspe_rate(ax=ax1, reg_params= CTL_reg_west , df_x_y_yhat=CTL_df_west , color=black, marker= "*", label= "W1E1 (PI)",
+                               title="[A] West", xmax=1500, xmin=0,
+                                ymax=-2, ymin= -12, bottom_labels=True)
+        scatter_plot_laspe_rate(ax=ax1, reg_params= W1E1_278_reg_west , df_x_y_yhat=W1E1_278_df_west , color=red, marker= "D", label= "W1E1 (MIO 278ppm)",
+                               bottom_labels=True)
+        scatter_plot_laspe_rate(ax=ax1, reg_params= W1E1_450_reg_west , df_x_y_yhat=W1E1_450_df_west , color=green, marker= "^", label= "W1E1 (MIO 450ppm)",
+                               bottom_labels=True)
+        
+        
+        
+        ax1.legend(frameon=True, fontsize=20, loc="upper left", framealpha=0.5, ncol=1)
+        ax1.grid(visible=False)
+        
+        
+        #ax2 (north)
+        scatter_plot_laspe_rate(ax=ax2, reg_params= CTL_reg_north , df_x_y_yhat=CTL_df_north , color=black, marker= "*", label= "W1E1 (PI)",
+                                left_labels=False, xmax=1500, xmin=0, title= "[B] North",
+                                 ymax=-2, ymin= -12,)
+        scatter_plot_laspe_rate(ax=ax2, reg_params= W1E1_278_reg_north , df_x_y_yhat=W1E1_278_df_north , color=red, marker= "D", label= "W1E1 (MIO 278ppm)",
+                                left_labels=False)
+        
+        scatter_plot_laspe_rate(ax=ax2, reg_params= W1E1_450_reg_north , df_x_y_yhat=W1E1_450_df_north , color=green, marker= "^", label= "W1E1 (MIO 450ppm)",
+                                left_labels=False)
+        
+        
+        ax2.legend(frameon=True, fontsize=20, loc="upper left", framealpha=0.5, ncol=1)
+        ax2.grid(visible=False)
+        
+        #ax3 (south)
+        scatter_plot_laspe_rate(ax=ax3, reg_params= CTL_reg_south , df_x_y_yhat=CTL_df_south , color=black, marker= "*", label= "W1E1 (PI)",
+                                left_labels=False, xmax=1500, xmin=0, title= "[C] South",
+                                 ymax=-2, ymin= -12, add_label=True)
+        scatter_plot_laspe_rate(ax=ax3, reg_params= W1E1_278_reg_south , df_x_y_yhat=W1E1_278_df_south , color=red, marker= "^", label= "W1E1 (MIO 278ppm)",
+                               left_labels=False, add_label=True)
+        scatter_plot_laspe_rate(ax=ax3, reg_params= W1E1_450_reg_south, df_x_y_yhat=W1E1_450_df_south, color=green, marker= "D", label= "W1E1 (MIO 450ppm)",
+                               left_labels=False, add_label=True)
+        
+        
+        ax3.legend(frameon=True, fontsize=20, loc="upper left", framealpha=0.5, ncol=1)
+        ax3.grid(visible=False)
+        
+        plt.tight_layout()
+        plt.subplots_adjust(left=0.15, right=0.88, top=0.97, bottom=0.05)
+        plt.savefig(os.path.join(path_to_plots, "lapse_rate_CTL_pi_mio.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
+    elif case==2:
+        W2E1_reg_north, W2E1_df_north, W2E1_reg_south, W2E1_df_south, W2E1_reg_west, W2E1_df_west = extract_relevant_vars_sections(data=W2E1_PI_data, wiso=W2E1_PI_wiso)
+        W2E1_278_reg_north, W2E1_278_df_north, W2E1_278_reg_south, W2E1_278_df_south, W2E1_278_reg_west, W2E1_278_df_west = extract_relevant_vars_sections(data=W2E1_278_data, wiso=W2E1_278_wiso)
+        W2E1_450_reg_north, W2E1_450_df_north, W2E1_450_reg_south, W2E1_450_df_south, W2E1_450_reg_west, W2E1_450_df_west = extract_relevant_vars_sections(data=W2E1_450_data, wiso=W2E1_450_wiso)
     
-    ax1.legend(frameon=True, fontsize=20, loc="upper left", framealpha=0.5, ncol=1)
-    ax1.grid(visible=False)
+        fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 8))
+        
+        #ax1 (west)
+        
+        scatter_plot_laspe_rate(ax=ax1, reg_params= W2E1_reg_west , df_x_y_yhat=W2E1_df_west , color=black, marker= "*", label= "W2E1 (PI)",
+                               title="[A] West", xmax=1500, xmin=0,
+                                ymax=-2, ymin= -12, bottom_labels=True)
+        scatter_plot_laspe_rate(ax=ax1, reg_params= W2E1_278_reg_west , df_x_y_yhat=W2E1_278_df_west , color=red, marker= "D", label= "W2E1 (MIO 278ppm)",
+                               bottom_labels=True)
+        scatter_plot_laspe_rate(ax=ax1, reg_params= W2E1_450_reg_west , df_x_y_yhat=W2E1_450_df_west , color=green, marker= "^", label= "W2E1 (MIO 450ppm)",
+                               bottom_labels=True)
+        
+        
+        
+        ax1.legend(frameon=True, fontsize=20, loc="upper left", framealpha=0.5, ncol=1)
+        ax1.grid(visible=False)
+        
+        
+        #ax2 (north)
+        scatter_plot_laspe_rate(ax=ax2, reg_params= W2E1_reg_north , df_x_y_yhat=W2E1_df_north , color=black, marker= "*", label= "W2E1 (PI)",
+                                left_labels=False, xmax=1500, xmin=0, title= "[B] North",
+                                 ymax=-2, ymin= -12,)
+        scatter_plot_laspe_rate(ax=ax2, reg_params= W2E1_278_reg_north , df_x_y_yhat=W2E1_278_df_north , color=red, marker= "D", label= "W2E1 (MIO 278ppm)",
+                                left_labels=False)
+        
+        scatter_plot_laspe_rate(ax=ax2, reg_params= W2E1_450_reg_north , df_x_y_yhat=W2E1_450_df_north , color=green, marker= "^", label= "W2E1 (MIO 450ppm)",
+                                left_labels=False)
+        
+        
+        ax2.legend(frameon=True, fontsize=20, loc="upper left", framealpha=0.5, ncol=1)
+        ax2.grid(visible=False)
+        
+        #ax3 (south)
+        scatter_plot_laspe_rate(ax=ax3, reg_params= W2E1_reg_south , df_x_y_yhat=W2E1_df_south , color=black, marker= "*", label= "W2E1 (PI)",
+                                left_labels=False, xmax=1500, xmin=0, title= "[C] South",
+                                 ymax=-2, ymin= -12, add_label=True)
+        scatter_plot_laspe_rate(ax=ax3, reg_params= W2E1_278_reg_south , df_x_y_yhat=W2E1_278_df_south , color=red, marker= "^", label= "W2E1 (MIO 278ppm)",
+                               left_labels=False, add_label=True)
+        scatter_plot_laspe_rate(ax=ax3, reg_params= W2E1_450_reg_south, df_x_y_yhat=W2E1_450_df_south, color=green, marker= "D", label= "W2E1 (MIO 450ppm)",
+                               left_labels=False, add_label=True)
+        
+        
+        ax3.legend(frameon=True, fontsize=20, loc="upper left", framealpha=0.5, ncol=1)
+        ax3.grid(visible=False)
+        
+        plt.tight_layout()
+        plt.subplots_adjust(left=0.15, right=0.88, top=0.97, bottom=0.05)
+        plt.savefig(os.path.join(path_to_plots, "lapse_rate_W2E1_pi_mio.svg"), format= "svg", bbox_inches="tight", dpi=600)
+        
+        
+        
+    elif case==3:
+        W2E0_reg_north, W2E0_df_north, W2E0_reg_south, W2E0_df_south, W2E0_reg_west, W2E0_df_west = extract_relevant_vars_sections(data=W2E0_PI_data, wiso=W2E0_PI_wiso)
+        W2E0_278_reg_north, W2E0_278_df_north, W2E0_278_reg_south, W2E0_278_df_south, W2E0_278_reg_west, W2E0_278_df_west = extract_relevant_vars_sections(data=W2E0_278_data, wiso=W2E0_278_wiso)
+        W2E0_450_reg_north, W2E0_450_df_north, W2E0_450_reg_south, W2E0_450_df_south, W2E0_450_reg_west, W2E0_450_df_west = extract_relevant_vars_sections(data=W2E0_450_data, wiso=W2E0_450_wiso)
     
-    
-    #ax2 (north)
-    scatter_plot_laspe_rate(ax=ax2, reg_params= CTL_reg_north , df_x_y_yhat=CTL_df_north , color=black, marker= "*", label= "CTL (PI)",
-                            left_labels=False, xmax=1500, xmin=0, title= "[B] North",
-                             ymax=-2, ymin= -12,)
-    scatter_plot_laspe_rate(ax=ax2, reg_params= W1E1_278_reg_north , df_x_y_yhat=W1E1_278_df_north , color=red, marker= "D", label= "W1E1 (MIO 278ppm)",
-                            left_labels=False)
-    
-    scatter_plot_laspe_rate(ax=ax2, reg_params= W1E1_450_reg_north , df_x_y_yhat=W1E1_450_df_north , color=green, marker= "^", label= "W1E1 (MIO 450ppm)",
-                            left_labels=False)
-    
-    
-    ax2.legend(frameon=True, fontsize=20, loc="upper left", framealpha=0.5, ncol=1)
-    ax2.grid(visible=False)
-    
-    #ax3 (south)
-    scatter_plot_laspe_rate(ax=ax3, reg_params= CTL_reg_south , df_x_y_yhat=CTL_df_south , color=black, marker= "*", label= "CTL (PI)",
-                            left_labels=False, xmax=1500, xmin=0, title= "[C] South",
-                             ymax=-2, ymin= -12, add_label=True)
-    scatter_plot_laspe_rate(ax=ax3, reg_params= W1E1_278_reg_south , df_x_y_yhat=W1E1_278_df_south , color=red, marker= "^", label= "W1E1 (MIO 278ppm)",
-                           left_labels=False, add_label=True)
-    scatter_plot_laspe_rate(ax=ax3, reg_params= W1E1_450_reg_south, df_x_y_yhat=W1E1_450_df_south, color=green, marker= "D", label= "W1E1 (MIO 450ppm)",
-                           left_labels=False, add_label=True)
-    
-    
-    ax3.legend(frameon=True, fontsize=20, loc="upper left", framealpha=0.5, ncol=1)
-    ax3.grid(visible=False)
-    
-    plt.tight_layout()
-    plt.subplots_adjust(left=0.15, right=0.88, top=0.97, bottom=0.05)
-    plt.savefig(os.path.join(path_to_plots, "lapse_rate_CTL_pi_mio.svg"), format= "svg", bbox_inches="tight", dpi=600)
+        fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 8))
+        
+        #ax1 (west)
+        
+        scatter_plot_laspe_rate(ax=ax1, reg_params= W2E0_reg_west , df_x_y_yhat=W2E0_df_west , color=black, marker= "*", label= "W2E0 (PI)",
+                               title="[A] West", xmax=1500, xmin=0,
+                                ymax=-2, ymin= -12, bottom_labels=True)
+        scatter_plot_laspe_rate(ax=ax1, reg_params= W2E0_278_reg_west , df_x_y_yhat=W2E0_278_df_west , color=red, marker= "D", label= "W2E0 (MIO 278ppm)",
+                               bottom_labels=True)
+        scatter_plot_laspe_rate(ax=ax1, reg_params= W2E0_450_reg_west , df_x_y_yhat=W2E0_450_df_west , color=green, marker= "^", label= "W2E0 (MIO 450ppm)",
+                               bottom_labels=True)
+        
+        
+        
+        ax1.legend(frameon=True, fontsize=20, loc="upper left", framealpha=0.5, ncol=1)
+        ax1.grid(visible=False)
+        
+        
+        #ax2 (north)
+        scatter_plot_laspe_rate(ax=ax2, reg_params= W2E0_reg_north , df_x_y_yhat=W2E0_df_north , color=black, marker= "*", label= "W2E0 (PI)",
+                                left_labels=False, xmax=1500, xmin=0, title= "[B] North",
+                                 ymax=-2, ymin= -12,)
+        scatter_plot_laspe_rate(ax=ax2, reg_params= W2E0_278_reg_north , df_x_y_yhat=W2E0_278_df_north , color=red, marker= "D", label= "W2E0 (MIO 278ppm)",
+                                left_labels=False)
+        
+        scatter_plot_laspe_rate(ax=ax2, reg_params= W2E0_450_reg_north , df_x_y_yhat=W2E0_450_df_north , color=green, marker= "^", label= "W2E0 (MIO 450ppm)",
+                                left_labels=False)
+        
+        
+        ax2.legend(frameon=True, fontsize=20, loc="upper left", framealpha=0.5, ncol=1)
+        ax2.grid(visible=False)
+        
+        #ax3 (south)
+        scatter_plot_laspe_rate(ax=ax3, reg_params= W2E0_reg_south , df_x_y_yhat=W2E0_df_south , color=black, marker= "*", label= "W2E0 (PI)",
+                                left_labels=False, xmax=1500, xmin=0, title= "[C] South",
+                                 ymax=-2, ymin= -12, add_label=True)
+        scatter_plot_laspe_rate(ax=ax3, reg_params= W2E0_278_reg_south , df_x_y_yhat=W2E0_278_df_south , color=red, marker= "^", label= "W2E0 (MIO 278ppm)",
+                               left_labels=False, add_label=True)
+        scatter_plot_laspe_rate(ax=ax3, reg_params= W2E0_450_reg_south, df_x_y_yhat=W2E0_450_df_south, color=green, marker= "D", label= "W2E0 (MIO 450ppm)",
+                               left_labels=False, add_label=True)
+        
+        
+        ax3.legend(frameon=True, fontsize=20, loc="upper left", framealpha=0.5, ncol=1)
+        ax3.grid(visible=False)
+        
+        plt.tight_layout()
+        plt.subplots_adjust(left=0.15, right=0.88, top=0.97, bottom=0.05)
+        plt.savefig(os.path.join(path_to_plots, "lapse_rate_W2E0_pi_mio.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
     
  
     
 if __name__ == '__main__':
 
-    CTL_reg_north, CTL_df_north, CTL_reg_south, CTL_df_south, CTL_reg_west, CTL_df_west = extract_relevant_vars_sections(data=CTL_data, wiso=CTL_wiso)
-    W1E1_278_reg_north, W1E1_278_df_north, W1E1_278_reg_south, W1E1_278_df_south, W1E1_278_reg_west, W1E1_278_df_west = extract_relevant_vars_sections(data=W1E1_278_data, wiso=W1E1_278_wiso)
-    W1E1_450_reg_north, W1E1_450_df_north, W1E1_450_reg_south, W1E1_450_df_south, W1E1_450_reg_west, W1E1_450_df_west = extract_relevant_vars_sections(data=W1E1_450_data, wiso=W1E1_450_wiso)
-
-    plot_lape_rate_per_section()                                                                                                                          
+    plot_lape_rate_per_section(case=1) 
+    plot_lape_rate_per_section(case=2)
+    plot_lape_rate_per_section(case=3)                                                                                                                           
