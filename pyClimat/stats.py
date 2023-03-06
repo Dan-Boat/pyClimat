@@ -565,12 +565,16 @@ class GrangerCausality():
         if x.shape == y.shape:
             xi = x.isel(stacked=i)
             yi = y.isel(stacked=i)
-        else:
+        elif x.shape > y.shape:
             xi = x.isel(stacked=i)
             yi = y.isel(stacked=0)
         
+        else:
+            xi = x.isel(stacked=0)
+            yi = y.isel(stacked=i)
+        
         if z is not None:
-            if x.shape == y.shape:
+            if len(z.stacked) > 1:
                 zi = z.isel(stacked=i)
             else:
                 zi = z.isel(stacked=0)
@@ -635,8 +639,13 @@ class GrangerCausality():
             x,y = self.prepare_data(X, Y, Z, dim)
             z = None
         
-        nspace = len(x.stacked)
-        pval = np.zeros(x.stacked.shape)
+        if len(X.shape) != 1:
+            nspace = len(x.stacked)
+            pval = np.zeros(x.stacked.shape)
+        else:
+            nspace = len(y.stacked)
+            pval = np.zeros(y.stacked.shape)
+        
         
         for i in range(nspace):
                 
@@ -650,8 +659,12 @@ class GrangerCausality():
                 pvalue = np.min(pvalues)
                 pval[i] = pvalue
             
-        if nspace > 1:
+        if len(X.shape) > 1:
             pvalx = DataArray(pval, coords=[x.stacked],name='pval').unstack('stacked')
+            pvalx = pvalx.sortby("lon")
+            
+        elif len(Y.shape) > 1:
+            pvalx = DataArray(pval, coords=[y.stacked],name='pval').unstack('stacked')
             pvalx = pvalx.sortby("lon")
         else:
             pvalx = pval[0]

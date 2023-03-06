@@ -1591,6 +1591,86 @@ def plot_correlation(variable, data, cmap = None, levels=None, units=None, ax=No
     #optional if one plot is required, alternatively save from the control script
     if all(parameter is not None for parameter in [output_format, output_name, path_to_store]):
         plt.savefig(os.path.join(path_to_store, output_name + "." + output_format), format= output_format, bbox_inches="tight")
+        
+        
+def plot_causal_statistics(variable, data, cmap = None, levels=None, units=None, ax=None, domain=None, output_name=None, 
+                     output_format=None, level_ticks=None, title=None, path_to_store=None, cbar = True,
+                     cbar_orientation="vertical", 
+                     cbar_pos = None,plot_pvalues=False, pvalue_data=None,use_AlbersEqualArea=False,
+                     fig=None, vmax=None, vmin=None, left_labels= True, bottom_labels=True,plot_sig_level=True,
+                     ):
+    import cartopy.crs as ccrs
+    import cartopy.feature as cfeature
+    from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
+    from cartopy.mpl.ticker import (LatitudeLocator, LongitudeLocator) 
+    from cartopy.util import add_cyclic_point
+    
+    norm = MidpointNormalize(midpoint=0)
+    projection = ccrs.PlateCarree()
+    
+    # defining axis
+    if ax is None:
+    
+        fig, ax = plt.subplots(1, 1, sharex=False, figsize= (15, 13), subplot_kw= {"projection":projection})
+             
+    if all(parameter is not None for parameter in [vmin, vmax, levels, level_ticks]):
+        ticks = np.linspace(vmin, vmax, level_ticks)
+        if cbar==True:
+            if cbar_pos is None:
+                cbar_pos = [0.90, 0.30, 0.03, 0.45]
+                
+            
+            cbar_ax = fig.add_axes(cbar_pos)   # axis for subplot colorbar # left, bottom, width, height
+            if cbar_orientation == "vertical":
+                cbar_ax.get_xaxis().set_visible(False)
+                cbar_ax.yaxis.set_ticks_position('right')
+            else:
+                cbar_ax.get_yaxis().set_visible(False)
+                cbar_ax.xaxis.set_ticks_position('bottom')
+                
+            cbar_ax.set_yticklabels([])
+            cbar_ax.tick_params(size=0)
+            
+            p = data.plot.contourf(ax=ax, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, transform = projection,
+                                 cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": cbar_orientation, 
+                                               "shrink": 0.7, "format": "%.1f", "ticks":ticks}, extend= "neither", 
+                                 add_colorbar=True, cbar_ax=cbar_ax,
+                                 add_labels=False)
+            
+            
+            p.colorbar.set_label(label=variable, size= 22, fontweight="bold")
+            p.colorbar.ax.tick_params(labelsize=22, size=0,)
+            
+        elif cbar == False:
+            p = data.plot.contourf(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, transform = projection, 
+                                 add_colorbar=False, add_labels=False)
+                                 
+    else:
+        p = data.plot.contourf(ax =ax, cmap=cmap, transform = projection, 
+                                 cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": cbar_orientation, 
+                                               "shrink": 0.50, "format": "%.1f", "ticks":ticks}, extend= "neither")
+    
+        
+    
+
+    plot_background(p, domain= domain, bottom_labels=bottom_labels, left_labels=left_labels,
+                    use_AlbersEqualArea=use_AlbersEqualArea)
+    
+    if plot_sig_level:
+        # data.plot.contour(colors="green", linestyles="-", ax=ax, transform=projection, levels=[0.1],
+        #                   linewidth=1.0, add_labels=False)
+        
+        data.plot.contour(colors="magenta", linestyles="-", ax=ax, transform=projection, levels=[0.1],
+                          linewidth=1.0, add_labels=False)
+    
+    if title is not None:
+        ax.set_title(title , fontsize=22, weight="bold", loc="left")
+                
+
+        
+    #optional if one plot is required, alternatively save from the control script
+    if all(parameter is not None for parameter in [output_format, output_name, path_to_store]):
+        plt.savefig(os.path.join(path_to_store, output_name + "." + output_format), format= output_format, bbox_inches="tight")
                 
 def plot_wind_streamlines():
     pass

@@ -89,7 +89,8 @@ from pyClimat.stats import StatCrossCorr, GrangerCausality
 G = GrangerCausality(maxlag=3, test="params_ftest")
 pval = G.perform_granger_test(X=ea_index_echam, Y=nao_index_echam, apply_standardize=True,
                               Z=scan_index_echam)
-pval_e = G.perform_granger_test(X=nao_index_echam, Y=ea_index_echam, apply_standardize=True)
+pval_e = G.perform_granger_test(X=nao_index_echam, Y=ea_index_echam, apply_standardize=True,
+                                Z=scan_index_echam)
 
 era_pval = G.perform_granger_test(X=ea_index, Y=nao_index, apply_standardize=True)
 era_pval_e = G.perform_granger_test(X=nao_index, Y=ea_index, apply_standardize=True)
