@@ -47,9 +47,9 @@ W2E0_PI_filename="a010_hpc-bw_e5w2.3_t159_PI_AW200E0_t159l31.6h"
 W2E0_Mio278_filename="a019_hpc-bw_e5w2.3_t159_MIO_W2E0_278ppm_t159l31.6h"
 W2E0_Mio450_filename="a018_hpc-bw_e5w2.3_t159_MIO_W2E0_450ppm_t159l31.6h"
 
-W2E2_PI_filename=""
-W2E2_Mio278_filename=""
-W2E2_Mio450_filename=""
+W2E2_PI_filename="t017_hpc-bw_e5w2.3_PI_Alps150_t159l31.6h"
+W2E2_Mio278_filename="a020_dkrz-levante_e5w2.3_t159_MIO_W2E2_278ppm_t159l31.6h"
+W2E2_Mio450_filename="a021_dkrz-levante_e5w2.3_t159_MIO_W2E2_450ppm_t159l31.6h"
 
 
 
@@ -83,6 +83,15 @@ W2E0_278_data, W2E0_278_wiso = read_ECHAM_processed(main_path=path_to_data, exp_
                                                     years=years_not_complete, period=period, read_wiso=True)
 
 W2E0_450_data, W2E0_450_wiso = read_ECHAM_processed(main_path=path_to_data, exp_name=W2E0_Mio450_filename, years=years, 
+                                          period=period, read_wiso=True)
+
+W2E2_PI_data, W2E2_PI_wiso = read_ECHAM_processed(main_path=path_to_data, exp_name=W2E2_PI_filename, years=years, 
+                                          period=period, read_wiso=True)
+
+W2E2_278_data, W2E2_278_wiso = read_ECHAM_processed(main_path=path_to_data, exp_name=W2E2_Mio278_filename, 
+                                                    years=years, period=period, read_wiso=True)
+
+W2E2_450_data, W2E2_450_wiso = read_ECHAM_processed(main_path=path_to_data, exp_name=W2E2_Mio450_filename, years=years, 
                                           period=period, read_wiso=True)
 
 
@@ -151,6 +160,13 @@ W2E0_278_temp2, W2E0_278_prec, W2E0_278_d18op, W2E0_278_u10, W2E0_278_v10 = extr
 W2E0_450_temp2, W2E0_450_prec, W2E0_450_d18op, W2E0_450_u10, W2E0_450_v10 = extract_relevant_vars(data=W2E0_450_data, wiso=W2E0_450_wiso,
                                                                                                   CTL_data=W1E1_450_data, CTL_wiso=W1E1_450_wiso, calc_diff=True)
 
+W2E2_PI_temp2, W2E2_PI_prec, W2E2_PI_d18op, W2E2_PI_u10, W2E2_PI_v10 = extract_relevant_vars(data=W2E2_PI_data, wiso=W2E2_PI_wiso, 
+                                                                                             CTL_data=CTL_data, CTL_wiso=CTL_wiso, calc_diff=True)
+W2E2_278_temp2, W2E2_278_prec, W2E2_278_d18op, W2E2_278_u10, W2E2_278_v10 = extract_relevant_vars(data=W2E2_278_data, wiso=W2E2_278_wiso,
+                                                                                                  CTL_data=W1E1_278_data, CTL_wiso=W1E1_278_wiso, calc_diff=True)
+W2E2_450_temp2, W2E2_450_prec, W2E2_450_d18op, W2E2_450_u10, W2E2_450_v10 = extract_relevant_vars(data=W2E2_450_data, wiso=W2E2_450_wiso,
+                                                                                                  CTL_data=W1E1_450_data, CTL_wiso=W1E1_450_wiso, calc_diff=True)
+
 
 
 
@@ -160,21 +176,22 @@ apply_style(fontsize=22, style=None, linewidth=2)
 projection = ccrs.PlateCarree()
 
 def plot_prec():
-    fig, ((ax1,ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9)) = plt.subplots(nrows = 3, ncols = 3, figsize=(28, 24), subplot_kw={"projection":  projection})
+    fig, ((ax1,ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9), 
+          (ax10, ax11, ax12)) = plt.subplots(nrows = 4, ncols = 3, figsize=(30, 28), subplot_kw={"projection":  projection})
     
     vmax=60
     vmin=-60
     plot_annual_mean(ax=ax1, variable="Precipitation", data_alt=CTL_prec, cmap=YlGnBu, units="mm/month", vmax=180, vmin=20, domain="Europe", 
-                      levels=22, level_ticks=8, title="W1E1 (PI)", left_labels=True, bottom_labels=True, add_colorbar=True, cbar_pos = [0.15, 0.05, 0.25, 0.02],
+                      levels=22, level_ticks=8, title="W1E1 (PI)", left_labels=True, bottom_labels=False, add_colorbar=True, cbar_pos = [0.15, 0.05, 0.25, 0.02],
                       plot_projection=projection, plot_winds=True, data_u=CTL_u10, data_v=CTL_v10,  orientation= "horizontal", fig=fig, plot_coastlines=True,
-                      show_arrow_scale=True)
+                      show_arrow_scale=True,)
     
     plot_annual_mean(ax=ax2, variable="Precipitation", data_alt=W1E1_278_prec, cmap=YlGnBu, units="mm/month", vmax=180, vmin=20, domain="Europe", 
-                      levels=22, level_ticks=8, title="W1E1 (MIO 278ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                      levels=22, level_ticks=8, title="W1E1 (MIO 278ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                       plot_winds=True, data_u=W1E1_278_u10, data_v=W1E1_278_v10, fig=fig, plot_coastlines=False, 
                       sea_land_mask=slm_mio)
     plot_annual_mean(ax=ax3, variable="Precipitation", data_alt=W1E1_450_prec, cmap=YlGnBu, units="mm/month", vmax=180, vmin=20, domain="Europe", 
-                      levels=22, level_ticks=8, title="W1E1 (MIO 450ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                      levels=22, level_ticks=8, title="W1E1 (MIO 450ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                       plot_winds=True, data_u=W1E1_450_u10, data_v=W1E1_450_v10, fig=fig, plot_coastlines=False, 
                       sea_land_mask=slm_mio)
     
@@ -182,32 +199,47 @@ def plot_prec():
     #anomalies
     
     plot_annual_mean(ax=ax4, variable="Precipitation difference", data_alt=W2E1_PI_prec, cmap=BrBG, units="mm/month", vmax=vmax, vmin=vmin, domain="Europe", 
-                      levels=22, level_ticks=9, title="W2E1 - W1E1 (PI)", left_labels=True, bottom_labels=True, add_colorbar=True, cbar_pos = [0.45, 0.05, 0.25, 0.02],
+                      levels=22, level_ticks=9, title="W2E1 - W1E1 (PI)", left_labels=True, bottom_labels=False, add_colorbar=True, cbar_pos = [0.45, 0.05, 0.25, 0.02],
                       plot_projection=projection, plot_winds=True, data_u=W2E1_PI_u10, data_v=W2E1_PI_v10,  orientation= "horizontal", fig=fig, plot_coastlines=True)
     
     plot_annual_mean(ax=ax5, variable="Precipitation difference", data_alt=W2E1_278_prec, cmap=BrBG, units="mm/month", vmax=vmax, vmin=vmin, domain="Europe", 
-                      levels=22, level_ticks=9, title="W2E1 - W1E1 (MIO 278ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                      levels=22, level_ticks=9, title="W2E1 - W1E1 (MIO 278ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                       plot_winds=True, data_u=W2E1_278_u10, data_v=W2E1_278_v10, fig=fig, plot_coastlines=False, 
                       sea_land_mask=slm_mio)
     
     plot_annual_mean(ax=ax6, variable="Precipitation difference", data_alt=W2E1_450_prec, cmap=BrBG, units="mm/month", vmax=vmax, vmin=vmin, domain="Europe", 
-                      levels=22, level_ticks=9, title="W2E1 - W1E1 (MIO 450ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                      levels=22, level_ticks=9, title="W2E1 - W1E1 (MIO 450ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                       plot_winds=True, data_u=W2E1_450_u10, data_v=W2E1_450_v10, fig=fig, plot_coastlines=False, 
                       sea_land_mask=slm_mio)
     
     
     plot_annual_mean(ax=ax7, variable="Precipitation difference", data_alt=W2E0_PI_prec, cmap=BrBG, units="mm/month", vmax=vmax, vmin=vmin, domain="Europe", 
-                      levels=22, level_ticks=9, title="W2E0 - W1E1 (PI)", left_labels=True, bottom_labels=True, add_colorbar=True, cbar_pos = [0.45, 0.05, 0.25, 0.02],
+                      levels=22, level_ticks=9, title="W2E0 - W1E1 (PI)", left_labels=True, bottom_labels=False, add_colorbar=False, cbar_pos = [0.45, 0.05, 0.25, 0.02],
                       plot_projection=projection, plot_winds=True, data_u=W2E0_PI_u10, data_v=W2E0_PI_v10,  orientation= "horizontal", fig=fig, plot_coastlines=True)
     
     plot_annual_mean(ax=ax8, variable="Precipitation difference", data_alt=W2E0_278_prec, cmap=BrBG, units="mm/month", vmax=vmax, vmin=vmin, domain="Europe", 
-                      levels=22, level_ticks=9, title="W2E0 - W1E1 (MIO 278ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                      levels=22, level_ticks=9, title="W2E0 - W1E1 (MIO 278ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                       plot_winds=True, data_u=W2E0_278_u10, data_v=W2E0_278_v10, fig=fig, plot_coastlines=False, 
                       sea_land_mask=slm_mio)
     
     plot_annual_mean(ax=ax9, variable="Precipitation difference", data_alt=W2E0_450_prec, cmap=BrBG, units="mm/month", vmax=vmax, vmin=vmin, domain="Europe", 
-                      levels=22, level_ticks=9, title="W2E0 - W1E1 (MIO 450ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                      levels=22, level_ticks=9, title="W2E0 - W1E1 (MIO 450ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                       plot_winds=True, data_u=W2E0_450_u10, data_v=W2E0_450_v10, fig=fig, plot_coastlines=False, 
+                      sea_land_mask=slm_mio)
+    
+    
+    plot_annual_mean(ax=ax10, variable="Precipitation difference", data_alt=W2E2_PI_prec, cmap=BrBG, units="mm/month", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=9, title="W2E2 - W1E1 (PI)", left_labels=True, bottom_labels=True, add_colorbar=False, cbar_pos = [0.45, 0.05, 0.25, 0.02],
+                      plot_projection=projection, plot_winds=True, data_u=W2E2_PI_u10, data_v=W2E2_PI_v10,  orientation= "horizontal", fig=fig, plot_coastlines=True)
+    
+    plot_annual_mean(ax=ax11, variable="Precipitation difference", data_alt=W2E2_278_prec, cmap=BrBG, units="mm/month", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=9, title="W2E2 - W1E1 (MIO 278ppm)", left_labels=False, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                      plot_winds=True, data_u=W2E2_278_u10, data_v=W2E2_278_v10, fig=fig, plot_coastlines=False, 
+                      sea_land_mask=slm_mio)
+    
+    plot_annual_mean(ax=ax12, variable="Precipitation difference", data_alt=W2E2_450_prec, cmap=BrBG, units="mm/month", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=9, title="W2E2 - W1E1 (MIO 450ppm)", left_labels=False, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                      plot_winds=True, data_u=W2E2_450_u10, data_v=W2E2_450_v10, fig=fig, plot_coastlines=False, 
                       sea_land_mask=slm_mio)
     
     
@@ -218,46 +250,63 @@ def plot_prec():
 
 
 def plot_temp2():
-    fig, ((ax1,ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9)) = plt.subplots(nrows = 3, ncols = 3, figsize=(28, 24), subplot_kw={"projection":  projection})
+    fig, ((ax1,ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9),
+          (ax10, ax11, ax12)) = plt.subplots(nrows = 4, ncols = 3, figsize=(30, 28), subplot_kw={"projection":  projection})
     
     plot_annual_mean(ax=ax1, variable="Temperature", data_alt=CTL_temp2, cmap=Spectral_r, units="°C", vmax=22, vmin=-5, domain="Europe", 
-                      levels=22, level_ticks=11, title="CTL (PI)", left_labels=True, bottom_labels=True, add_colorbar=True, cbar_pos = [0.15, 0.05, 0.25, 0.02],
+                      levels=22, level_ticks=11, title="CTL (PI)", left_labels=True, bottom_labels=False, add_colorbar=True, cbar_pos = [0.15, 0.05, 0.25, 0.02],
                       plot_projection=projection, orientation= "horizontal", fig=fig, plot_coastlines=True, center=False)
     
     plot_annual_mean(ax=ax2, variable="Temperature", data_alt=W1E1_278_temp2, cmap=Spectral_r, units="°C", vmax=22, vmin=-5, domain="Europe", 
-                      levels=22, level_ticks=11, title="W1E1 (MIO 278ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                      levels=22, level_ticks=11, title="W1E1 (MIO 278ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                        fig=fig, plot_coastlines=False, sea_land_mask=slm_mio, center=False)
     plot_annual_mean(ax=ax3, variable="Temperature", data_alt=W1E1_450_temp2, cmap=Spectral_r, units="°C", vmax=22, vmin=-5, domain="Europe", 
-                      levels=22, level_ticks=11, title="W1E1 (MIO 450ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                      levels=22, level_ticks=11, title="W1E1 (MIO 450ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                       fig=fig, plot_coastlines=False, sea_land_mask=slm_mio, center=False)
     
     
     #anomalies
+    vmax = 10
+    vmin = -10
     
-    plot_annual_mean(ax=ax4, variable="Temperature difference", data_alt=W2E1_PI_temp2, cmap=RdBu_r, units="°C", vmax=10, vmin=-10, domain="Europe", 
-                      levels=22, level_ticks=11, title="W2E1 - W1E1 (PI)", left_labels=True, bottom_labels=True, add_colorbar=True, cbar_pos = [0.45, 0.05, 0.25, 0.02],
+    plot_annual_mean(ax=ax4, variable="Temperature difference", data_alt=W2E1_PI_temp2, cmap=RdBu_r, units="°C", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E1 - W1E1 (PI)", left_labels=True, bottom_labels=False, add_colorbar=True, cbar_pos = [0.45, 0.05, 0.25, 0.02],
                       plot_projection=projection, orientation= "horizontal", fig=fig, plot_coastlines=True)
     
-    plot_annual_mean(ax=ax5, variable="Temperature difference", data_alt=W2E1_278_temp2, cmap=RdBu_r, units="°C", vmax=10, vmin=-10, domain="Europe", 
-                      levels=22, level_ticks=11, title="W2E1 - W1E1 (MIO 278ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+    plot_annual_mean(ax=ax5, variable="Temperature difference", data_alt=W2E1_278_temp2, cmap=RdBu_r, units="°C", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E1 - W1E1 (MIO 278ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                       fig=fig, plot_coastlines=False, sea_land_mask=slm_mio)
     
-    plot_annual_mean(ax=ax6, variable="Temperature difference", data_alt=W2E1_450_temp2, cmap=RdBu_r, units="°C", vmax=10, vmin=-10, domain="Europe", 
-                      levels=22, level_ticks=11, title="W2E1 - W1E1 (MIO 450ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+    plot_annual_mean(ax=ax6, variable="Temperature difference", data_alt=W2E1_450_temp2, cmap=RdBu_r, units="°C", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E1 - W1E1 (MIO 450ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                       fig=fig, plot_coastlines=False, sea_land_mask=slm_mio)
     
     
-    plot_annual_mean(ax=ax7, variable="Temperature difference", data_alt=W2E0_PI_temp2, cmap=RdBu_r, units="°C", vmax=10, vmin=-10, domain="Europe", 
-                      levels=22, level_ticks=11, title="W2E0 - W1E1 (PI)", left_labels=True, bottom_labels=True, add_colorbar=True, cbar_pos = [0.45, 0.05, 0.25, 0.02],
+    plot_annual_mean(ax=ax7, variable="Temperature difference", data_alt=W2E0_PI_temp2, cmap=RdBu_r, units="°C", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E0 - W1E1 (PI)", left_labels=True, bottom_labels=False, add_colorbar=True, cbar_pos = [0.45, 0.05, 0.25, 0.02],
                       plot_projection=projection, orientation= "horizontal", fig=fig, plot_coastlines=True)
     
-    plot_annual_mean(ax=ax8, variable="Temperature difference", data_alt=W2E0_278_temp2, cmap=RdBu_r, units="°C", vmax=10, vmin=-10, domain="Europe", 
-                      levels=22, level_ticks=11, title="W2E0 - W1E1 (MIO 278ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+    plot_annual_mean(ax=ax8, variable="Temperature difference", data_alt=W2E0_278_temp2, cmap=RdBu_r, units="°C", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E0 - W1E1 (MIO 278ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                       fig=fig, plot_coastlines=False, sea_land_mask=slm_mio)
     
-    plot_annual_mean(ax=ax9, variable="Temperature difference", data_alt=W2E0_450_temp2, cmap=RdBu_r, units="°C", vmax=10, vmin=-10, domain="Europe", 
-                      levels=22, level_ticks=11, title="W2E0 - W1E1 (MIO 450ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+    plot_annual_mean(ax=ax9, variable="Temperature difference", data_alt=W2E0_450_temp2, cmap=RdBu_r, units="°C", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E0 - W1E1 (MIO 450ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                       fig=fig, plot_coastlines=False, sea_land_mask=slm_mio)
+    
+    
+    plot_annual_mean(ax=ax10, variable="Temperature difference", data_alt=W2E2_PI_temp2, cmap=RdBu_r, units="°C", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E2 - W1E1 (PI)", left_labels=True, bottom_labels=True, add_colorbar=False, cbar_pos = [0.45, 0.05, 0.25, 0.02],
+                      plot_projection=projection, orientation= "horizontal", fig=fig, plot_coastlines=True)
+    
+    plot_annual_mean(ax=ax11, variable="Temperature difference", data_alt=W2E2_278_temp2, cmap=RdBu_r, units="°C", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E2 - W1E1 (MIO 278ppm)", left_labels=False, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                      fig=fig, plot_coastlines=False, sea_land_mask=slm_mio)
+    
+    plot_annual_mean(ax=ax12, variable="Temperature difference", data_alt=W2E2_450_temp2, cmap=RdBu_r, units="°C", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E2 - W1E1 (MIO 450ppm)", left_labels=False, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                      fig=fig, plot_coastlines=False, sea_land_mask=slm_mio)
+    
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.10)
@@ -265,57 +314,71 @@ def plot_temp2():
 
 
 def plot_d18op():
-    fig, ((ax1,ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9)) = plt.subplots(nrows = 3, ncols = 3, figsize=(28, 24), subplot_kw={"projection":  projection})
+    fig, ((ax1,ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9),
+          (ax10, ax11, ax12)) = plt.subplots(nrows = 4, ncols = 3, figsize=(30, 28), subplot_kw={"projection":  projection})
     
     plot_annual_mean(ax=ax1, variable="$\delta^{18}$Op vs SMOW", data_alt=CTL_d18op, cmap=RdYlBu, units="‰", vmax=2, vmin=-16, domain="Europe", 
-                      levels=22, level_ticks=11, title="CTL (PI)", left_labels=True, bottom_labels=True, add_colorbar=True, cbar_pos = [0.15, 0.05, 0.25, 0.02],
+                      levels=22, level_ticks=11, title="CTL (PI)", left_labels=True, bottom_labels=False, add_colorbar=True, cbar_pos = [0.15, 0.05, 0.25, 0.02],
                       plot_projection=projection, orientation= "horizontal", fig=fig, plot_coastlines=True, center=False)
     
     plot_annual_mean(ax=ax2, variable="$\delta^{18}$Op vs SMOW", data_alt=W1E1_278_d18op, cmap=RdYlBu, units="‰", vmax=2, vmin=-16, domain="Europe", 
-                      levels=22, level_ticks=11, title="W1E1 (MIO 278ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                      levels=22, level_ticks=11, title="W1E1 (MIO 278ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                        fig=fig, plot_coastlines=False, sea_land_mask=slm_mio, center=False)
     plot_annual_mean(ax=ax3, variable="$\delta^{18}$Op vs SMOW", data_alt=W1E1_450_d18op, cmap=RdYlBu, units="‰", vmax=2, vmin=-16, domain="Europe", 
-                      levels=22, level_ticks=11, title="W1E1 (MIO 450ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+                      levels=22, level_ticks=11, title="W1E1 (MIO 450ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                       fig=fig, plot_coastlines=False, sea_land_mask=slm_mio, center=False)
     
     
     
     #anomalies 
     
-    
-    plot_annual_mean(ax=ax4, variable="$\delta^{18}$Op vs SMOW difference", data_alt=W2E1_PI_d18op, cmap="PRGn", units="‰", vmax=8, vmin=-8, domain="Europe", 
-                      levels=22, level_ticks=11, title="W2E1 - W1E1 (PI)", left_labels=True, bottom_labels=True, add_colorbar=True, cbar_pos = [0.45, 0.05, 0.25, 0.02],
+    vmax = 8
+    vmin = -8
+    plot_annual_mean(ax=ax4, variable="$\delta^{18}$Op vs SMOW difference", data_alt=W2E1_PI_d18op, cmap="PRGn", units="‰", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E1 - W1E1 (PI)", left_labels=True, bottom_labels=False, add_colorbar=True, cbar_pos = [0.45, 0.05, 0.25, 0.02],
                       plot_projection=projection, orientation= "horizontal", fig=fig, plot_coastlines=True)
     
-    plot_annual_mean(ax=ax5, variable="$\delta^{18}$Op vs SMOW difference", data_alt=W2E1_278_d18op, cmap="PRGn", units="‰", vmax=8, vmin=-8, domain="Europe", 
-                      levels=22, level_ticks=11, title="W2E1 - W1E1 (MIO 278ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+    plot_annual_mean(ax=ax5, variable="$\delta^{18}$Op vs SMOW difference", data_alt=W2E1_278_d18op, cmap="PRGn", units="‰", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E1 - W1E1 (MIO 278ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                       fig=fig, plot_coastlines=False, sea_land_mask=slm_mio)
     
-    plot_annual_mean(ax=ax6, variable="$\delta^{18}$Op vs SMOW difference", data_alt=W2E1_450_d18op, cmap="PRGn", units="‰", vmax=8, vmin=-8, domain="Europe", 
-                      levels=22, level_ticks=11, title="W2E1 - W1E1 (MIO 450ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+    plot_annual_mean(ax=ax6, variable="$\delta^{18}$Op vs SMOW difference", data_alt=W2E1_450_d18op, cmap="PRGn", units="‰", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E1 - W1E1 (MIO 450ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
                       fig=fig, plot_coastlines=False, sea_land_mask=slm_mio)
     
-    plot_annual_mean(ax=ax7, variable="$\delta^{18}$Op vs SMOW difference", data_alt=W2E0_PI_d18op, cmap="PRGn", units="‰", vmax=8, vmin=-8, domain="Europe", 
+    plot_annual_mean(ax=ax7, variable="$\delta^{18}$Op vs SMOW difference", data_alt=W2E0_PI_d18op, cmap="PRGn", units="‰", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E0 - W1E1 (PI)", left_labels=True, bottom_labels=False, add_colorbar=True, cbar_pos = [0.45, 0.05, 0.25, 0.02],
+                      plot_projection=projection, orientation= "horizontal", fig=fig, plot_coastlines=True)
+    
+    plot_annual_mean(ax=ax8, variable="$\delta^{18}$Op vs SMOW difference", data_alt=W2E0_278_d18op, cmap="PRGn", units="‰", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E0 - W1E1 (MIO 278ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
+                      fig=fig, plot_coastlines=False, sea_land_mask=slm_mio)
+    
+    plot_annual_mean(ax=ax9, variable="$\delta^{18}$Op vs SMOW difference", data_alt=W2E0_450_d18op, cmap="PRGn", units="‰", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E0 - W1E1 (MIO 450ppm)", left_labels=False, bottom_labels=False, add_colorbar=False, plot_projection=projection, 
+                      fig=fig, plot_coastlines=False, sea_land_mask=slm_mio)
+    
+    plot_annual_mean(ax=ax10, variable="$\delta^{18}$Op vs SMOW difference", data_alt=W2E2_PI_d18op, cmap="PRGn", units="‰", vmax=vmax, vmin=vmin, domain="Europe", 
                       levels=22, level_ticks=11, title="W2E0 - W1E1 (PI)", left_labels=True, bottom_labels=True, add_colorbar=True, cbar_pos = [0.45, 0.05, 0.25, 0.02],
                       plot_projection=projection, orientation= "horizontal", fig=fig, plot_coastlines=True)
     
-    plot_annual_mean(ax=ax8, variable="$\delta^{18}$Op vs SMOW difference", data_alt=W2E0_278_d18op, cmap="PRGn", units="‰", vmax=8, vmin=-8, domain="Europe", 
-                      levels=22, level_ticks=11, title="W2E0 - W1E1 (MIO 278ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+    plot_annual_mean(ax=ax11, variable="$\delta^{18}$Op vs SMOW difference", data_alt=W2E2_278_d18op, cmap="PRGn", units="‰", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E0 - W1E1 (MIO 278ppm)", left_labels=False, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
                       fig=fig, plot_coastlines=False, sea_land_mask=slm_mio)
     
-    plot_annual_mean(ax=ax9, variable="$\delta^{18}$Op vs SMOW difference", data_alt=W2E0_450_d18op, cmap="PRGn", units="‰", vmax=8, vmin=-8, domain="Europe", 
-                      levels=22, level_ticks=11, title="W2E0 - W1E1 (MIO 450ppm)", left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
+    plot_annual_mean(ax=ax12, variable="$\delta^{18}$Op vs SMOW difference", data_alt=W2E2_450_d18op, cmap="PRGn", units="‰", vmax=vmax, vmin=vmin, domain="Europe", 
+                      levels=22, level_ticks=11, title="W2E0 - W1E1 (MIO 450ppm)", left_labels=False, bottom_labels=True, add_colorbar=False, plot_projection=projection, 
                       fig=fig, plot_coastlines=False, sea_land_mask=slm_mio)
     
     
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
-    plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.10)
+    plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.10, hspace=0.01, wspace=0.01)
     plt.savefig(os.path.join(path_to_plots, "d18op_CTL_mio_pi.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 if __name__== "__main__":
-    plot_prec()
-    plot_temp2()
+    #plot_prec()
+    #plot_temp2()
     plot_d18op()
     
