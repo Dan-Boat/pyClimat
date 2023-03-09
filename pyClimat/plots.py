@@ -1598,7 +1598,7 @@ def plot_causal_statistics(variable, data, cmap = None, levels=None, units=None,
                      cbar_orientation="vertical", 
                      cbar_pos = None,plot_pvalues=False, pvalue_data=None,use_AlbersEqualArea=False,
                      fig=None, vmax=None, vmin=None, left_labels= True, bottom_labels=True,plot_sig_level=True,
-                     ):
+                     plot_less_than_pvalue=True):
     import cartopy.crs as ccrs
     import cartopy.feature as cfeature
     from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
@@ -1657,11 +1657,14 @@ def plot_causal_statistics(variable, data, cmap = None, levels=None, units=None,
                     use_AlbersEqualArea=use_AlbersEqualArea)
     
     if plot_sig_level:
-        # data.plot.contour(colors="green", linestyles="-", ax=ax, transform=projection, levels=[0.1],
-        #                   linewidth=1.0, add_labels=False)
         
-        data.plot.contour(colors="magenta", linestyles="-", ax=ax, transform=projection, levels=[0.1],
+        data.plot.contour(colors="magenta", linestyles="-", ax=ax, transform=projection, levels=[0.30],
                           linewidth=1.0, add_labels=False)
+        
+        if plot_less_than_pvalue:
+            pvalue_data = xr.where(data <= 0.05, data, data*np.nan)
+            pvalue_data.plot.contourf(colors="none", ax=ax, transform=projection, hatches=[".."], add_labels=False,
+                                      add_colorbar=False,extend="both")
     
     if title is not None:
         ax.set_title(title , fontsize=22, weight="bold", loc="left")

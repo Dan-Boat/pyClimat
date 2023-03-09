@@ -81,12 +81,12 @@ def plot_causal(filenames, labels, figname):
             plot_causal_statistics(variable="p-value", data=data, ax=axes[i], cmap="Blues", levels=20,
                                    domain = "Europe Wide", vmin=0, vmax=1, level_ticks=8, cbar=True, 
                                    cbar_orientation="horizontal", cbar_pos=[0.40, 0.05, 0.25, 0.02],fig=fig,
-                                   title=labels[i])
+                                   title=labels[i], plot_less_than_pvalue=True)
             
         else:
             plot_causal_statistics(variable="p-value", data=data, ax=axes[i], cmap="Blues", levels=20,
                                    domain = "Europe Wide", vmin=0, vmax=1, level_ticks=8, cbar=False, 
-                                   fig=fig, title=labels[i])
+                                   fig=fig, title=labels[i], plot_less_than_pvalue=True)
             
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
@@ -95,8 +95,8 @@ def plot_causal(filenames, labels, figname):
     
 
 
-# plot_causal(filenames=filenames_NAO, labels=labels_NAO, figname="causal_NAO_climate")
-# plot_causal(filenames=filenames_EA, labels=labels_EA, figname="causal_EA_climate")
-# plot_causal(filenames=filenames_NAO_EA, labels=labels_NAO_EA, figname="causal_NAO_EA_climate")
+plot_causal(filenames=filenames_NAO, labels=labels_NAO, figname="causal_NAO_climate")
+plot_causal(filenames=filenames_EA, labels=labels_EA, figname="causal_EA_climate")
+plot_causal(filenames=filenames_NAO_EA, labels=labels_NAO_EA, figname="causal_NAO_EA_climate")
 
 plot_causal(filenames=filenames_d18op, labels=labels_d18op, figname="causal_d18op")

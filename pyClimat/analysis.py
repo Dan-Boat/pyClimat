@@ -566,17 +566,21 @@ def extract_transect(data, maxlon, minlon, maxlat, minlat, sea_land_mask=False, 
     if sea_land_mask == True:
         if hasattr(data_extract, "slm"):
             data_extract = xr.where(data_extract["slm"]==1, data_extract, data_extract*np.nan)
+            
+            data_extract = data_extract.drop_vars(["slm"])
     if minelev and maxelev is not None:
         if hasattr(data_extract, "geosp"):
             data_extract = xr.where((data_extract.geosp >= minelev) & (data_extract.geosp <= maxelev), data_extract, data_extract*np.nan)
-        
+            data_extract = data_extract.drop_vars(["geosp"])
     elif minelev is not None:
         if hasattr(data_extract, "geosp"):
             data_extract = xr.where(data_extract.geosp >= minelev, data_extract, data_extract*np.nan)
+            data_extract = data_extract.drop_vars(["geosp"])
         
     elif maxelev is not None:
         if hasattr(data_extract, "geosp"):
             data_extract = xr.where(data_extract.geosp <= maxelev, data_extract, data_extract*np.nan)
+            data_extract = data_extract.drop_vars(["geosp"])
           
     return data_extract
     
