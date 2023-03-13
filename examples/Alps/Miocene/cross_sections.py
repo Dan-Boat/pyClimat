@@ -196,8 +196,9 @@ def extract_var_for_section_all_topo(varname, units, maxlon, minlon,
     
     return mdf
 
-def plot_cross_section(varname, units, data, ax=None, path_to_store=None, filename=None,
-                       colors=None, xlabel=True, ylabel=True, ):
+def plot_cross_section(varname, units, data, hue, ax=None, path_to_store=None, filename=None,
+                       colors=None, xlabel=True, ylabel=True, title=None, ax_legend=True,
+                       ymin=None, ymax=None):
     
     topo_names = ["W1E1", "W2E0", "W2E1", "W2E2"]
     apply_style(fontsize=22, style=None, linewidth=2)
@@ -205,7 +206,7 @@ def plot_cross_section(varname, units, data, ax=None, path_to_store=None, filena
         fig,ax = plt.subplots(1,1, sharex=False, figsize=(20, 15))
         
     boxplot = sns.boxplot(data=data, x="Paleoclimate", y="value", saturation=0.8, ax=ax,
-                          hue="d18op")
+                          hue=hue)
     
     if colors is not None:
         
@@ -227,6 +228,21 @@ def plot_cross_section(varname, units, data, ax=None, path_to_store=None, filena
         ax.grid(True, linestyle="--", color="grey")
         ax.set_xticklabels([])
         
+    if all(parameter is not None for parameter in [ymax, ymin]):
+        ax.set_ylim(ymin, ymax)
+        
+    if ax_legend:
+        ax.legend(frameon=True, fontsize=22, loc="lower right")
+    else:
+        ax.legend([],[], frameon=False)
+        
+       
+    if title is not None:
+        ax.set_title(title, fontdict= {"fontsize": 22, "fontweight":"bold"}, loc="center")
+        
+    
+        
+        
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05)
     
@@ -236,9 +252,9 @@ def plot_cross_section(varname, units, data, ax=None, path_to_store=None, filena
 
 # extract
 def estimate_all_transect(varname, units):        
-    mdf_low = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=16, minlon=2, maxlat=51, minlat=43,
+    mdf_low = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=19, minlon=0, maxlat=51, minlat=42,
                                      maxelev=500, land_mask=True)
-    mdf_high = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=16, minlon=2, maxlat=51, minlat=43,
+    mdf_high = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=19, minlon=0, maxlat=51, minlat=42,
                                      minelev=1000, land_mask=True)
     mdf_west = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=8, minlon=1, maxlat=47, minlat=44,
                                      land_mask=True)
@@ -248,6 +264,46 @@ def estimate_all_transect(varname, units):
                                      land_mask=True)
     
     mdfs = [mdf_low, mdf_high, mdf_west, mdf_north, mdf_south]
+    
     return mdfs
 
-plot_cross_section(varname="$\delta^{18}$Op vs SMOW", units="‰", data=mdf_low)
+
+
+# extract for all variables 
+d18op_mdfs = estimate_all_transect(varname="d18op", units="per mil")
+t2m_mdfs = estimate_all_transect(varname="temp2", units="°C")
+prec_mdfs = estimate_all_transect(varname="prec", units="mm/month")
+
+# plotting 
+
+apply_style(fontsize=22, style=None, linewidth=2,)
+fig, ((ax1,ax2, ax3, ax4, ax5), (ax6, ax7, ax8, ax9, ax10), 
+      (ax11, ax12, ax13, ax14, ax15)) = plt.subplots(nrows = 3, ncols = 5, figsize=(30, 24), sharey=False)
+
+row_1 = [ax1,ax2, ax3, ax4, ax5]
+row_2 = [ax6, ax7, ax8, ax9, ax10]
+row_3 = [ax11, ax12, ax13, ax14, ax15]
+sections = ["Low elevation", "High elevation", "West-Central Alps", "Northern Alps", "Southern Alps"]
+
+for i, ax in enumerate(row_1):
+    if i ==0:
+        plot_cross_section(varname="$\delta^{18}$Op vs SMOW", units="‰", data=d18op_mdfs[i], ax=ax, xlabel=True,
+                           title=sections[i], ax_legend=True, hue="d18op", ymin=-20, ymax=-4)
+        
+    else:
+        plot_cross_section(varname="$\delta^{18}$Op vs SMOW", units="‰", data=d18op_mdfs[i], ax=ax, xlabel=True,
+                           title=sections[i], ax_legend=False, ylabel=True, hue="d18op",  ymin=-20, ymax=-4)
+        
+        
+for i, ax in enumerate(row_2):
+    plot_cross_section(varname="Temperature", units="°C", data=t2m_mdfs[i], ax=ax, xlabel=True,
+                       title=None, ax_legend=False, hue="temp2", ymin=-10, ymax=25)
+    
+for i, ax in enumerate(row_3):
+    plot_cross_section(varname="Precipitation", units="mm/month", data=prec_mdfs[i], ax=ax, xlabel=True,
+                       title=None, ax_legend=False, hue="prec", ymin=20, ymax=280)
+    
+plt.tight_layout()
+plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05)
+plt.savefig(os.path.join(path_to_plots, "cross_section_d18op_temp_prec.svg"), format= "svg", bbox_inches="tight", dpi=600)
+        

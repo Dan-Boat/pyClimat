@@ -43,7 +43,7 @@ def vert_coord_convertion(data, units):
 
 
 def extract_region(data, maxlon=60, minlon=-80, maxlat=80, minlat=10, time="season", 
-                              season="DJF", month=None):
+                              season="DJF", month=None, regional_mean=False):
     if hasattr(data, "longitude"):
         data = data.rename({"longitude":"lon", "latitude":"lat"})
         
@@ -82,5 +82,8 @@ def extract_region(data, maxlon=60, minlon=-80, maxlat=80, minlat=10, time="seas
             
         else:
             raise ValueError("The define month parameter is not recognized")
-
+            
+    if regional_mean:
+        data = data.mean(dim=("lat", "lon"))
+            
     return data   

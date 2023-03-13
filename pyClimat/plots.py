@@ -1467,13 +1467,13 @@ def plot_hovmoller_space_time(variable, data, cmap, units, ax=None, fig=None, vm
         if level_ticks is not None:
             if use_cbar_norm == True:
                 cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
-                         format="%.2f", ticks = ticks, extend = "neither", pad = 0.05, norm=norm)
+                         format="%.2f", ticks = ticks, extend = "both", pad = 0.05, norm=norm)
             else:
                 cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
-                         format="%.2f", ticks = ticks, extend = "neither", pad = 0.05,)
+                         format="%.2f", ticks = ticks, extend = "both", pad = 0.05,)
         else:
             cb =fig.colorbar(p, cax=cbar_ax, drawedges=True, orientation="vertical", shrink=0.7, 
-                     format="%.2f", extend = "neither", pad=0.05, norm=norm)
+                     format="%.2f", extend = "both", pad=0.05, norm=norm)
             
         cb.set_label(label=variable + " [" + units + "]", size= 20, fontweight="bold")
         cb.ax.tick_params(labelsize=20, size=0,)
@@ -1675,11 +1675,7 @@ def plot_causal_statistics(variable, data, cmap = None, levels=None, units=None,
     if all(parameter is not None for parameter in [output_format, output_name, path_to_store]):
         plt.savefig(os.path.join(path_to_store, output_name + "." + output_format), format= output_format, bbox_inches="tight")
                 
-def plot_wind_streamlines():
-    pass
 
-def plot_vertical_winds(*args):
-    pass
 
 
 

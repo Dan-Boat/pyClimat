@@ -77,7 +77,7 @@ def perform_causality_indices(filename="causal_results.csv", plot=True):
                                                       apply_standardize=True, dim="time")
     
     if plot:
-        apply_style(fontsize=22, style=None, linewidth=2)
+        apply_style(fontsize=23, style="seaborn-talk", linewidth=3,)
         fig,ax = plt.subplots(1,1, sharex=False, figsize=(18, 15))
         df_results.iloc[0].plot(kind="barh", ax=ax)
         ax.axvline(x=0.1, linestyle="-", color="red")
@@ -87,7 +87,7 @@ def perform_causality_indices(filename="causal_results.csv", plot=True):
         
     df_results.to_csv(os.path.join(path_to_plots, filename))
 
-#perform_causality_indices()
+perform_causality_indices()
 
 def perform_causality_testing_with_climate_var(Y, varname, units=None, lev=None, lev_units=None, save_pval=True,
                         path_to_save=main_path_to_data, filename=None, Z=None, revrese=True):
@@ -214,17 +214,17 @@ def perform_causality_testing_with_d18op(Y_varname, Y_units=None, Z_units=None, 
     else:
         return pval
 
-pval_prec_t2m_to_d18op = perform_causality_testing_with_d18op(Y_varname="temp2", Y_units="°C", Z_varname="prec", 
-                                                            Z_units="mm/month",
-                                                           filename="d18op_caused_by_t2m_prec")
+# pval_prec_t2m_to_d18op = perform_causality_testing_with_d18op(Y_varname="temp2", Y_units="°C", Z_varname="prec", 
+#                                                             Z_units="mm/month",
+#                                                            filename="d18op_caused_by_t2m_prec")
 
 
-pval_nao_t2m_to_d18op = perform_causality_testing_with_d18op(Y_varname="temp2", Y_units="°C", Z_varname="NAO",
-                                                           filename="d18op_caused_by_t2m_NAO")
+# pval_nao_t2m_to_d18op = perform_causality_testing_with_d18op(Y_varname="temp2", Y_units="°C", Z_varname="NAO",
+#                                                            filename="d18op_caused_by_t2m_NAO")
 
 
-pval_t2m_to_d18op = perform_causality_testing_with_d18op(Y_varname="temp2", Y_units="°C", Z_varname=None,
-                                                           filename="d18op_caused_by_t2m")
+# pval_t2m_to_d18op = perform_causality_testing_with_d18op(Y_varname="temp2", Y_units="°C", Z_varname=None,
+#                                                            filename="d18op_caused_by_t2m")
 
-pval_prec_to_d18op = perform_causality_testing_with_d18op(Y_varname="prec", Y_units="mm/month", Z_varname=None,
-                                                           filename="d18op_caused_by_prec")
+# pval_prec_to_d18op = perform_causality_testing_with_d18op(Y_varname="prec", Y_units="mm/month", Z_varname=None,
+#                                                            filename="d18op_caused_by_prec")

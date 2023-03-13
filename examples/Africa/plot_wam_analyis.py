@@ -14,14 +14,14 @@ from pyClimat.plots import plot_annual_mean, plot_seasonal_mean, plot_vertical_s
 
 from wam_analysis import *
 
-path_to_store = "/home/dboateng/Python_scripts/ClimatPackage_repogit/examples/Africa/plots"
+path_to_store = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Africa/plots"
 
 
 def plot_monthly_sections(data_sahara, data_sahel, data_guinea, ax, ymax, ymin, varname, title):
     
-    ax.plot(data_sahara["mean"], "--", color=red, label="Sahara", linewidth=3)
-    ax.plot(data_sahel["mean"], "--", color=black, label="Sahel", linewidth=3)
-    ax.plot(data_guinea["mean"], "--", color=blue, label="Coast of Guinea", linewidth=3)
+    ax.plot(data_sahara["mean"], "-", color=red, label="Sahara", linewidth=3)
+    ax.plot(data_sahel["mean"], "-", color=black, label="Sahel", linewidth=3)
+    ax.plot(data_guinea["mean"], "-", color=blue, label="Coast of Guinea", linewidth=3)
     
     ax.set_ylabel(varname, fontsize= 20, fontweight="bold")
     ax.set_ylim(bottom=ymin, top=ymax)
@@ -31,9 +31,9 @@ def plot_monthly_sections(data_sahara, data_sahel, data_guinea, ax, ymax, ymin, 
 def plot_monthly_period_per_section(PI, MH, LGM, PLIO, ax, title, ymax, ymin, varname=None): # extend with ERA (gold), SSP2.6(purple), 4,5(brown), 8.5(orange)  
     
     ax.plot(PI["mean"], "-", color=black, label="PI", linewidth=4)
-    ax.plot(MH["mean"], "--", color=red, label="MH", linewidth=4)
-    ax.plot(LGM["mean"], "-.", color=blue, label="LGM", linewidth=4)
-    ax.plot(PLIO["mean"], ":", color=green, label="mPLIO", linewidth=4)
+    ax.plot(MH["mean"], "-", color=red, label="MH", linewidth=4)
+    ax.plot(LGM["mean"], "-", color=blue, label="LGM", linewidth=4)
+    ax.plot(PLIO["mean"], "-", color=green, label="mPLIO", linewidth=4)
     
     if varname is not None:
         ax.set_ylabel(varname, fontweight="bold", fontsize=22)
@@ -103,18 +103,22 @@ def plot_JJA_anomaly():
                                                                                                                       projection})
     plot_annual_mean(variable="Precipitation anomalies", data_alt=MH_prec_alt_diff , cmap=BrBG, units="mm/month", ax=ax1, fig=fig, vmax=150, vmin=-150,
                      levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
-                               title= ["[A]  MH - PI"], bottom_labels=True, left_labels=True, compare_data1=PI_prec,
-                               compare_data2=MH_prec, max_pvalue=0.01, plot_stats=True, time="JJAS")
+                               title= ["(a)  MH - PI"], bottom_labels=True, left_labels=True, compare_data1=PI_prec,
+                               compare_data2=MH_prec, max_pvalue=0.05, plot_stats=True, time="JJAS",
+                               hatches=".")
     
     plot_annual_mean(variable="Precipitation anomalies", data_alt=LGM_prec_alt_diff , cmap=BrBG, units="mm/month", ax=ax2, fig=fig, vmax=150, vmin=-150,
                      levels=22, domain="West Africa", level_ticks=11, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
-                               title= ["[B]  LGM - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_prec,
-                               compare_data2=LGM_prec, max_pvalue=0.01, plot_stats=True, orientation= "horizontal", time="JJAS") 
+                               title= ["(b)  LGM - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_prec,
+                               compare_data2=LGM_prec, max_pvalue=0.05, plot_stats=True, orientation= "horizontal", time="JJAS",
+                               hatches=".") 
     
     plot_annual_mean(variable="Precipitation anomalies", data_alt=PLIO_prec_alt_diff , cmap=BrBG, units="mm/month", ax=ax3, fig=fig, vmax=150, vmin=-150,
                      levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
-                               title= ["[C]  mPLIO - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_prec,
-                               compare_data2=PLIO_prec, max_pvalue=0.01, plot_stats=True, time="JJAS") 
+                               title= ["(c)  mPLIO - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_prec,
+                               compare_data2=PLIO_prec, max_pvalue=0.05, plot_stats=True, time="JJAS",
+                               hatches=".") 
+    
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
@@ -125,43 +129,46 @@ def plot_JJA_anomaly():
                                                                                                                       projection})
     plot_annual_mean(variable="Temperature anomalies", data_alt=MH_t2m_alt_diff , cmap=RdBu_r, units="°C", ax=ax1, fig=fig, vmax=12, vmin=-12,
                      levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
-                               title= ["[A]  MH - PI"], bottom_labels=True, left_labels=True, compare_data1=PI_t2m,
-                               compare_data2=MH_t2m, max_pvalue=0.01, plot_stats=True, time="JJAS")
+                               title= ["(a)  MH - PI"], bottom_labels=True, left_labels=True, compare_data1=PI_t2m,
+                               compare_data2=MH_t2m, max_pvalue=0.05, plot_stats=True, time="JJAS",
+                               hatches=".")
     
     plot_annual_mean(variable="Temperature anomalies", data_alt=LGM_t2m_alt_diff , cmap=RdBu_r, units="°C", ax=ax2, fig=fig, vmax=12, vmin=-12,
                      levels=22, domain="West Africa", level_ticks=11, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
-                               title= ["[B]  LGM - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_t2m,
-                               compare_data2=LGM_t2m, max_pvalue=0.01, plot_stats=True, orientation= "horizontal", time="JJAS") 
+                               title= ["(b)  LGM - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_t2m,
+                               compare_data2=LGM_t2m, max_pvalue=0.05, plot_stats=True, orientation= "horizontal", time="JJAS",
+                               hatches=".") 
     
     plot_annual_mean(variable="Temperature anomalies", data_alt=PLIO_t2m_alt_diff , cmap=RdBu_r, units="°C", ax=ax3, fig=fig, vmax=12, vmin=-12,
                      levels=22, domain="West Africa", level_ticks=11, add_colorbar=False,
-                               title= ["[C]  mPLIO - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_t2m,
-                               compare_data2=PLIO_t2m, max_pvalue=0.01, plot_stats=True, time="JJAS") 
+                               title= ["(c)  mPLIO - PI"], bottom_labels=True, left_labels=False, compare_data1=PI_t2m,
+                               compare_data2=PLIO_t2m, max_pvalue=0.05, plot_stats=True, time="JJAS",
+                               hatches=".") 
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
     plt.savefig(os.path.join(path_to_store, "t2m_anomalies.svg"), format= "svg", bbox_inches="tight", dpi=300)
     
-    projection = ccrs.PlateCarree()
-    fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":
-                                                                                                                      projection})
-    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=MH_slp_alt_diff , cmap=BwR, units="hPa", ax=ax1, fig=fig, vmax=20, vmin=-20,
-                     levels=22, domain="West Africa Wide", level_ticks=11, add_colorbar=False,
-                               title= ["[A]  MH - PI"], bottom_labels=True, left_labels=True, plot_winds=True, data_u=MH_u850_alt, data_v=MH_v850_alt, time="JJAS")
+    # projection = ccrs.PlateCarree()
+    # fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 13), subplot_kw={"projection":
+    #                                                                                                                   projection})
+    # plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=MH_slp_alt_diff , cmap=BwR, units="hPa", ax=ax1, fig=fig, vmax=20, vmin=-20,
+    #                  levels=22, domain="West Africa Wide", level_ticks=11, add_colorbar=False,
+    #                            title= ["[A]  MH - PI"], bottom_labels=True, left_labels=True, plot_winds=True, data_u=MH_u850_alt, data_v=MH_v850_alt, time="JJAS")
     
-    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=LGM_slp_alt_diff , cmap=BwR, units="hPa", ax=ax2, fig=fig, vmax=20, vmin=-20,
-                     levels=22, domain="West Africa Wide", level_ticks=11, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
-                               title= ["[B]  LGM - PI"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=LGM_u850_alt, data_v=LGM_v850_alt, 
-                               orientation= "horizontal", time="JJAS") 
+    # plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=LGM_slp_alt_diff , cmap=BwR, units="hPa", ax=ax2, fig=fig, vmax=20, vmin=-20,
+    #                  levels=22, domain="West Africa Wide", level_ticks=11, add_colorbar=True, cbar_pos = [0.35, 0.25, 0.25, 0.02],
+    #                            title= ["[B]  LGM - PI"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=LGM_u850_alt, data_v=LGM_v850_alt, 
+    #                            orientation= "horizontal", time="JJAS") 
     
-    plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=PLIO_slp_alt_diff , cmap=BwR, units="hPa", ax=ax3, fig=fig, vmax=20, vmin=-20,
-                     levels=22, domain="West Africa Wide", level_ticks=11, add_colorbar=False,
-                               title= ["[C]  mPLIO - PI"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=PLIO_u850_alt, data_v=PLIO_v850_alt, 
-                               time="JJAS") 
-    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
-    plt.tight_layout()
-    plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
-    plt.savefig(os.path.join(path_to_store, "slp_anomalies.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    # plot_annual_mean(variable="Sea Level Pressure anomalies", data_alt=PLIO_slp_alt_diff , cmap=BwR, units="hPa", ax=ax3, fig=fig, vmax=20, vmin=-20,
+    #                  levels=22, domain="West Africa Wide", level_ticks=11, add_colorbar=False,
+    #                            title= ["[C]  mPLIO - PI"], bottom_labels=True, left_labels=False, plot_winds=True, data_u=PLIO_u850_alt, data_v=PLIO_v850_alt, 
+    #                            time="JJAS") 
+    # fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+    # plt.tight_layout()
+    # plt.subplots_adjust(left=0.05, right=0.95, top=0.94, bottom=0.15)
+    # plt.savefig(os.path.join(path_to_store, "slp_anomalies.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 def plot_slp():
@@ -190,8 +197,10 @@ def plot_slp():
 # left, bottom, width, height
 
 def plot_monthly_variability():
-    apply_style(fontsize=22, style=None, linewidth=2) 
-    fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 14), sharey=False)
+    
+    apply_style(fontsize=22, style=None, linewidth=3) 
+    
+    fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(30, 15), sharey=False)
     
     plot_monthly_period_per_section(PI=PI_month_sahara_prec , MH= MH_month_sahara_prec, LGM=LGM_month_sahara_prec, 
                                     PLIO=PLIO_month_sahara_prec, ax=ax1, title="Sahara", varname="Precipitation [mm/month]", ymax=14,
@@ -208,6 +217,11 @@ def plot_monthly_variability():
     
     ax2.legend(bbox_to_anchor=(0.01, 1.04, 1., 0.102), loc=3, ncol=4, borderaxespad=0., frameon = True, 
                   fontsize=20)
+    
+    axes = [ax1,ax2, ax3]
+    for ax in axes:
+        ax.grid(True, linestyle="--", color="grey")
+        
     plt.tight_layout()
     plt.savefig(os.path.join(path_to_store, "monthly_sections_sahara_sahel_coast.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
@@ -290,9 +304,9 @@ def plot_vertical_sections():
 
 
 #run for all 
-plot_PI_JJAS()
+#plot_PI_JJAS()
 plot_JJA_anomaly()
-#plot_monthly_variability()
+plot_monthly_variability()
 #plot_vertical_sections()
 #plot_slp()
 

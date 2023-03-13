@@ -14,7 +14,7 @@ import os
 from pyClimat.data import read_from_path, read_ECHAM_processed
 
 # define paths 
-main_path = "/home/dboateng/Model_output_pst"
+main_path = "D:/Datasets/Model_output_pst/"
 lgm_path = os.path.join(main_path, "LGM", "MONTHLY_MEANS")
 plio_path = os.path.join(main_path, "PLIO", "MONTHLY_MEANS")
 mh_path = os.path.join(main_path, "MH", "MONTHLY_MEANS")

@@ -108,7 +108,7 @@ def apply_style(fontsize=20, style=None, linewidth=2):
     None.
     """
     if style is not None:
-        plt.style.use(style)  
+        plt.style.use(style)  #seaborn-talk 'seaborn-paper' 'seaborn-poster'
         
     rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
     mpl.rc('text', usetex=True)
