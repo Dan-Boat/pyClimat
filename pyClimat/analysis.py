@@ -93,6 +93,31 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
                 var_data.attrs["units"] = units
             else:
                 print("Define unit well or the default is kelvin")
+                
+    elif varname == "tsurf":
+        var_data = Dataset[varname]
+        if units is not None:
+            if units == "°C":
+                var_data = var_data - 273.15 # convert temperature to dec C
+                var_data.attrs["units"] = units
+            else:
+                print("Define unit well or the default is kelvin")
+                
+    elif varname == "tsoil":
+        var_data = Dataset[varname]
+        var_data = var_data.sel(belowsurface=698)
+        
+        if units is not None:
+            if units == "°C":
+                var_data = var_data - 273.15 # convert temperature to dec C
+                var_data.attrs["units"] = units
+            else:
+                print("Define unit well or the default is kelvin")
+        
+    elif varname == "ws":
+        print(".....Extracting soil wetness......")
+        var_data = Dataset[varname]
+       
         
     #Total precipitation amount
     elif varname == "prec":
@@ -586,7 +611,7 @@ def extract_transect(data, maxlon, minlon, maxlat, minlat, sea_land_mask=False, 
     
 
 def extract_profile(data, maxlon, minlon, maxlat, minlat, dim, to_pandas=True, sea_land_mask=False, minelev=None, maxelev=None, 
-                    Dataset=None):
+                    Dataset=None, method="mean"):
     """
     
 
@@ -629,10 +654,23 @@ def extract_profile(data, maxlon, minlon, maxlat, minlat, dim, to_pandas=True, s
                                     minelev=minelev, maxelev=maxelev, Dataset=Dataset)
     if dim in ["lat", "latitude"]:
         print("Computing the mean across longitude")
-        data_prof = data_extract.mean(dim="lon")
+        
+        if method =="std":
+            data_prof = data_extract.std(dim="lon")
+            
+        else:
+            data_prof = data_extract.mean(dim="lon")
+            
+            
     elif dim in ["lon", "longitude"]:
         print("Computing the mean across latitude")
-        data_prof = data_extract.mean(dim="lat")
+        
+        if method =="std":
+            data_prof = data_extract.std(dim="lat")
+            
+        else:
+            data_prof = data_extract.mean(dim="lat")
+        
     else:
         print("Define the dimension to extract the profile")
         
