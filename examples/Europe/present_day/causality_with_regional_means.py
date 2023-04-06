@@ -151,70 +151,105 @@ def perform_for_all_regions(Y_varname=None, Y_units=None, Z_units=None, Z_varnam
     
     
     
+def plot_causal_to_d18op():    
+    pval_t2m_prec_to_d18op = perform_for_all_regions(Z_varname="temp2", Z_units="°C", Y_varname="prec", 
+                                                                Y_units="mm/month", X_varname="d18op", X_units="per mil",
+                                                               )
     
-pval_t2m_prec_to_d18op = perform_for_all_regions(Z_varname="temp2", Z_units="°C", Y_varname="prec", 
-                                                            Y_units="mm/month", X_varname="d18op", X_units="per mil",
-                                                           )
-
-pval_nao_ea_to_d18op = perform_for_all_regions(Z_varname="EA", Z_units=None, Y_varname="NAO", 
-                                                            Y_units=None, X_varname="d18op", X_units="per mil",
-                                                           )
-
-pval_t2m_nao_to_d18op = perform_for_all_regions(Y_varname="prec", Y_units="mm/month", Z_varname="temp2", 
-                                                            Z_units="°C", X_varname="NAO", X_units=None,
-                                                           )
-
-apply_style(fontsize=23, style="seaborn-talk", linewidth=3,)
-fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(20, 15), sharex=True)
-
-pval_t2m_prec_to_d18op.iloc[0].plot(kind="barh", ax=ax1)
-pval_nao_ea_to_d18op.iloc[0].plot(kind="barh", ax=ax2)
-pval_t2m_nao_to_d18op.iloc[0].plot(kind="barh", ax=ax3)
-
-axes = [ax1, ax2, ax3]
-titles = ["(a) Y(t2m, Prec) to X($\delta^{18}$Op)", "(b) Y(NAO, EA) to X($\delta^{18}$Op)",  
-          "(c) Y(t2m, NAO) to X($\delta^{18}$Op)"]
-
-for i, ax in enumerate(axes):
-    ax.set_title(titles[i], fontdict= {"fontsize": 22, "fontweight":"bold"}, loc="left")
-    ax.axvline(x=0.1, linestyle="-", color="red")
-    ax.axvline(x=0.33, linestyle="-", color="blue")
-    ax.axvline(x=0.66, linestyle="-", color="magenta")
+    pval_nao_ea_to_d18op = perform_for_all_regions(Z_varname="EA", Z_units=None, Y_varname="NAO", 
+                                                                Y_units=None, X_varname="d18op", X_units="per mil",
+                                                               )
     
-plt.savefig(os.path.join(path_to_plots, "causal_regional_means_d18op.svg"), format= "svg", 
-            bbox_inches="tight", dpi=300)
-
-
-
-pval_t2m_prec_to_nao = perform_for_all_regions(Z_varname="temp2", Z_units="°C", Y_varname="prec", 
-                                                            Y_units="mm/month", X_varname="NAO", X_units=None,
-                                                           )
-
-pval_d18op_t2m_to_nao = perform_for_all_regions(Z_varname="d18op", Z_units="per mil", Y_varname="temp2", 
-                                                            Y_units="°C", X_varname="NAO", X_units=None,
-                                                           )
-
-pval_d18op_prec_to_nao = perform_for_all_regions(Z_varname="prec", Z_units="mm/month", Y_varname="d18op", 
-                                                            Y_units="per mil", X_varname="NAO", X_units=None,
-                                                           )
-
-apply_style(fontsize=23, style="seaborn-talk", linewidth=3,)
-fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(20, 15), sharex=True)
-
-pval_t2m_prec_to_nao.iloc[0].plot(kind="barh", ax=ax1)
-pval_d18op_t2m_to_nao.iloc[0].plot(kind="barh", ax=ax2)
-pval_d18op_prec_to_nao.iloc[0].plot(kind="barh", ax=ax3)
-
-axes = [ax1, ax2, ax3]
-titles = ["(a) Y(t2m, Prec) to X(NAO)", "(b) Y($\delta^{18}$Op, t2m) to X(NAO)",  
-          "(c) Y($\delta^{18}$Op, Prec) to X(NAO)"]
-
-for i, ax in enumerate(axes):
-    ax.set_title(titles[i], fontdict= {"fontsize": 22, "fontweight":"bold"}, loc="left")
-    ax.axvline(x=0.1, linestyle="-", color="red")
-    ax.axvline(x=0.33, linestyle="-", color="blue")
-    ax.axvline(x=0.66, linestyle="-", color="magenta")
+    pval_t2m_nao_to_d18op = perform_for_all_regions(Y_varname="prec", Y_units="mm/month", Z_varname="temp2", 
+                                                                Z_units="°C", X_varname="NAO", X_units=None,
+                                                               )
     
-plt.savefig(os.path.join(path_to_plots, "causal_regional_means_nao.svg"), format= "svg", 
-            bbox_inches="tight", dpi=300)
+    apply_style(fontsize=23, style="seaborn-talk", linewidth=3,)
+    fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(20, 15), sharex=True)
+    
+    pval_t2m_prec_to_d18op.iloc[0].plot(kind="barh", ax=ax1)
+    pval_nao_ea_to_d18op.iloc[0].plot(kind="barh", ax=ax2)
+    pval_t2m_nao_to_d18op.iloc[0].plot(kind="barh", ax=ax3)
+    
+    axes = [ax1, ax2, ax3]
+    titles = ["(a) Y(t2m, Prec) to X($\delta^{18}$Op)", "(b) Y(NAO, EA) to X($\delta^{18}$Op)",  
+              "(c) Y(t2m, NAO) to X($\delta^{18}$Op)"]
+    
+    for i, ax in enumerate(axes):
+        ax.set_title(titles[i], fontdict= {"fontsize": 22, "fontweight":"bold"}, loc="left")
+        ax.axvline(x=0.1, linestyle="-", color="red")
+        ax.axvline(x=0.33, linestyle="-", color="blue")
+        ax.axvline(x=0.66, linestyle="-", color="magenta")
+        
+    plt.savefig(os.path.join(path_to_plots, "causal_regional_means_d18op.svg"), format= "svg", 
+                bbox_inches="tight", dpi=300)
 
+
+def plot_causal_to_nao():
+    pval_t2m_prec_to_nao = perform_for_all_regions(Z_varname="temp2", Z_units="°C", Y_varname="prec", 
+                                                                Y_units="mm/month", X_varname="NAO", X_units=None,
+                                                               )
+    
+    pval_d18op_t2m_to_nao = perform_for_all_regions(Z_varname="d18op", Z_units="per mil", Y_varname="temp2", 
+                                                                Y_units="°C", X_varname="NAO", X_units=None,
+                                                               )
+    
+    pval_d18op_prec_to_nao = perform_for_all_regions(Z_varname="prec", Z_units="mm/month", Y_varname="d18op", 
+                                                                Y_units="per mil", X_varname="NAO", X_units=None,
+                                                               )
+    
+    apply_style(fontsize=23, style="seaborn-talk", linewidth=3,)
+    fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(20, 15), sharex=True)
+    
+    pval_t2m_prec_to_nao.iloc[0].plot(kind="barh", ax=ax1)
+    pval_d18op_t2m_to_nao.iloc[0].plot(kind="barh", ax=ax2)
+    pval_d18op_prec_to_nao.iloc[0].plot(kind="barh", ax=ax3)
+    
+    axes = [ax1, ax2, ax3]
+    titles = ["(a) Y(t2m, Prec) to X(NAO)", "(b) Y($\delta^{18}$Op, t2m) to X(NAO)",  
+              "(c) Y($\delta^{18}$Op, Prec) to X(NAO)"]
+    
+    for i, ax in enumerate(axes):
+        ax.set_title(titles[i], fontdict= {"fontsize": 22, "fontweight":"bold"}, loc="left")
+        ax.axvline(x=0.1, linestyle="-", color="red")
+        ax.axvline(x=0.33, linestyle="-", color="blue")
+        ax.axvline(x=0.66, linestyle="-", color="magenta")
+        
+    plt.savefig(os.path.join(path_to_plots, "causal_regional_means_nao.svg"), format= "svg", 
+                bbox_inches="tight", dpi=300)
+    
+    
+def plot_causal_to_climate():
+    pval_nao_ea_to_prec = perform_for_all_regions(Z_varname="EA", Z_units=None, Y_varname="NAO", 
+                                                                Y_units=None, X_varname="prec", X_units="mm/month",
+                                                               )
+    
+    pval_nao_ea_to_t2m = perform_for_all_regions(Z_varname="EA", Z_units=None, Y_varname="NAO", 
+                                                                Y_units=None, X_varname="temp2", X_units="°C",
+                                                               )
+    
+    pval_nao_ea_to_d18op = perform_for_all_regions(Z_varname="EA", Z_units=None, Y_varname="NAO", 
+                                                                Y_units=None, X_varname="d18op", X_units="per mil",
+                                                               )
+    
+    apply_style(fontsize=23, style="seaborn-talk", linewidth=3,)
+    fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(20, 15), sharex=True)
+    
+    pval_nao_ea_to_prec.iloc[0].plot(kind="barh", ax=ax1)
+    pval_nao_ea_to_t2m.iloc[0].plot(kind="barh", ax=ax2)
+    pval_nao_ea_to_d18op.iloc[0].plot(kind="barh", ax=ax3)
+    
+    axes = [ax1, ax2, ax3]
+    titles = ["(a) Y(NAO, EA) to X(Prec)", "(b)  Y(NAO, EA) to X(t2m)",  
+              "(c)  Y(NAO, EA) to X($\delta^{18}$Op)"]
+    
+    for i, ax in enumerate(axes):
+        ax.set_title(titles[i], fontdict= {"fontsize": 22, "fontweight":"bold"}, loc="left")
+        ax.axvline(x=0.1, linestyle="-", color="red")
+        ax.axvline(x=0.33, linestyle="-", color="blue")
+        ax.axvline(x=0.66, linestyle="-", color="magenta")
+        
+    plt.savefig(os.path.join(path_to_plots, "causal_regional_means_nao_ea_to_climate.svg"), format= "svg", 
+                bbox_inches="tight", dpi=300)
+
+plot_causal_to_climate()

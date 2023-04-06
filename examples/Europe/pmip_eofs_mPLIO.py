@@ -32,7 +32,8 @@ giss_path = os.path.join(main_path_plio, "GISS-E2-1-G")
 ipsl_path = os.path.join(main_path_plio, "IPSL-CM6A-LR")
 norESM_path = os.path.join(main_path_plio, "NorESM1-F")
 
-def perform_eof_and_store(apply_varimax, filesname, path_to_data=None, vmax=15, vmin=-15, data=None):
+def perform_eof_and_store(apply_varimax=False, filesname=None, path_to_data=None, vmax=20, vmin=-20, data=None,
+                          method="xeofs", season="DJF"):
     
     if data is None:
         data = read_from_path(path=path_to_data, filename="psl_monthly.nc", 
@@ -43,25 +44,27 @@ def perform_eof_and_store(apply_varimax, filesname, path_to_data=None, vmax=15, 
     data_pcs = extract_eofs_data(data=data, figname=filesname, 
                                  units="hPa", variable="Mean Sea Level Pressure", vmax=vmax, vmin=vmin,
                                  path_to_plots=path_to_plots, apply_varimax=apply_varimax, save_files=True,
-                                 filename=filesname, path_to_files=path_to_files)
+                                 filename=filesname, path_to_files=path_to_files, standardize=False, 
+                                 monthly_anomalies=True, method=method, season=season, is_era=False)
 
+season = "DJF"
 
 echam_data = read_from_path(main_path_echam, "PLIO_1003_1017_monthly.nc", decode=True) 
 PLIO_msl = extract_var(Dataset=echam_data, varname="slp", units="hPa")
 
-# labels_plio = ["CESM2", "EC-Earth3-LR", "GISS-E2-1-G", "IPSL-CM6A-LR", "NorESM1-F"]
+labels_plio = ["CESM2", "EC-Earth3-LR", "GISS-E2-1-G", "IPSL-CM6A-LR", "NorESM1-F"]
 
-# data_paths = [cesm_path, ec_earth_path, giss_path, ipsl_path, norESM_path]
+data_paths = [cesm_path, ec_earth_path, giss_path, ipsl_path, norESM_path]
 
-# for i,model in enumerate(labels_plio):
-#     perform_eof_and_store(apply_varimax=False, filesname= model + "_standard_eof_plio", path_to_data=data_paths[i],
-#                           vmax=20, vmin=-20)
-#     perform_eof_and_store(apply_varimax=True, filesname= model + "_varimax_eof_plio", path_to_data=data_paths[i])
+for i,model in enumerate(labels_plio):
+    perform_eof_and_store(apply_varimax=False, filesname= model + "_standard_eof_plio" + season, path_to_data=data_paths[i],
+                          vmax=20, vmin=-20)
+    perform_eof_and_store(apply_varimax=True, filesname= model + "_varimax_eof_plio" + season, path_to_data=data_paths[i])
     
 
 
     
-perform_eof_and_store(apply_varimax=False, filesname="ECHAM5-wiso" + "_standard_eof_plio", data=PLIO_msl,
-                      vmax=20, vmin=-20)
-perform_eof_and_store(apply_varimax=True, filesname="ECHAM5-wiso" + "_varimax_eof_plio", data=PLIO_msl,
-                      vmax=15, vmin=-15)
+# perform_eof_and_store(apply_varimax=False, filesname="ECHAM5-wiso" + "_standard_eof_plio", data=PLIO_msl,
+#                       vmax=20, vmin=-20)
+# perform_eof_and_store(apply_varimax=True, filesname="ECHAM5-wiso" + "_varimax_eof_plio", data=PLIO_msl,
+#                       vmax=15, vmin=-15)

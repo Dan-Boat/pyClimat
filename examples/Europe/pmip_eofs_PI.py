@@ -41,8 +41,8 @@ norESM_path = os.path.join(main_path_pi, "NorESM1-F")
 
 
 
-
-def perform_eof_and_store(apply_varimax, filesname, path_to_data=None, vmax=15, vmin=-15, data=None):
+def perform_eof_and_store(apply_varimax=False, filesname=None, path_to_data=None, vmax=20, vmin=-20, data=None,
+                          method="xeofs", season="DJF"):
     
     if data is None:
         data = read_from_path(path=path_to_data, filename="psl_monthly.nc", 
@@ -53,7 +53,10 @@ def perform_eof_and_store(apply_varimax, filesname, path_to_data=None, vmax=15, 
     data_pcs = extract_eofs_data(data=data, figname=filesname, 
                                  units="hPa", variable="Mean Sea Level Pressure", vmax=vmax, vmin=vmin,
                                  path_to_plots=path_to_plots, apply_varimax=apply_varimax, save_files=True,
-                                 filename=filesname, path_to_files=path_to_files)
+                                 filename=filesname, path_to_files=path_to_files, standardize=False, 
+                                 monthly_anomalies=True, method=method, season=season, is_era=False)
+
+season = "DJF"
 
 
 echam_data = read_from_path(main_path_echam, "PI_1003_1017_monthly.nc", decode=True)    
@@ -66,15 +69,15 @@ data_paths = [awi_path, cesm_path, cesm_waccm_path, ec_earth_path, giss_path, ha
               miroc_path, mpi_esm_path, norESM_path] 
 
 
-# for i,model in enumerate(labels_pi):
-#     perform_eof_and_store(apply_varimax=False, filesname= model + "_standard_eof_pi", path_to_data=data_paths[i],
-#                           vmax=20, vmin=-20)
-#     perform_eof_and_store(apply_varimax=True, filesname= model + "_varimax_eof_pi", path_to_data=data_paths[i])
+for i,model in enumerate(labels_pi):
+    perform_eof_and_store(apply_varimax=False, filesname= model + "_standard_eof_pi" + season, path_to_data=data_paths[i],
+                          vmax=20, vmin=-20)
+    perform_eof_and_store(apply_varimax=True, filesname= model + "_varimax_eof_pi" + season, path_to_data=data_paths[i])
     
 
 
     
-perform_eof_and_store(apply_varimax=False, filesname="ECHAM5-wiso" + "_standard_eof_pi", data=pi_msl,
-                      vmax=20, vmin=-20)
-perform_eof_and_store(apply_varimax=True, filesname="ECHAM5-wiso" + "_varimax_eof_pi", data=pi_msl,
-                      vmax=20, vmin=-20)
+# perform_eof_and_store(apply_varimax=False, filesname="ECHAM5-wiso" + "_standard_eof_pi", data=pi_msl,
+#                       vmax=20, vmin=-20)
+# perform_eof_and_store(apply_varimax=True, filesname="ECHAM5-wiso" + "_varimax_eof_pi", data=pi_msl,
+#                       vmax=20, vmin=-20)
