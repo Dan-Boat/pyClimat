@@ -219,6 +219,40 @@ def plot_causal_to_nao():
                 bbox_inches="tight", dpi=300)
     
     
+def plot_causal_EA_to_nao():
+    pval_t2m_ea_to_nao = perform_for_all_regions(Y_varname="temp2", Y_units="°C", Z_varname="EA", 
+                                                                Z_units=None, X_varname="NAO", X_units=None,
+                                                               )
+    
+    pval_prec_ea_to_nao = perform_for_all_regions(Y_varname="prec", Y_units="mm/month", Z_varname="EA", 
+                                                                Z_units=None, X_varname="NAO", X_units=None,
+                                                               )
+    
+    pval_d18op_ea_to_nao = perform_for_all_regions(Y_varname="d18op", Y_units="per mil", Z_varname="EA", 
+                                                                Z_units=None, X_varname="NAO", X_units=None,
+                                                               )
+    
+    apply_style(fontsize=23, style="seaborn-talk", linewidth=3,)
+    fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3, sharey=True, figsize=(20, 15), sharex=True)
+    
+    pval_t2m_ea_to_nao.iloc[0].plot(kind="barh", ax=ax1)
+    pval_prec_ea_to_nao.iloc[0].plot(kind="barh", ax=ax2)
+    pval_d18op_ea_to_nao.iloc[0].plot(kind="barh", ax=ax3)
+    
+    axes = [ax1, ax2, ax3]
+    titles = ["(a) Y(t2m, EA) to X(NAO)", "(b) Y(Prec, EA) to X(NAO)",  
+              "(c) Y($\delta^{18}$Op, EA) to X(NAO)"]
+    
+    for i, ax in enumerate(axes):
+        ax.set_title(titles[i], fontdict= {"fontsize": 22, "fontweight":"bold"}, loc="left")
+        ax.axvline(x=0.1, linestyle="-", color="red")
+        ax.axvline(x=0.33, linestyle="-", color="blue")
+        ax.axvline(x=0.66, linestyle="-", color="magenta")
+        
+    plt.savefig(os.path.join(path_to_plots, "causal_regional_means_ea_climate_to_nao.svg"), format= "svg", 
+                bbox_inches="tight", dpi=300)
+    
+    
 def plot_causal_to_climate():
     pval_nao_ea_to_prec = perform_for_all_regions(Z_varname="EA", Z_units=None, Y_varname="NAO", 
                                                                 Y_units=None, X_varname="prec", X_units="mm/month",
@@ -252,4 +286,6 @@ def plot_causal_to_climate():
     plt.savefig(os.path.join(path_to_plots, "causal_regional_means_nao_ea_to_climate.svg"), format= "svg", 
                 bbox_inches="tight", dpi=300)
 
-plot_causal_to_climate()
+
+
+plot_causal_EA_to_nao()

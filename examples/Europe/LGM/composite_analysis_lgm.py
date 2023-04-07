@@ -21,20 +21,16 @@ from pyClimat.analysis import extract_var, extract_transect
 from pyClimat.utils import extract_region
 
 
-from path_to_data_mh import *
+main_path_lgm = "D:/Datasets/CMIP6/PMIP/postprocessed/LGM"
+from path_to_data_lgm import *
 
-main_path_mh = "D:/Datasets/CMIP6/PMIP/postprocessed/MH"
-awi_path = os.path.join(main_path_mh, "AWI-ESM-1-1-LR")
-cesm_path = os.path.join(main_path_mh, "CESM2")
-ec_earth_path = os.path.join(main_path_mh, "EC-Earth3-LR")
-giss_path = os.path.join(main_path_mh, "GISS-E2-1-G")
-ipsl_path = os.path.join(main_path_mh, "IPSL-CM6A-LR")
-miroc_path = os.path.join(main_path_mh, "MIROC-ES2L")
-mpi_esm_path = os.path.join(main_path_mh, "MPI-ESM1-2-LR")
+awi_path = os.path.join(main_path_lgm, "AWI-ESM-1-1-LR")
+cesm_waccm_path = os.path.join(main_path_lgm, "CESM2-WACCM-FV2")
+inm_cm_path = os.path.join(main_path_lgm, "INM-CM4-8")
+miroc_path = os.path.join(main_path_lgm, "MIROC-ES2L")
+mpi_esm_path = os.path.join(main_path_lgm, "MPI-ESM1-2-LR")
 
-
-def get_indices(pcs_path, nao_mode, ea_mode, 
-                                             nao_factor=1, ea_factor=1):
+def get_indices(pcs_path, nao_mode, ea_mode, nao_factor, ea_factor):
     
     
     df = pd.read_csv(pcs_path, parse_dates=["time"])
@@ -155,68 +151,77 @@ def extract_all_for_model(pcs_path, path_to_data, nao_mode, ea_mode,
     
     return data
 
+awi_data = extract_all_for_model(pcs_path=AWI_DJF_PCS, path_to_data=awi_path,
+                                                    nao_mode=1, ea_mode=3, nao_factor=-1, ea_factor=1)
 
-awi_data = extract_all_for_model(pcs_path=AWI_DJF_PCS, path_to_data=awi_path, nao_mode=1, ea_mode=2, nao_factor=-1, ea_factor=-1)  
-cesm_data = extract_all_for_model(pcs_path=CESM2_DJF_PCS, path_to_data=cesm_path, nao_mode=1, ea_mode=3, nao_factor=-1, ea_factor=1) 
-ec_earth_data = extract_all_for_model(pcs_path=EC_Earth3_DJF_PCS, path_to_data=ec_earth_path, nao_mode=1, ea_mode=3, nao_factor=-1, ea_factor=1)  
-giss_data = extract_all_for_model(pcs_path=GISS_DJF_PCS, path_to_data=giss_path, nao_mode=1, ea_mode=3, nao_factor=-1, ea_factor=1)  
-ipsl_data = extract_all_for_model(pcs_path=IPSL_DJF_PCS, path_to_data=ipsl_path, nao_mode=1, ea_mode=2, nao_factor=-1, ea_factor=-1)   
-miroc_data = extract_all_for_model(pcs_path=MIROC_DJF_PCS, path_to_data=miroc_path, nao_mode=1, ea_mode=2, nao_factor=-1, ea_factor=-1)
-mpi_esm_data = extract_all_for_model(pcs_path=MPI_ESM_DJF_PCS, path_to_data=mpi_esm_path, nao_mode=1, ea_mode=2, nao_factor=-1, 
-                                     ea_factor=-1)
+cesm_data = extract_all_for_model(pcs_path=CESM_WA_DJF_PCS, path_to_data=cesm_waccm_path, 
+                                                     nao_mode=1, ea_mode=3, nao_factor=-1, ea_factor=1)
 
 
-
-labels_mh = ["AWI-ESM-1-1-LR", "CESM2", "EC-Earth3-LR", "GISS-E2-1-G", 
-              "IPSL-CM6A-LR", "MIROC-ES2L", "MPI-ESM1-2-LR"]
-
-mh_data = [awi_data, cesm_data, ec_earth_data, giss_data, ipsl_data, miroc_data, mpi_esm_data]
+inm_data = extract_all_for_model(pcs_path=INM_DJF_PCS, path_to_data=inm_cm_path, 
+                                                     nao_mode=1, ea_mode=3, nao_factor=-1, ea_factor=1)
 
 
-path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/plots/MH"
+
+miroc_data = extract_all_for_model(pcs_path=MIROC_DJF_PCS, path_to_data=miroc_path,
+                                                    nao_mode=1, ea_mode=4, nao_factor=-1, ea_factor=1)
+
+mpi_data = extract_all_for_model(pcs_path=MPI_ESM_DJF_PCS, path_to_data=mpi_esm_path, 
+                                                    nao_mode=1, ea_mode=3, nao_factor=-1, ea_factor=1)
+
+
+
+
+labels_lgm = ["AWI-ESM-1-1-LR", "CESM2-WACCM-FV2", "INM-CM4-8",
+              "MIROC-ES2L", "MPI-ESM1-2-LR"]
+
+lgm_data = [awi_data, cesm_data, inm_data, miroc_data, mpi_data]
+
+
+path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/plots/LGM"
 
 
 def plot_nao_t2m():
     apply_style(fontsize=22, style=None, linewidth=2)
     projection = ccrs.PlateCarree()
-    fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9), (ax10, ax11, ax12), (ax13, ax14, ax15), (ax16, ax17, ax18), (ax19, ax20, ax21)) = plt.subplots(nrows = 7, ncols=3, 
+    fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9), (ax10, ax11, ax12), (ax13, ax14, ax15)) = plt.subplots(nrows = 5, ncols=3, 
                                                      figsize=(22, 28), subplot_kw={"projection": projection})
     
-    axes_op = [ax2, ax5, ax8, ax11, ax14, ax17, ax20]
-    axes_eq = [ax1, ax4, ax7, ax10, ax13, ax16, ax19]
-    axes_diff = [ax3, ax6, ax9, ax12, ax15, ax18, ax21]
+    axes_op = [ax2, ax5, ax8, ax11, ax14,]
+    axes_eq = [ax1, ax4, ax7, ax10, ax13,]
+    axes_diff = [ax3, ax6, ax9, ax12, ax15]
     
-    for i,label in enumerate(labels_mh):
+    for i,label in enumerate(labels_lgm):
         if i == 0:
             
-            plot_correlation(variable="Spearman Coefficients", data=mh_data[i].get("t2m_eq_sval"), units="-", vmax=1,
+            plot_correlation(variable="Spearman Coefficients", data=lgm_data[i].get("t2m_eq_sval"), units="-", vmax=1,
                              vmin=-1, cmap="PRGn", domain="Europe Wide", levels=22,cbar=True, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_eq[i], fig=fig, cbar_pos= [0.05, 0.01, 0.30, 0.02],
-                             plot_pvalues=True, pvalue_data=mh_data[i].get("t2m_eq_sig"), bottom_labels=True, 
+                             plot_pvalues=True, pvalue_data=lgm_data[i].get("t2m_eq_sig"), bottom_labels=True, 
                              title="NAO-t2m (EQ)-"+ label)
             
-            plot_correlation(variable="Spearman Coefficients", data=mh_data[i].get("t2m_op_sval"), units="-", vmax=1,
+            plot_correlation(variable="Spearman Coefficients", data=lgm_data[i].get("t2m_op_sval"), units="-", vmax=1,
                              vmin=-1, cmap="PRGn", domain="Europe Wide", levels=22,cbar=False, cbar_orientation="horizontal",
-                             level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=mh_data[i].get("t2m_op_sig"), bottom_labels=True,
+                             level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=lgm_data[i].get("t2m_op_sig"), bottom_labels=True,
                              left_labels=True, title="NAO-t2m (OP)-"+ label)
             
-            plot_annual_mean(variable='Temperature', data_alt=mh_data[i].get("t2m_diff"), cmap=RdBu, units="°C",
+            plot_annual_mean(variable='Temperature', data_alt=lgm_data[i].get("t2m_diff"), cmap=RdBu, units="°C",
                  ax=axes_diff[i], fig=fig, vmax=4, vmin=-4, levels=22, domain="Europe Wide", level_ticks=11, 
                  cbar_pos = [0.60, 0.01, 0.30, 0.02], title="[F] t2m (OP-EQ)",
                  left_labels=True, bottom_labels=True, label_format="%.1f", add_colorbar=True)
         else:
-            plot_correlation(variable="Spearman Coefficients", data=mh_data[i].get("t2m_eq_sval"), units="-", vmax=1,
+            plot_correlation(variable="Spearman Coefficients", data=lgm_data[i].get("t2m_eq_sval"), units="-", vmax=1,
                              vmin=-1, cmap="PRGn", domain="Europe Wide", levels=22,cbar=False,
                              level_ticks=7, ax=axes_eq[i], fig=fig,
-                             plot_pvalues=True, pvalue_data=mh_data[i].get("t2m_eq_sig"), bottom_labels=True, 
+                             plot_pvalues=True, pvalue_data=lgm_data[i].get("t2m_eq_sig"), bottom_labels=True, 
                              title="NAO-t2m (EQ)-"+ label)
             
-            plot_correlation(variable="Spearman Coefficients", data=mh_data[i].get("t2m_op_sval"), units="-", vmax=1,
+            plot_correlation(variable="Spearman Coefficients", data=lgm_data[i].get("t2m_op_sval"), units="-", vmax=1,
                              vmin=-1, cmap="PRGn", domain="Europe Wide", levels=22,cbar=False, cbar_orientation="horizontal",
-                             level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=mh_data[i].get("t2m_op_sig"), bottom_labels=True,
+                             level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=lgm_data[i].get("t2m_op_sig"), bottom_labels=True,
                              left_labels=True, title="NAO-t2m (OP)-"+ label)
             
-            plot_annual_mean(variable='Temperature', data_alt=mh_data[i].get("t2m_diff"), cmap=RdBu, units="°C",
+            plot_annual_mean(variable='Temperature', data_alt=lgm_data[i].get("t2m_diff"), cmap=RdBu, units="°C",
                  ax=axes_diff[i], fig=fig, vmax=4, vmin=-4, levels=22, domain="Europe Wide", level_ticks=11, 
                  cbar_pos = [0.60, 0.01, 0.30, 0.02], title="[F] t2m (OP-EQ)",
                  left_labels=True, bottom_labels=True, label_format="%.1f", add_colorbar=False)
@@ -224,50 +229,50 @@ def plot_nao_t2m():
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.10,)
-    plt.savefig(os.path.join(path_to_plots, "composite_nao_ea_mh_t2m.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_plots, "composite_nao_ea_lgm_t2m.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 def plot_nao_prec():
     apply_style(fontsize=22, style=None, linewidth=2)
     projection = ccrs.PlateCarree()
-    fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9), (ax10, ax11, ax12), (ax13, ax14, ax15), (ax16, ax17, ax18), (ax19, ax20, ax21)) = plt.subplots(nrows = 7, ncols=3, 
+    fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9), (ax10, ax11, ax12), (ax13, ax14, ax15)) = plt.subplots(nrows = 5, ncols=3, 
                                                      figsize=(22, 28), subplot_kw={"projection": projection})
     
-    axes_op = [ax2, ax5, ax8, ax11, ax14, ax17, ax20]
-    axes_eq = [ax1, ax4, ax7, ax10, ax13, ax16, ax19]
-    axes_diff = [ax3, ax6, ax9, ax12, ax15, ax18, ax21]
+    axes_op = [ax2, ax5, ax8, ax11, ax14]
+    axes_eq = [ax1, ax4, ax7, ax10, ax13]
+    axes_diff = [ax3, ax6, ax9, ax12, ax15]
     
-    for i,label in enumerate(labels_mh):
+    for i,label in enumerate(labels_lgm):
         if i == 0:
             
-            plot_correlation(variable="Spearman Coefficients", data=mh_data[i].get("prec_eq_sval"), units="-", vmax=1,
+            plot_correlation(variable="Spearman Coefficients", data=lgm_data[i].get("prec_eq_sval"), units="-", vmax=1,
                              vmin=-1, cmap="PRGn", domain="Europe Wide", levels=22,cbar=True, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_eq[i], fig=fig, cbar_pos= [0.05, 0.01, 0.30, 0.02],
-                             plot_pvalues=True, pvalue_data=mh_data[i].get("prec_eq_sig"), bottom_labels=True, 
+                             plot_pvalues=True, pvalue_data=lgm_data[i].get("prec_eq_sig"), bottom_labels=True, 
                              title="NAO-Prec (EQ)-"+ label)
             
-            plot_correlation(variable="Spearman Coefficients", data=mh_data[i].get("prec_op_sval"), units="-", vmax=1,
+            plot_correlation(variable="Spearman Coefficients", data=lgm_data[i].get("prec_op_sval"), units="-", vmax=1,
                              vmin=-1, cmap="PRGn", domain="Europe Wide", levels=22,cbar=False, cbar_orientation="horizontal",
-                             level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=mh_data[i].get("prec_op_sig"), bottom_labels=True,
+                             level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=lgm_data[i].get("prec_op_sig"), bottom_labels=True,
                              left_labels=True, title="NAO-Prec (OP)-"+ label)
             
-            plot_annual_mean(variable='Precipitation', data_alt=mh_data[i].get("prec_diff"), cmap=BrBG, units="mm/month",
+            plot_annual_mean(variable='Precipitation', data_alt=lgm_data[i].get("prec_diff"), cmap=BrBG, units="mm/month",
                  ax=axes_diff[i], fig=fig, vmax=50, vmin=-50, levels=22, domain="Europe Wide", level_ticks=9, 
                  cbar_pos = [0.60, 0.01, 0.30, 0.02], title="[F] Prec (OP-EQ)",
                  left_labels=True, bottom_labels=True, add_colorbar=True)
         else:
-            plot_correlation(variable="Spearman Coefficients", data=mh_data[i].get("prec_eq_sval"), units="-", vmax=1,
+            plot_correlation(variable="Spearman Coefficients", data=lgm_data[i].get("prec_eq_sval"), units="-", vmax=1,
                              vmin=-1, cmap="PRGn", domain="Europe Wide", levels=22,cbar=False,
                              level_ticks=7, ax=axes_eq[i], fig=fig,
-                             plot_pvalues=True, pvalue_data=mh_data[i].get("prec_eq_sig"), bottom_labels=True, 
+                             plot_pvalues=True, pvalue_data=lgm_data[i].get("prec_eq_sig"), bottom_labels=True, 
                              title="NAO-Prec (EQ)-"+ label)
             
-            plot_correlation(variable="Spearman Coefficients", data=mh_data[i].get("prec_op_sval"), units="-", vmax=1,
+            plot_correlation(variable="Spearman Coefficients", data=lgm_data[i].get("prec_op_sval"), units="-", vmax=1,
                              vmin=-1, cmap="PRGn", domain="Europe Wide", levels=22,cbar=False, cbar_orientation="horizontal",
-                             level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=mh_data[i].get("prec_op_sig"), bottom_labels=True,
+                             level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=lgm_data[i].get("prec_op_sig"), bottom_labels=True,
                              left_labels=True, title="NAO-Prec (OP)-"+ label)
             
-            plot_annual_mean(variable='Precipitation', data_alt=mh_data[i].get("prec_diff"), cmap=BrBG, units="mm/month",
+            plot_annual_mean(variable='Precipitation', data_alt=lgm_data[i].get("prec_diff"), cmap=BrBG, units="mm/month",
                  ax=axes_diff[i], fig=fig, vmax=50, vmin=-50, levels=22, domain="Europe Wide", level_ticks=9, 
                  cbar_pos = [0.60, 0.01, 0.30, 0.02], title="[F] Prec (OP-EQ)",
                  left_labels=True, bottom_labels=True, add_colorbar=False)
@@ -275,7 +280,7 @@ def plot_nao_prec():
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.10)
-    plt.savefig(os.path.join(path_to_plots, "composite_nao_ea_mh_prec.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_plots, "composite_nao_ea_lgm_prec.svg"), format= "svg", bbox_inches="tight", dpi=300)
   
 if __name__ == "__main__":
     plot_nao_prec()      

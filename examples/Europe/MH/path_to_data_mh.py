@@ -44,8 +44,3 @@ MPI_ESM_DJF_VARS = os.path.join(main_path_to_data, "MPI-ESM1-2-LR_standard_eof_m
 MPI_ESM_DJF_PCS = os.path.join(main_path_to_data, "MPI-ESM1-2-LR_standard_eof_mh_DJF_pcs.csv")
 
 
-# path to correlations
-
-
-
-#path to causals
