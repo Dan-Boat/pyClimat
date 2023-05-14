@@ -391,6 +391,15 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
         
     elif varname =="qvi":
         var_data = Dataset["qvi"] # vertical integrated water vapor
+    
+    elif varname == "vegetation_frac":
+        var_data = Dataset["VGRATCLIM"]
+        
+    elif varname == "TOA":
+        var_data = Dataset["srafl"]
+        
+    elif varname == "SW_land":
+        var_data = Dataset["sofllac"]
         
         
     else:

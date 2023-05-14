@@ -122,7 +122,7 @@ def apply_style(fontsize=20, style=None, linewidth=2):
 # defining function for selecting background domain for cartopy
 
 def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labels=True,
-                    bottom_labels=True, plot_coastlines=True, plot_borders=False):
+                    bottom_labels=True, plot_coastlines=True, plot_borders=False, coast_resolution=None):
     """
     This funtion defines the plotting domain and also specifies the background. It requires 
     the plot handle from xarray.plot.imshow and other optional arguments 
@@ -140,7 +140,11 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
     p.axes.set_global()                    # setting global axis 
     
     if plot_coastlines ==True:
-        p.axes.coastlines(resolution = "50m")  # add coastlines outlines to the current axis
+        if coast_resolution is None:
+            p.axes.coastlines(resolution = "50m")  # add coastlines outlines to the current axis
+            
+        else:
+            p.axes.coastlines(resolution = coast_resolution)  # add coastlines outlines to the current axis
     
     if plot_borders == True:
         p.axes.add_feature(cfeature.BORDERS, edgecolor="black", linewidth = 0.3) #adding country boarder lines

@@ -87,10 +87,10 @@ def perform_causality_indices(filename="causal_results.csv", plot=True):
         
     df_results.to_csv(os.path.join(path_to_plots, filename))
 
-perform_causality_indices()
+
 
 def perform_causality_testing_with_climate_var(Y, varname, units=None, lev=None, lev_units=None, save_pval=True,
-                        path_to_save=main_path_to_data, filename=None, Z=None, revrese=True):
+                        path_to_save=main_path_to_data, filename=None, Z=None, revrese=True, season="DJF"):
     
     echam_data = read_from_path(echam_pd_data_path, "PD_1980_2014_monthly.nc", decode=True)   
     echam_wiso = read_from_path(echam_pd_data_path, "PD_1980_2014_monthly_wiso.nc", decode=True)
@@ -99,27 +99,18 @@ def perform_causality_testing_with_climate_var(Y, varname, units=None, lev=None,
                        lev=lev, lev_units=lev_units)
     
     data_season = extract_region(data=data, maxlon=40, minlon=-40, maxlat=80, minlat=30, time="season", 
-                                 season="DJF")
+                                 season=season)
     
     Granger_object = GrangerCausality(maxlag=15, test="params_ftest")
     
     pval = Granger_object.perform_granger_test(X=data_season, Y=Y, Z=Z, apply_standardize=True)
     
-    if revrese:
-        pval_reverse = Granger_object.perform_granger_test(X=Y, Y=data_season, Z=Z, 
-                                                           apply_standardize=True)
         
-    
-    
     
     if save_pval:
 
         pval.to_netcdf(os.path.join(path_to_save, filename + ".nc"))
         
-        if revrese:
-            pval_reverse.to_netcdf(os.path.join(path_to_save, filename + "_reverse.nc"))
-    if revrese:    
-        return pval, pval_reverse
     
     else:
         return pval
@@ -137,14 +128,14 @@ def experiment1():
     
     
     # EA
-    pval_ea_d18op, pval_d18op_ea = perform_causality_testing_with_climate_var(Y=ea_index_echam, 
-                                            varname="d18op", units="per mil", filename="EA_caused_by_d18op")
+    # pval_ea_d18op, pval_d18op_ea = perform_causality_testing_with_climate_var(Y=ea_index_echam, 
+    #                                         varname="d18op", units="per mil", filename="EA_caused_by_d18op")
     
-    pval_ea_t2m, pval_t2m_ea = perform_causality_testing_with_climate_var(Y=ea_index_echam, 
-                                            varname="temp2", units="°C", filename="EA_caused_by_t2m")
+    # pval_ea_t2m, pval_t2m_ea = perform_causality_testing_with_climate_var(Y=ea_index_echam, 
+    #                                         varname="temp2", units="°C", filename="EA_caused_by_t2m")
     
-    pval_ea_prec, pval_prec_ea = perform_causality_testing_with_climate_var(Y=ea_index_echam, 
-                                            varname="prec", units="mm/month", filename="EA_caused_by_prec")
+    # pval_ea_prec, pval_prec_ea = perform_causality_testing_with_climate_var(Y=ea_index_echam, 
+    #                                         varname="prec", units="mm/month", filename="EA_caused_by_prec")
     
     
     pval_d18op_nao_ea = perform_causality_testing_with_climate_var(Y=nao_index_echam, Z=ea_index_echam,
@@ -194,14 +185,6 @@ def perform_causality_testing_with_d18op(Y_varname, Y_units=None, Z_units=None, 
         Z = extract_region(data=data_Z, maxlon=40, minlon=-40, maxlat=80, minlat=30, time="season", 
                                      season="DJF")
         
-        
-        
-    
-    
-   
-    
-        
-    
     
     Granger_object = GrangerCausality(maxlag=15, test="params_ftest")
     
@@ -228,3 +211,6 @@ def perform_causality_testing_with_d18op(Y_varname, Y_units=None, Z_units=None, 
 
 # pval_prec_to_d18op = perform_causality_testing_with_d18op(Y_varname="prec", Y_units="mm/month", Z_varname=None,
 #                                                            filename="d18op_caused_by_prec")
+
+if __name__ == "__main__":
+    perform_causality_indices()

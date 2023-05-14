@@ -11,7 +11,7 @@ import os
 import pygmt
 
 
-path_to_data = "D:/Datasets/GNIP_data/processed/station_info.csv"
+path_to_data = "D:/Datasets/GNIP_data/processed_all/station_info_all.csv"
 path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/plots"
 
 
@@ -23,8 +23,8 @@ df = pd.read_csv(path_to_data)
 #           df.lat.max() + 1]
 
 
-#region = [-25, 60, 30, 70]
-region = [-10, 25, 35, 55]
+region = [-35, 45, 30, 70]
+#region = [-10, 25, 35, 55]
 fig = pygmt.Figure()
 topo_data = '@earth_relief_30s'
 
@@ -39,8 +39,7 @@ fig.grdimage(grid=topo_data, region=region, projection="M15c",
 
 #fig.basemap(region=region, projection="M15c", frame=True)
 fig.coast(shorelines=True)       
-fig.plot(x=df.Longitude, y=df.Latitude, style="cc", color="white", pen="black",
-         size=df.years/100)
+fig.plot(x=df.lon, y=df.lat, style="cc", color="white", pen="black",)
 
 #West/South/East/North coordinates
 
@@ -51,6 +50,6 @@ fig.plot(x=df.Longitude, y=df.Latitude, style="cc", color="white", pen="black",
 
 
 fig.colorbar(frame='+l"Topography"')
-fig.savefig(fname= os.path.join(path_to_plots, "stations_alps.pdf"), crop=True, dpi=720)
+fig.savefig(fname= os.path.join(path_to_plots, "stations_alps_to_be_edited.pdf"), crop=True, dpi=720)
 
 fig.show()

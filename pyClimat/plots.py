@@ -39,7 +39,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                      hatches=None, fig=None, cbar_pos=None, use_colorbar_default=False, plot_winds=False,
                      orientation = "horizontal", time=None, plot_projection=None, plot_coastlines=True, sea_land_mask=None,
                      show_arrow_scale=False, wind_scale=50, label_format="%.0f", plot_contour=False, c_data=None, c_vmax=None, c_vmin=None,
-                     c_label_ticks=None, c_levels=None):
+                     c_label_ticks=None, c_levels=None, coast_resolution=None):
     """
     
 
@@ -229,7 +229,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
     
     # ploting background extent
     plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels,
-                    plot_coastlines=plot_coastlines)
+                    plot_coastlines=plot_coastlines, coast_resolution=coast_resolution)
     
     
     ###ploting  contour lines
@@ -318,7 +318,7 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                      plot_winds_pattern=False, plot_winds_streamline=False,
                      data_u=None, cbar_pos=None, fig_title=None, season_label=None, plot_stats= False, compare_data1=None, compare_data2=None, max_pvalue=None,
                      hatches=None, add_colorbar = True, left_labels= True, bottom_labels=True, show_arrow_scale=True, center=True, 
-                     orientation = "vertical"):
+                     orientation = "vertical", winds_length=10):
     """
     
 
@@ -435,32 +435,32 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                 if vmin < 0 & center==True:
                     print("---using customized norm for the colormap ------")
                     if add_colorbar ==True:
-                        p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
+                        p = data_slt.sel(season=season).plot.contourf(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
                                  levels=levels, transform = projection, norm=norm, 
                                  cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": orientation, 
-                                               "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "neither",
+                                               "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "both",
                                  add_colorbar=True, cbar_ax = cbar_ax, add_labels=False)
                     else:
-                        p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
+                        p = data_slt.sel(season=season).plot.contourf(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
                                  levels=levels, transform = projection, norm=norm, 
                                  add_colorbar=False, add_labels=False)
                 else:
                     print("-----skipping the use of norm for the cmap -------")
                     if add_colorbar == True:
                         
-                        p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, 
+                        p = data_slt.sel(season=season).plot.contourf(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, 
                                      levels=levels, transform = projection, 
                                      cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": orientation, 
-                                                   "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "neither",
+                                                   "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "both",
                                      add_colorbar=True, cbar_ax=cbar_ax, add_labels=False) 
                     else: 
-                        p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, 
+                        p = data_slt.sel(season=season).plot.contourf(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, 
                                      levels=levels, transform = projection, add_colorbar=False, add_labels=False)
                                      
             else:
-                p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, transform = projection, 
+                p = data_slt.sel(season=season).plot.contourf(ax =axes[i], cmap=cmap, transform = projection, 
                                  cbar_kwargs= {"pad":0.05, "drawedges": True, "orientation": orientation, 
-                                               "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "neither", add_labels=False)
+                                               "shrink": 0.30, "format": "%.0f", "ticks":ticks}, extend= "both", add_labels=False)
             if add_colorbar == True:
                 p.colorbar.set_label(label=variable + " [" + units + "]", size= 22, fontweight= "bold")
                 
@@ -487,20 +487,20 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                                   headwidth=3, headlength=5, headaxislength=4.5)
                     
                     if show_arrow_scale==True:
-                        qk = axes[i].quiverkey(q, 1.0, -0.02, 5, r'$5 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
+                        qk = axes[i].quiverkey(q, 1.0, -0.02, winds_length, r'$10 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
                                                {"size": 22, "weight":"bold"})
             
         else:
             if all(parameter is not None for parameter in [vmin, vmax, levels, level_ticks]):
                 ticks = np.linspace(vmin, vmax, level_ticks)
                 if vmin < 0:
-                    p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
+                    p = data_slt.sel(season=season).plot.contourf(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, center=0, 
                                  levels=levels, transform = projection, norm=norm, extend= "neither", add_colorbar=False, add_labels=False)
                 else:
-                    p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, 
+                    p = data_slt.sel(season=season).plot.contourf(ax =axes[i], cmap=cmap, vmin=vmin, vmax=vmax, 
                                  levels=levels, transform = projection, extend= "neither", add_colorbar=False, add_labels=False) 
             else:
-                p = data_slt.sel(season=season).plot.imshow(ax =axes[i], cmap=cmap, transform = projection, extend= "neither", add_labels=False)
+                p = data_slt.sel(season=season).plot.contourf(ax =axes[i], cmap=cmap, transform = projection, extend= "neither", add_labels=False)
                 
             # ploting background extent
             plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels)
@@ -524,7 +524,7 @@ def plot_seasonal_mean(variable, data_slt, cmap, units, seasons, axes=None, fig=
                                   headwidth=3, headlength=5, headaxislength=4.5)
                     
                     if show_arrow_scale==True:
-                        qk = axes[i].quiverkey(q, 1.0, -0.02, 5, r'$5 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
+                        qk = axes[i].quiverkey(q, 1.0, -0.02, winds_length, r'$10 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
                                                {"size": 22, "weight":"bold"})
                 
                 

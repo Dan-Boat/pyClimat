@@ -12,7 +12,7 @@ import os
 #defining paths
 main_path_to_data = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/plots/save_files/PD"
 main_path_to_obs = "C:/Users/dboateng/Desktop/Datasets/NAO"
-path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/plots"
+path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/plots/PD"
 
 
 EA_valencia_DJF_path = os.path.join(main_path_to_obs, "EA_Valencia_DJF.csv")

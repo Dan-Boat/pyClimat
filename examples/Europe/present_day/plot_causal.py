@@ -50,6 +50,29 @@ filenames_d18op = ["d18op_caused_by_t2m.nc", "d18op_caused_by_prec.nc", "d18op_c
 labels_d18op = ["(a) Y(Temperature) to X($\delta^{18}$Op)", "(b) Y(Precipitation) to X($\delta^{18}$Op)", 
                 "(a) Y(Temperature, NAO) to X($\delta^{18}$Op)", "(d) Y(Temperature, Precipitation) to X($\delta^{18}$Op)"]
 
+
+labels_to_NAO = ["(a) Y($\delta^{18}$Op,EA) to X(NAO) DJF", "(b) Y(Temperature,EA) to X(NAO) DJF",
+                 "(c) Y(Precipitation,EA) to X(NAO) DJF", "(d) Y($\delta^{18}$Op,EA) to X(NAO) JJA", "(e) Y(Temperature,EA) to X(NAO) JJA",
+                                  "(f) Y(Precipitation,EA) to X(NAO) JJA"]
+
+filename_to_NAO = ["NAO_caused_by_d18op_EA_DJF.nc", "NAO_caused_by_t2m_EA_DJF.nc", "NAO_caused_by_prec_EA_DJF.nc", 
+                   "NAO_caused_by_d18op_EA_JJA.nc", "NAO_caused_by_t2m_EA_JJA.nc", "NAO_caused_by_prec_EA_JJA.nc"]
+
+labels_to_climate = ["(a) Y(NAO,EA) to X($\delta^{18}$Op) DJF", "(b) Y(NAO,EA) to X(Temperature) DJF",
+                 "(c) Y(NAO,EA) to X(Precipitation) DJF", "(d) Y(NAO,EA) to X($\delta^{18}$Op) JJA", "(e) Y(NAO,EA) to X(Temperature) JJA",
+                                  "(f) Y(NAO,EA) to X(Precipitation) JJA"]
+
+filename_to_climate = ["d18op_caused_by_NAO_EA_DJF.nc", "t2m_caused_by_NAO_EA_DJF.nc", "prec_caused_by_NAO_EA_DJF.nc", 
+                   "d18op_caused_by_NAO_EA_JJA.nc", "t2m_caused_by_NAO_EA_JJA.nc", "prec_caused_by_NAO_EA_JJA.nc"]
+
+
+labels_NAO_EA_DJF_to_climate_JJA = ["(a) Y(NAO,EA)(DJF) to X($\delta^{18}$Op)(JJA)", "(b) Y(NAO,EA)(DJF) to X(Temperature)(JJA)",
+                 "(c) Y(NAO,EA)(DJF) to X(Precipitation)(JJA)"]
+
+filename_NAO_EA_DJF_to_climate_JJA = ["d18op_JJA_caused_by_NAO_EA_DJF.nc", "t2m_JJA_caused_by_NAO_EA_DJF.nc", "prec_JJA_caused_by_NAO_EA_DJF.nc", ]
+
+
+
 def plot_causal(filenames, labels, figname):
 
     apply_style(fontsize=22, style=None, linewidth=2) 
@@ -95,8 +118,13 @@ def plot_causal(filenames, labels, figname):
     
 
 
-plot_causal(filenames=filenames_NAO, labels=labels_NAO, figname="causal_NAO_climate")
-plot_causal(filenames=filenames_EA, labels=labels_EA, figname="causal_EA_climate")
-plot_causal(filenames=filenames_NAO_EA, labels=labels_NAO_EA, figname="causal_NAO_EA_climate")
+#plot_causal(filenames=filename_to_NAO, labels=labels_to_NAO, figname="causal_to_NAO_from_climate_EA")
+#plot_causal(filenames=filename_to_climate, labels=labels_to_climate, figname="causal_to_climate_from_NAO_EA")
+plot_causal(filenames=filename_NAO_EA_DJF_to_climate_JJA, labels=labels_NAO_EA_DJF_to_climate_JJA,
+            figname="causal_to_climate_JJA_from_NAO_EA_DJF")
 
-plot_causal(filenames=filenames_d18op, labels=labels_d18op, figname="causal_d18op")
+# plot_causal(filenames=filenames_NAO, labels=labels_NAO, figname="causal_NAO_climate")
+# plot_causal(filenames=filenames_EA, labels=labels_EA, figname="causal_EA_climate")
+# plot_causal(filenames=filenames_NAO_EA, labels=labels_NAO_EA, figname="causal_NAO_EA_climate")
+
+# plot_causal(filenames=filenames_d18op, labels=labels_d18op, figname="causal_d18op")

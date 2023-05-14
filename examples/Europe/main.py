@@ -22,9 +22,10 @@ from pyClimat.data import read_ECHAM_processed, read_from_path, read_ERA_process
 
 
 def extract_eofs_data(data, figname, units, variable, vmax=15, vmin=-15, plot_covariance=True, is_era=False,
-                      path_to_plots=None, apply_varimax=True, save_files=False,
+                      path_to_plots=None, apply_varimax=False, save_files=False,
                       path_to_files=None, filename=None, standardize=True, 
-                      monthly_anomalies=True, method="Eof", season="DJF"):
+                      monthly_anomalies=True, method="Eof", season="DJF", time="season",
+                      month="ONDJFM"):
     # analysis for ERA5 Dataset
     
     
@@ -34,8 +35,8 @@ def extract_eofs_data(data, figname, units, variable, vmax=15, vmin=-15, plot_co
                           extract_region=True, extract_season=True, neofs=4)
     
     # select the region of interest and season
-    EOF.select_time_and_region(maxlon=40, minlon=-100, maxlat=80, minlat=10, time="season", 
-                                  season=season,) # month="AMJJAS"
+    EOF.select_time_and_region(maxlon=40, minlon=-100, maxlat=80, minlat=10, time=time, 
+                                  season=season, month=month)
     
     # calculate the anomalies and apply norm
     EOF.calculate_anomalies(monthly_anomalies=monthly_anomalies)

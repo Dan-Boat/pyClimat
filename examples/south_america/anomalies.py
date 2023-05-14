@@ -5,7 +5,7 @@ Created on Wed Dec 14 16:20:22 2022
 
 @author: dboateng
 
-This script intend to analyse the simulated changes in the Miocene compared to the PI-industrial
+This script intend to analyse the simulated changes in the Mid-Holocene compared to the PI-industrial
 Interested variables: sea level pressure, precipitation, winds, geopotential height, and the integrated vertical moisture or precipitable water
 
 ! The script heavily depend on the pyClimat package which can installed with pip install pyclimat (is you face issues with cartopy, please check how to install it 
@@ -25,9 +25,9 @@ from pyClimat.plot_utils import *
 from pyClimat.plots import plot_seasonal_mean
 
 
-path_to_store = "/home/dboateng/Python_scripts/ClimatPackage_repogit/examples/south_america/plots"
+path_to_store = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/south_america"
 # define paths 
-main_path = "/home/dboateng/Model_output_pst"
+main_path = "D:/Datasets/Model_output_pst/"
 
 # reading files 
 
@@ -65,9 +65,9 @@ def extract_all_variables(data_surface, data_plev):
     data_v = extract_var(Dataset=data_plev, varname="v", lev_units="hPa")
     data_u = extract_var(Dataset=data_plev, varname="u", lev_units="hPa")
     data_geosp = extract_var(Dataset=data_plev, varname=geosp, lev_units="hPa")
-    data_v500 = data_v.sel(lev=500)
-    data_u500 = data_u.sel(lev=500)
-    data_geosp_500 = data_geosp.sel(lev=500)
+    data_v500 = data_v.sel(lev=200)
+    data_u500 = data_u.sel(lev=200)
+    data_geosp_500 = data_geosp.sel(lev=200)
 
     return data_t2m, data_prec, data_qvi, data_slp, data_v500, data_u500, data_geosp_500 
 
@@ -81,6 +81,9 @@ prec_diff = compute_lterm_diff(data_control=PI_prec, data_main=MH_prec, time="se
 slp_diff = compute_lterm_diff(data_control=PI_slp, data_main=MH_slp, time="season", season_calendar="standard")
 geosp_diff = compute_lterm_diff(data_control=PI_geosp_500, data_main=MH_geosp_500, time="season", season_calendar="standard")
 qvi_diff = compute_lterm_diff(data_control=PI_qvi, data_main=MH_qvi, time="season", season_calendar="standard")
+v_diff = compute_lterm_diff(data_control=PI_v500, data_main=MH_v500, time="season", season_calendar="standard")
+u_diff = compute_lterm_diff(data_control=PI_u500, data_main=MH_u500, time="season", season_calendar="standard")
+
 
 
 #means
@@ -146,18 +149,18 @@ def plot_anomalies(data, data_diff, varname, cmap, cmap_diff, vmax, vmin, vmax_d
     plt.subplots_adjust(left=0.05, right=0.88, top=0.94, bottom=0.10, hspace=0.05)
     plt.savefig(os.path.join(path_to_store, plot_filename), format= "svg", bbox_inches="tight", dpi=300)
 
-# plot_anomalies(data=PI_prec_alt , data_diff=prec_diff, varname="Precipitation", cmap=YlGnBu, cmap_diff=BrBG, vmax=500, vmin=0, 
-#                vmax_diff=150, vmin_diff=-150, units="mm/month", plot_filename="prec_anomalies.svg")
+plot_anomalies(data=MH_prec_alt , data_diff=prec_diff, varname="Precipitation", cmap=YlGnBu, cmap_diff=BrBG, vmax=800, vmin=0, 
+                vmax_diff=120, vmin_diff=-120, units="mm/month", plot_filename="prec_anomalies.svg")
 
-# plot_anomalies(data=PI_t2m_alt , data_diff=t2m_diff, varname="Temperature", cmap=Spectral_r, cmap_diff=RdBu_r, vmax=35, vmin=-5, 
-#                vmax_diff=10, vmin_diff=-10, units="°C", plot_filename="t2m_anomalies.svg")
+plot_anomalies(data=PI_t2m_alt , data_diff=t2m_diff, varname="Temperature", cmap=Spectral_r, cmap_diff=RdBu_r, vmax=35, vmin=-5, 
+                vmax_diff=6, vmin_diff=-6, units="°C", plot_filename="t2m_anomalies.svg")
 
 # plot_anomalies(data=PI_slp_alt , data_diff=slp_diff, varname="Sea Level Pressure", cmap=RdYlBu_r, cmap_diff=RdBu_r, vmax=1040, vmin=1000, 
 #                vmax_diff=10, vmin_diff=-10, units="hPa", plot_filename="slp_anomalies.svg")
 
-plot_anomalies(data=PI_geop_500_alt , data_diff=geosp_diff, varname="Geopotential", cmap=RdYlBu_r, cmap_diff=RdBu_r, vmax=5950, vmin=5600, 
-               vmax_diff=30, vmin_diff=-30, units="gpm", plot_filename="geop_anomalies.svg", plot_winds=True, u_data=PI_u500_alt,
-               v_data=PI_v500_alt, u_data_diff=MH_u500_alt, v_data_diff=MH_v500_alt)
+plot_anomalies(data=PI_geop_500_alt , data_diff=geosp_diff, varname="Geopotential", cmap=RdYlBu_r, cmap_diff=RdBu_r, vmax=12000, vmin=11000, 
+               vmax_diff=40, vmin_diff=-40, units="m", plot_filename="geop_anomalies_200.svg", plot_winds=True, u_data=PI_u500_alt,
+               v_data=PI_v500_alt, u_data_diff=u_diff, v_data_diff=v_diff)
 
 
 

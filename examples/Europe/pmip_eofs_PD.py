@@ -22,8 +22,9 @@ from pyClimat.plots import plot_eofsAsCovariance
 from pyClimat.data import read_ECHAM_processed, read_from_path, read_ERA_processed
 from main import extract_eofs_data
 
-def perform_eof_and_store(apply_varimax, filesname, path_to_data=None, vmax=15, vmin=-15, data=None, 
-                          method="xeofs", season="JJA", is_era=False):
+def perform_eof_and_store(filesname, path_to_data=None, vmax=15, vmin=-15, data=None, 
+                          method="xeofs", season="JJA", is_era=False, apply_varimax=False,
+                          time="season", month="ONDJFM"):
     
     if data is None:
         data = read_from_path(path=path_to_data, filename="psl_monthly.nc", 
@@ -35,11 +36,12 @@ def perform_eof_and_store(apply_varimax, filesname, path_to_data=None, vmax=15, 
                                  units="hPa", variable="Mean Sea Level Pressure", vmax=vmax, vmin=vmin,
                                  path_to_plots=path_to_plots, apply_varimax=apply_varimax, save_files=True,
                                  filename=filesname, path_to_files=path_to_files, standardize=False,
-                                 monthly_anomalies=True, method=method, season=season, is_era=is_era)
+                                 monthly_anomalies=True, method=method, season=season, is_era=is_era,
+                                 time=time, month=month)
     
     
 
-path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/plots"
+path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/plots/PD"
 main_path_echam = "D:/Datasets/Model_output_pst/PD"
 ERA5_path = "C:/Users/dboateng/Desktop/Datasets/ERA5/monthly_1950_2021/"
 path_to_files = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/plots/save_files/PD"
@@ -53,15 +55,30 @@ ERA5_msl_path = os.path.join(ERA5_path, "msl_monthly.nc")
 ERA5_msl = read_ERA_processed(path=ERA5_msl_path, varname="msl") / 100 #Pa --> hPa
 
 season="JJA"
+season_w = "DJF"
+
+month= "ONDJFM"
+month_s= "AMJJAS"
 
 perform_eof_and_store(apply_varimax=False, filesname="ECHAM5-wiso" + "_standard_eof_pd_" + season, data=pd_msl,
-                      vmax=10, vmin=-10, method="xeofs")
+                      vmax=15, vmin=-15, method="xeofs", time="season", season=season)
 
-perform_eof_and_store(apply_varimax=True, filesname="ECHAM5-wiso" + "_varimax_eof_pd_" + season, data=pd_msl,
-                      vmax=10, vmin=-10, method="xeofs")
+perform_eof_and_store(apply_varimax=False, filesname="ECHAM5-wiso" + "_standard_eof_pd_" + season_w, data=pd_msl,
+                      vmax=15, vmin=-15, method="xeofs", time="season", season=season_w)
+
+# perform_eof_and_store(apply_varimax=False, filesname="ECHAM5-wiso" + "_standard_eof_pd_" + month_s, data=pd_msl,
+#                       vmax=15, vmin=-15, method="xeofs", time="month", month=month_s)
+
+
+
 
 
 perform_eof_and_store(apply_varimax=False, filesname="ERA5" + "_standard_eof_" + season, data=ERA5_msl,
-                      vmax=10, vmin=-10, method="xeofs")
-perform_eof_and_store(apply_varimax=True, filesname="ERA5" + "_varimax_eof_" + season, data=ERA5_msl,
-                      vmax=10, vmin=-10, method="xeofs")
+                      vmax=15, vmin=-15, method="xeofs", time="season", season=season)
+perform_eof_and_store(apply_varimax=False, filesname="ERA5" + "_standard_eof_" + season_w, data=ERA5_msl,
+                      vmax=15, vmin=-15, method="xeofs", time="season", season=season_w)
+
+# perform_eof_and_store(apply_varimax=False, filesname="ERA5" + "_standard_eof_" + month, data=ERA5_msl,
+#                       vmax=15, vmin=-15, method="xeofs", time="month", month="ONDJFM")
+
+
