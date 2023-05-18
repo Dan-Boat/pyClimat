@@ -115,7 +115,7 @@ def extract_and_compute(W1E1, W2E0, W2E1, W2E2, varname, units, W1E1_wiso=None, 
 
 def extract_region_topos(varname, units, W1E1, W2E0, W2E1, W2E2, maxlon, minlon, maxlat, minlat, minelev=None, 
                          maxelev=None, land_mask=False, W1E1_wiso=None, W2E0_wiso=None, 
-                                                 W2E1_wiso=None, W2E2_wiso=None):
+                                                 W2E1_wiso=None, W2E2_wiso=None, cal_mean=False):
     
     
     # extract var and compute
@@ -136,16 +136,21 @@ def extract_region_topos(varname, units, W1E1, W2E0, W2E1, W2E2, maxlon, minlon,
     region_w2e2 = extract_transect(data = w2e2_alt, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat,
                                          sea_land_mask=land_mask, minelev=minelev, maxelev=maxelev, Dataset=W2E2)
     
-    
-    region_values = [region_w1e1.values.ravel(), region_w2e0.values.ravel(), 
-                     region_w2e1.values.ravel(), region_w2e2.values.ravel()]
+    if cal_mean == True:
+        region_values = [region_w1e1.mean().values.ravel(), region_w2e0.mean().values.ravel(), 
+                         region_w2e1.mean().values.ravel(), region_w2e2.mean().values.ravel()]
+       
+    else:
+        region_values = [region_w1e1.values.ravel(), region_w2e0.values.ravel(), 
+                         region_w2e1.values.ravel(), region_w2e2.values.ravel()]
     
     return region_values
 
 
 
 def extract_var_for_section_all_topo(varname, units, maxlon, minlon,
-                                      maxlat, minlat, minelev=None, maxelev=None, land_mask=False):
+                                      maxlat, minlat, minelev=None, maxelev=None, land_mask=False,
+                                      cal_mean=False,):
     
     topo_names = ["W1E1", "W2E0", "W2E1", "W2E2"]
     
@@ -157,7 +162,8 @@ def extract_var_for_section_all_topo(varname, units, maxlon, minlon,
                                                 minlon=minlon, maxlat=maxlat, minlat=minlat,
                                                 minelev=minelev, maxelev=maxelev, land_mask=land_mask,
                                                 W1E1_wiso=CTL_wiso, W2E0_wiso=W2E0_PI_wiso, 
-                                                W2E1_wiso=W2E1_PI_wiso, W2E2_wiso=W2E2_PI_wiso)
+                                                W2E1_wiso=W2E1_PI_wiso, W2E2_wiso=W2E2_PI_wiso, 
+                                                cal_mean=cal_mean)
     
     region_values_mio278 = extract_region_topos(varname=varname, units=units, 
                                                 W1E1=W1E1_278_data, W2E0=W2E0_278_data, 
@@ -165,7 +171,8 @@ def extract_var_for_section_all_topo(varname, units, maxlon, minlon,
                                                 minlon=minlon, maxlat=maxlat, minlat=minlat,
                                                 minelev=minelev, maxelev=maxelev, land_mask=land_mask,
                                                 W1E1_wiso=W1E1_278_wiso, W2E0_wiso=W2E0_278_wiso, 
-                                                W2E1_wiso=W2E1_278_wiso, W2E2_wiso=W2E2_278_wiso)
+                                                W2E1_wiso=W2E1_278_wiso, W2E2_wiso=W2E2_278_wiso,
+                                                cal_mean=cal_mean)
     
     region_values_mio450 = extract_region_topos(varname=varname, units=units, 
                                                 W1E1=W1E1_450_data, W2E0=W2E0_450_data, 
@@ -173,7 +180,8 @@ def extract_var_for_section_all_topo(varname, units, maxlon, minlon,
                                                 minlon=minlon, maxlat=maxlat, minlat=minlat,
                                                 minelev=minelev, maxelev=maxelev, land_mask=land_mask,
                                                 W1E1_wiso=W1E1_450_wiso, W2E0_wiso=W2E0_450_wiso, 
-                                                W2E1_wiso=W2E1_450_wiso, W2E2_wiso=W2E2_450_wiso)
+                                                W2E1_wiso=W2E1_450_wiso, W2E2_wiso=W2E2_450_wiso,
+                                                cal_mean=cal_mean)
     
     
     for i,topo in enumerate(topo_names):
@@ -182,9 +190,9 @@ def extract_var_for_section_all_topo(varname, units, maxlon, minlon,
             len_mio278 = len(region_values_mio278[i])
             len_mio450 = len(region_values_mio450[i])
             
-            df_pi = pd.DataFrame(index=np.arange(len_pi), columns=topo_names).assign(Paleoclimate=1)
-            df_mio278 = pd.DataFrame(index=np.arange(len_mio278), columns=topo_names).assign(Paleoclimate=2)
-            df_mio450 = pd.DataFrame(index=np.arange(len_mio450), columns=topo_names).assign(Paleoclimate=3)
+            df_pi = pd.DataFrame(index=np.arange(len_pi), columns=topo_names).assign(Paleoclimate="PI")
+            df_mio278 = pd.DataFrame(index=np.arange(len_mio278), columns=topo_names).assign(Paleoclimate="MIO 278ppm")
+            df_mio450 = pd.DataFrame(index=np.arange(len_mio450), columns=topo_names).assign(Paleoclimate="MIO 450ppm")
         
         df_pi[topo] = region_values_pi[i]
         df_mio278[topo] = region_values_mio278[i]
@@ -205,7 +213,7 @@ def plot_cross_section(varname, units, data, hue, ax=None, path_to_store=None, f
     if ax is None:
         fig,ax = plt.subplots(1,1, sharex=False, figsize=(20, 15))
         
-    boxplot = sns.boxplot(data=data, x="Paleoclimate", y="value", saturation=0.8, ax=ax,
+    boxplot = sns.violinplot(data=data, x="Paleoclimate", y="value", saturation=0.8, ax=ax,
                           hue=hue)
     
     if colors is not None:
@@ -232,7 +240,9 @@ def plot_cross_section(varname, units, data, hue, ax=None, path_to_store=None, f
         ax.set_ylim(ymin, ymax)
         
     if ax_legend:
-        ax.legend(frameon=True, fontsize=22, loc="lower right")
+        ax.legend(frameon=True, fontsize=22,
+                  bbox_to_anchor=(0.01, 1.02, 1, 0.102,), loc=3, borderaxespad=0,
+                  ncol=4)
     else:
         ax.legend([],[], frameon=False)
         
@@ -251,19 +261,21 @@ def plot_cross_section(varname, units, data, hue, ax=None, path_to_store=None, f
 
 
 # extract
-def estimate_all_transect(varname, units):        
+def estimate_all_transect(varname, units, cal_mean=False):        
     mdf_low = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=19, minlon=0, maxlat=51, minlat=42,
-                                     maxelev=500, land_mask=True)
+                                     maxelev=500, land_mask=True, cal_mean=cal_mean)
     mdf_high = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=19, minlon=0, maxlat=51, minlat=42,
-                                     minelev=1000, land_mask=True)
-    mdf_west = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=8, minlon=1, maxlat=47, minlat=44,
-                                     land_mask=True)
-    mdf_north = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=16, minlon=5, maxlat=51, minlat=46.5,
-                                     land_mask=True)
-    mdf_south = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=16, minlon=7.5, maxlat=47, minlat=43,
-                                     land_mask=True)
+                                     minelev=1000, land_mask=True, cal_mean=cal_mean)
     
-    mdfs = [mdf_low, mdf_high, mdf_west, mdf_north, mdf_south]
+    
+    # mdf_west = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=8, minlon=1, maxlat=47, minlat=44,
+    #                                  land_mask=True)
+    # mdf_north = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=16, minlon=5, maxlat=51, minlat=46.5,
+    #                                  land_mask=True)
+    # mdf_south = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=16, minlon=7.5, maxlat=47, minlat=43,
+    #                                  land_mask=True)
+    
+    mdfs = {"low_elev":mdf_low, "high_elev":mdf_high}
     
     return mdfs
 
@@ -271,39 +283,30 @@ def estimate_all_transect(varname, units):
 
 # extract for all variables 
 d18op_mdfs = estimate_all_transect(varname="d18op", units="per mil")
-t2m_mdfs = estimate_all_transect(varname="temp2", units="°C")
-prec_mdfs = estimate_all_transect(varname="prec", units="mm/month")
+
+elev_mdfs = estimate_all_transect(varname="elev", units="m", cal_mean=True)
+
+
+# t2m_mdfs = estimate_all_transect(varname="temp2", units="°C")
+# prec_mdfs = estimate_all_transect(varname="prec", units="mm/month")
 
 # plotting 
 
-apply_style(fontsize=22, style=None, linewidth=2,)
-fig, ((ax1,ax2, ax3, ax4, ax5), (ax6, ax7, ax8, ax9, ax10), 
-      (ax11, ax12, ax13, ax14, ax15)) = plt.subplots(nrows = 3, ncols = 5, figsize=(30, 24), sharey=False)
+apply_style(fontsize=28, style=None, linewidth=2,)
 
-row_1 = [ax1,ax2, ax3, ax4, ax5]
-row_2 = [ax6, ax7, ax8, ax9, ax10]
-row_3 = [ax11, ax12, ax13, ax14, ax15]
-sections = ["Low elevation", "High elevation", "West-Central Alps", "Northern Alps", "Southern Alps"]
+fig,(ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(24, 15))
 
-for i, ax in enumerate(row_1):
-    if i ==0:
-        plot_cross_section(varname="$\delta^{18}$Op vs SMOW", units="‰", data=d18op_mdfs[i], ax=ax, xlabel=True,
-                           title=sections[i], ax_legend=True, hue="d18op", ymin=-20, ymax=-4)
-        
-    else:
-        plot_cross_section(varname="$\delta^{18}$Op vs SMOW", units="‰", data=d18op_mdfs[i], ax=ax, xlabel=True,
-                           title=sections[i], ax_legend=False, ylabel=True, hue="d18op",  ymin=-20, ymax=-4)
-        
-        
-for i, ax in enumerate(row_2):
-    plot_cross_section(varname="Temperature", units="°C", data=t2m_mdfs[i], ax=ax, xlabel=True,
-                       title=None, ax_legend=False, hue="temp2", ymin=-10, ymax=25)
-    
-for i, ax in enumerate(row_3):
-    plot_cross_section(varname="Precipitation", units="mm/month", data=prec_mdfs[i], ax=ax, xlabel=True,
-                       title=None, ax_legend=False, hue="prec", ymin=20, ymax=280)
-    
+plot_cross_section(varname="$\delta^{18}$Op vs SMOW", units="‰", data=d18op_mdfs.get("low_elev"), 
+                   hue="d18op", xlabel=True, title="Low elevation", ax_legend=True, ymin=-25, ymax=-2,
+                   ax=ax1)
+
+plot_cross_section(varname="$\delta^{18}$Op vs SMOW", units="‰", data=d18op_mdfs.get("high_elev"), 
+                   hue="d18op", xlabel=True, title="High elevation", ax_legend=False, ymin=-25, ymax=-2,
+                   ax=ax2)
+
+
 plt.tight_layout()
 plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05)
-plt.savefig(os.path.join(path_to_plots, "cross_section_d18op_temp_prec.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_plots, "cross_section_low_high_d18op.svg"), format= "svg", bbox_inches="tight", dpi=600)
+
         

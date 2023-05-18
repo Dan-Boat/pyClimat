@@ -39,7 +39,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                      hatches=None, fig=None, cbar_pos=None, use_colorbar_default=False, plot_winds=False,
                      orientation = "horizontal", time=None, plot_projection=None, plot_coastlines=True, sea_land_mask=None,
                      show_arrow_scale=False, wind_scale=50, label_format="%.0f", plot_contour=False, c_data=None, c_vmax=None, c_vmin=None,
-                     c_label_ticks=None, c_levels=None, coast_resolution=None):
+                     c_label_ticks=None, c_levels=None, coast_resolution=None, plot_borders=False):
     """
     
 
@@ -229,7 +229,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
     
     # ploting background extent
     plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels,
-                    plot_coastlines=plot_coastlines, coast_resolution=coast_resolution)
+                    plot_coastlines=plot_coastlines, coast_resolution=coast_resolution, plot_borders=plot_borders)
     
     
     ###ploting  contour lines
@@ -284,9 +284,11 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
             stats_results = student_t_test_btn_datasets(dataA=data1, dataB=data2, return_pvalue=True, max_pvalue=max_pvalue, time=time)
         
         if hatches is not None:
-            ax.contourf(stats_results.lon.values, stats_results.lat.values, stats_results.t_statistic.values, colors="none", hatches=[hatches])
+            ax.contourf(stats_results.lon.values, stats_results.lat.values, stats_results.t_statistic.values, colors="none", hatches=[hatches],
+                        transform=projection)
         else:
-            ax.contourf(stats_results.lon.values, stats_results.lat.values, stats_results.t_statistic.values, colors="none", hatches=["//"])
+            ax.contourf(stats_results.lon.values, stats_results.lat.values, stats_results.t_statistic.values, colors="none", hatches=["//"],
+                        transform=projection)
             
             
             
@@ -1082,6 +1084,7 @@ def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, 
     None.
 
     """
+    apply_style(fontsize=28, style=None, linewidth=2.5)
     if norm is None:
         norm = MidpointNormalize(midpoint = 0)
         
@@ -1133,7 +1136,9 @@ def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, 
     if plot_coastlines == False:
         
         if sea_land_mask is not None:
-            sea_land_mask.plot.contour(colors="k", linestyles="-", ax=ax, transform=projection_p, levels=[0], linewidths=1.0)
+            
+            sea_land_mask.plot.contour(colors="k", linestyles="-", ax=ax, transform=projection_p, levels=[0], linewidths=1.0,
+                                      )
         
         
     plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels, 

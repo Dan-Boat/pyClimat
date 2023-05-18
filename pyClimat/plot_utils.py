@@ -94,9 +94,9 @@ hot = plt.cm.hot_r
 
 
 
-def apply_style(fontsize=20, style=None, linewidth=2):
+def apply_style(fontsize=28, style=None, linewidth=2):
     """
-    
+    Add more attributes: https://matplotlib.org/stable/tutorials/introductory/customizing.html
     Parameters
     ----------
     fontsize : TYPE, optional
@@ -116,6 +116,15 @@ def apply_style(fontsize=20, style=None, linewidth=2):
     mpl.rc('ytick', labelsize=fontsize)
     mpl.rc('legend', fontsize=fontsize)
     mpl.rc('axes', labelsize=fontsize)
+    mpl.rc('axes', titlesize=fontsize)
+    mpl.rc('axes', titleweight="bold")
+    mpl.rc('axes', labelweight="bold")
+    
+    # mpl.rc('figure', labelsize=fontsize)
+    # mpl.rc('figure', titlesize=fontsize)
+    # mpl.rc('figure', titleweight="bold")
+    # mpl.rc('figure', labelweight="bold")
+    
     mpl.rc('lines', linewidth=linewidth)
     mpl.rc("font", weight="bold")
 
@@ -141,10 +150,10 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
     
     if plot_coastlines ==True:
         if coast_resolution is None:
-            p.axes.coastlines(resolution = "50m")  # add coastlines outlines to the current axis
+            p.axes.coastlines(resolution = "50m")  # add coastlines outlines to the current axis (110m, 50m , 10m)
             
         else:
-            p.axes.coastlines(resolution = coast_resolution)  # add coastlines outlines to the current axis
+            p.axes.coastlines(resolution = coast_resolution, linewidth=1.5, color=black)  # add coastlines outlines to the current axis
     
     if plot_borders == True:
         p.axes.add_feature(cfeature.BORDERS, edgecolor="black", linewidth = 0.3) #adding country boarder lines
@@ -154,7 +163,7 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
         if domain == "Europe":   # Europe
             minLon = -20
             maxLon = 35
-            minLat = 32
+            minLat = 34
             maxLat = 65
         elif domain == "South America":   # South America
             minLon = -83

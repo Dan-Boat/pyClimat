@@ -5,8 +5,8 @@ Created on Thu Feb  9 14:22:54 2023
 @author: dboateng
 
 This script plots the topography configuration used for the Miocene experiments 
-(no need to plot the first, just reference)
-Note that, the coastlines are plotted with confour of the land-sea mask!
+
+Note that, the coastlines are plotted with contour of the land-sea mask! (look for better approach?)
 """
 
 # import models
@@ -32,6 +32,12 @@ from pyClimat.analysis import extract_profile
 # set paths to data and store 
 path_to_data = "D:/Datasets/topo/Miotopofiles/CTL_Mio_Herold/jan_surf_files"
 path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Alps/Miocene/plots"
+
+mmco_slm_path = "D:/Datasets/topo/Miotopofiles/CTL_Mio_Herold/topo_Herold_Miocene_2160x1080_SLM.nc"
+
+
+
+
 W1E1_filename = "T159_MIO_W1E1_jan_surf_Herold.nc"
 W2E1_filename = "T159_MIO_W2E1_jan_surf_Herold.nc"
 W2E0_filename = "T159_MIO_W2E0_jan_surf_Herold.nc"
@@ -70,6 +76,8 @@ def read_jan_surf_oromea(path, filename, return_slm=False):
         return oromea, slm
     else:
         return oromea
+    
+    
 
 def creat_norm():
     levels = [i for i in range(-100, 4000, 100)]
@@ -85,14 +93,6 @@ def creat_norm():
     
     return norm_new, terrain_shift
 
-
-
-CTL_topo, CTL_slm = read_jan_surf_oromea(path=path_to_data, filename=CTL_filename, return_slm=True)
-W1E1_topo, Mio_slm = read_jan_surf_oromea(path=path_to_data, filename=W1E1_filename, return_slm=True)
-W2E1_topo  = read_jan_surf_oromea(path=path_to_data, filename=W2E1_filename,)
-W2E15_topo  = read_jan_surf_oromea(path=path_to_data, filename=W2E15_filename,)
-W2E0_topo  = read_jan_surf_oromea(path=path_to_data, filename=W2E0_filename,)
-W2E2_topo = read_jan_surf_oromea(path=path_to_data, filename=W2E2_filename,)
 
 
 
@@ -123,6 +123,7 @@ def extract_topo_profile(maxlon=20, minlon=-5, maxlat=47, minlat=46,
         df[topo] = topo_data[i]
         
     return df
+
 
 def plot_topo_profiles(varname, units, data_topo, ax=None, path_to_store=None, filename=None,
                        colors=None, xlabel=True, ylabel=True, title=None, ax_legend=True,
@@ -178,51 +179,40 @@ def plot_topo_profiles(varname, units, data_topo, ax=None, path_to_store=None, f
         plt.savefig(os.path.join(path_to_store, filename), bbox_inches="tight", format= "svg")
 
 
-df_lon = extract_topo_profile(maxlon=20, minlon=-5, maxlat=47, minlat=46, 
-                          dim="lon")
 
-df_lat = extract_topo_profile(maxlon=10, minlon=9, maxlat=54, minlat=40, 
-                          dim="lat")
-
-
-apply_style(fontsize=23, style="seaborn-talk", linewidth=3,)
-fig, (ax1,ax2) = plt.subplots(nrows = 1, ncols = 2, figsize=(18, 14), sharey=True)
-plot_topo_profiles(varname="Elevation", units="m", data_topo=df_lon, ax=ax1,
-                   ax_legend=True,ymax=3500, ymin=0, dim="lon")
-
-plot_topo_profiles(varname="Elevation", units="m", data_topo=df_lat, ax=ax2,
-                   ax_legend=False,ymax=3500, ymin=0, dim="lat")
-
-plt.tight_layout()
-plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05)
-plt.savefig(os.path.join(path_to_plots, "topo_profiles.svg"), format= "svg", bbox_inches="tight", dpi=600)
-plt.show()
 
 def plot_line(ax):
     
     projection = ccrs.PlateCarree()
-    ax.plot([-5, 20],[46.5, 46.5],transform=projection, color="black", linestyle="--",
+    ax.plot([-5, 20],[45.5, 45.5],transform=projection, color="black", linestyle="--",
             )
-    ax.plot([10, 10],[40, 54],transform=projection, color="red", linestyle="--",
+    ax.plot([8.5, 8.5],[40, 53],transform=projection, color="red", linestyle="--",
             )
+    ax.text(-5,45.9, "A", color="black", transform=projection, fontsize=28, fontweight="bold")
+    ax.text(20,45.9, "A'", color="black", transform=projection, fontsize=28, fontweight="bold")
+    
+    ax.text(8.8,52.5, "B", color="red", transform=projection, fontsize=28, fontweight="bold")
+    ax.text(8.8,39.5, "B'", color="red", transform=projection, fontsize=28, fontweight="bold")
+    
+    
 
 def add_patches(ax):
     projection = ccrs.PlateCarree()
-    #west --> 44, 47 N 1, 8 E
-    lat_w, h_w = 44 , 3  # lat and height
-    lon_w , w_w = 1, 7  # long and width 
+    #west --> 43, 46 N 1, 8 E
+    lat_w, h_w = 43 , 3  # lat and height
+    lon_w , w_w = -1, 6  # long and width 
     
     #Europe --> 43, 51 N 2E, 16 E
-    lat_e, h_e = 42, 9
-    lon_e, w_e = 0, 19
+    lat_e, h_e = 41, 9
+    lon_e, w_e = -2, 20
     
     #north --> 46.5, 50 N 5, 16 E
-    lat_n, h_n = 46.5, 4
-    lon_n, w_n = 5, 11
+    lat_n, h_n = 45.5, 3
+    lon_n, w_n = 3, 11
     
     # south--> 43, 47 N 7.5, 15 E
-    lat_s, h_s = 43, 4
-    lon_s, w_s = 8, 7.5
+    lat_s, h_s = 42, 4
+    lon_s, w_s = 5, 7.5
     
     ax.add_patch(patches.Rectangle(xy =(lon_w, lat_w), width= w_w, height=h_w, ls= "-", color= red, transform = projection, 
                                 fc="None", lw=2.5,))
@@ -235,57 +225,166 @@ def add_patches(ax):
     
     ax.add_patch(patches.Rectangle(xy =(lon_e, lat_e), width= w_e, height=h_e, ls= "-", color= black, transform = projection, 
                                     fc="None", lw=2.5))
+
+
+#reading data 
+CTL_topo = read_jan_surf_oromea(path=path_to_data, filename=CTL_filename, return_slm=False)
+W1E1_topo = read_jan_surf_oromea(path=path_to_data, filename=W1E1_filename, return_slm=False)
+W2E1_topo  = read_jan_surf_oromea(path=path_to_data, filename=W2E1_filename,)
+W2E15_topo  = read_jan_surf_oromea(path=path_to_data, filename=W2E15_filename,)
+W2E0_topo  = read_jan_surf_oromea(path=path_to_data, filename=W2E0_filename,)
+W2E2_topo = read_jan_surf_oromea(path=path_to_data, filename=W2E2_filename,)
+
+mio_slm_data = xr.open_dataset(mmco_slm_path)
+mio_slm = mio_slm_data.SLM
+
+
+
     
+#plot global topography from Herold et. al
+
+def plot_global_topo(): 
+    apply_style(fontsize=28, style=None, linewidth=2.5) 
+            
+    projection = ccrs.Robinson(central_longitude=0, globe=None)
     
-    
-def plot_topo():    
-    projection = ccrs.PlateCarree()
-    fig, ((ax1,ax2,ax3), (ax4, ax5,ax6)) = plt.subplots(nrows = 2, ncols = 3, figsize=(26, 17), 
-                                                        subplot_kw={"projection": projection})
+    fig,ax = plt.subplots(nrows=1, ncols=1, figsize=(13,12), subplot_kw={"projection":projection})
     
     norm, terrain = creat_norm()
     
-    plot_echam_topo(variable="Elevation", data=CTL_topo, cmap=terrain, units="m", 
-                    vmax=4000, vmin=-100, levels=31, level_ticks=6,
-                    domain="Europe", cbar=True, cbar_position= [0.35, 0.05, 0.25, 0.02], cbar_orientation="horizontal",
-                    projection=projection, norm=norm, plot_coastlines=True, plot_borders=False, ax=ax1, 
-                    title="CTL (PI)", bottom_labels=False, fig=fig)
-    
-    
-    add_patches(ax1)
-    plot_echam_topo(variable="Elevation", data=W1E1_topo, cmap=terrain, units="m", 
-                    vmax=4000, vmin=-100, levels=31, level_ticks=6,
-                    domain="Europe", cbar=False, projection=projection, norm=norm, plot_coastlines=False, plot_borders=False, 
-                    ax=ax2, title="W1E1 (MIO)", bottom_labels=False, left_labels=False, sea_land_mask= Mio_slm)
-    
-    plot_line(ax=ax2)
-    
-    plot_echam_topo(variable="Elevation", data=W2E2_topo, cmap=terrain, units="m", 
-                    vmax=4000, vmin=-100, levels=31, level_ticks=6,
-                    domain="Europe", cbar=False, projection=projection, norm=norm, plot_coastlines=False, plot_borders=False, 
-                    ax=ax3, title="W2E2 (MIO)", bottom_labels=False, left_labels=False, sea_land_mask= Mio_slm)
-    
-    plot_echam_topo(variable="Elevation", data=W2E0_topo, cmap=terrain, units="m", 
-                    vmax=4000, vmin=-100, levels=31, level_ticks=6,
-                    domain="Europe", cbar=False, projection=projection, norm=norm, plot_coastlines=False, plot_borders=False, 
-                    ax=ax4, title="W2E0 (MIO)", bottom_labels=True, left_labels=True, sea_land_mask= Mio_slm)
-    
-    plot_echam_topo(variable="Elevation", data=W2E1_topo, cmap=terrain, units="m", 
-                    vmax=4000, vmin=-100, levels=31, level_ticks=6,
-                    domain="Europe", cbar=False, projection=projection, norm=norm, plot_coastlines=False, plot_borders=False, 
-                    ax=ax5, title="W2E1 (MIO)", bottom_labels=True, left_labels=False, sea_land_mask= Mio_slm)
-    
-    plot_echam_topo(variable="Elevation", data=W2E15_topo, cmap=terrain, units="m", 
-                    vmax=4000, vmin=-100, levels=31, level_ticks=6,
-                    domain="Europe", cbar=False, projection=projection, norm=norm, plot_coastlines=False, plot_borders=False, 
-                    ax=ax6, title="W2E1.5 (MIO)", bottom_labels=True, left_labels=False, sea_land_mask= Mio_slm)
-    
+    plot_echam_topo(variable="Elevation", data=W1E1_topo, ax=ax, cmap=terrain, units="m", vmax=4000, vmin=-100, 
+                    levels=31, level_ticks=6, cbar=True, cbar_position= [0.35, 0.05, 0.45, 0.02], 
+                    cbar_orientation="horizontal", norm=norm, plot_coastlines=False, bottom_labels=False,
+                    left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                    projection=projection)
     
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout() 
-    plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
-    plt.savefig(os.path.join(path_to_plots, "topography_mio.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.subplots_adjust(left=0.05, right=0.89, top=0.95)
+    plt.savefig(os.path.join(path_to_plots, "global_topo.svg"), format= "svg", bbox_inches="tight", dpi=600)
+
     plt.show()
     
+
+
+# plot the modified topography for the Alps
+
+def plot_topo_exps():
+    apply_style(fontsize=28, style=None, linewidth=2.5) 
+            
+    projection = ccrs.Robinson(central_longitude=0, globe=None)
     
-plot_topo()
+    fig,((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows=2, ncols=2, figsize=(24,22), subplot_kw={"projection":projection})
+    
+    
+    axes = [ax1, ax2, ax3, ax4]
+    labels = ["(b) W2E0", "(c) W2E1", "(d) W2E1.5", "(e) W2E2"]
+    data_to_plot = [W1E1_topo, W2E0_topo, W2E15_topo, W2E2_topo]
+    
+    norm, terrain = creat_norm()
+    
+    
+    for i,label in enumerate(labels):
+        if i ==0:
+            plot_echam_topo(variable="Elevation", data=data_to_plot[i], ax=axes[i], cmap=terrain, units="m", vmax=4000, vmin=-100, 
+                            levels=31, level_ticks=6, cbar=True, cbar_position= [0.35, 0.05, 0.25, 0.02], 
+                            cbar_orientation="horizontal", norm=norm, plot_coastlines=False, bottom_labels=False,
+                            left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                            projection=projection, domain="Europe", title=label)
+            
+        else:
+    
+            plot_echam_topo(variable="Elevation", data=data_to_plot[i], ax=axes[i], cmap=terrain, units="m", vmax=4000, vmin=-100, 
+                            levels=31, level_ticks=6, cbar=False, norm=norm, plot_coastlines=False, bottom_labels=False,
+                            left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                            projection=projection, domain="Europe", title=label)
+            
+    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+    plt.tight_layout() 
+    plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
+    plt.savefig(os.path.join(path_to_plots, "topo_exps.svg"), format= "svg", bbox_inches="tight", dpi=600)
+
+
+
+#plot topo profiles
+def plot_topo_exp_profiles(): 
+    df_lon = extract_topo_profile(maxlon=20, minlon=-5, maxlat=47, minlat=46, 
+                              dim="lon")
+    
+    df_lat = extract_topo_profile(maxlon=10, minlon=9, maxlat=54, minlat=40, 
+                              dim="lat")
+    
+    
+    apply_style(fontsize=28, style="seaborn-talk", linewidth=3,)
+    
+    
+    fig, (ax1,ax2) = plt.subplots(nrows = 1, ncols = 2, figsize=(18, 14), sharey=True)
+    plot_topo_profiles(varname="Elevation", units="m", data_topo=df_lon, ax=ax1,
+                        ax_legend=True,ymax=3500, ymin=0, dim="lon")
+    
+    plot_topo_profiles(varname="Elevation", units="m", data_topo=df_lat, ax=ax2,
+                        ax_legend=False,ymax=3500, ymin=0, dim="lat")
+    
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05)
+    plt.savefig(os.path.join(path_to_plots, "topo_profiles.svg"), format= "svg", bbox_inches="tight", dpi=600)
+
+
+
+
+#plot the lines of the profiles on control 
+
+def plot_topo_with_profile_lines():
+    apply_style(fontsize=28, style=None, linewidth=2.5) 
+            
+    projection = ccrs.Robinson(central_longitude=0, globe=None)
+    
+    fig,ax = plt.subplots(nrows=1, ncols=1, figsize=(13,12), subplot_kw={"projection":projection})
+    
+    norm, terrain = creat_norm()
+    
+    plot_echam_topo(variable="Elevation", data=W1E1_topo, ax=ax, cmap=terrain, units="m", vmax=4000, vmin=-100, 
+                    levels=31, level_ticks=6, cbar=True, cbar_position= [0.30, 0.05, 0.45, 0.02], 
+                    cbar_orientation="horizontal", norm=norm, plot_coastlines=False, bottom_labels=False,
+                    left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                    projection=projection, domain="Europe")
+    plot_line(ax)
+    
+    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+    plt.tight_layout() 
+    plt.subplots_adjust(left=0.05, right=0.89, top=0.95)
+    plt.savefig(os.path.join(path_to_plots, "W1E1_topo_with_lines.svg"), format= "svg", bbox_inches="tight", dpi=600)
+
+
+
+
+#plot the transects for lapse rates of the profiles on control 
+
+def plot_topo_with_profile_transect():
+    apply_style(fontsize=28, style=None, linewidth=2.5) 
+            
+    projection = ccrs.Robinson(central_longitude=0, globe=None)
+    
+    fig,ax = plt.subplots(nrows=1, ncols=1, figsize=(13,12), subplot_kw={"projection":projection})
+    
+    norm, terrain = creat_norm()
+    
+    plot_echam_topo(variable="Elevation", data=W1E1_topo, ax=ax, cmap=terrain, units="m", vmax=4000, vmin=-100, 
+                    levels=31, level_ticks=6, cbar=True, cbar_position= [0.30, 0.05, 0.45, 0.02], 
+                    cbar_orientation="horizontal", norm=norm, plot_coastlines=False, bottom_labels=False,
+                    left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                    projection=projection, domain="Europe")
+    add_patches(ax)
+    
+    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+    plt.tight_layout() 
+    plt.subplots_adjust(left=0.05, right=0.89, top=0.95)
+    plt.savefig(os.path.join(path_to_plots, "W1E1_topo_with_transects.svg"), format= "svg", bbox_inches="tight", dpi=600)
+
+
+if __name__ == "__main__":
+    plot_global_topo()
+    plot_topo_exps()
+    plot_topo_exp_profiles()
+    plot_topo_with_profile_lines()
+    plot_topo_with_profile_transect()
