@@ -279,7 +279,7 @@ def plot_topo_exps():
     
     axes = [ax1, ax2, ax3, ax4]
     labels = ["(b) W2E0", "(c) W2E1", "(d) W2E1.5", "(e) W2E2"]
-    data_to_plot = [W1E1_topo, W2E0_topo, W2E15_topo, W2E2_topo]
+    data_to_plot = [W2E0_topo, W2E1_topo, W2E15_topo, W2E2_topo]
     
     norm, terrain = creat_norm()
     

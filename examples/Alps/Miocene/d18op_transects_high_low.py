@@ -115,7 +115,8 @@ def extract_and_compute(W1E1, W2E0, W2E1, W2E2, varname, units, W1E1_wiso=None, 
 
 def extract_region_topos(varname, units, W1E1, W2E0, W2E1, W2E2, maxlon, minlon, maxlat, minlat, minelev=None, 
                          maxelev=None, land_mask=False, W1E1_wiso=None, W2E0_wiso=None, 
-                                                 W2E1_wiso=None, W2E2_wiso=None, cal_mean=False):
+                                                 W2E1_wiso=None, W2E2_wiso=None, cal_mean=False,
+                                                 lapse_rate= -0.002):
     
     
     # extract var and compute
@@ -137,8 +138,8 @@ def extract_region_topos(varname, units, W1E1, W2E0, W2E1, W2E2, maxlon, minlon,
                                          sea_land_mask=land_mask, minelev=minelev, maxelev=maxelev, Dataset=W2E2)
     
     if cal_mean == True:
-        region_values = [region_w1e1.mean().values.ravel(), region_w2e0.mean().values.ravel(), 
-                         region_w2e1.mean().values.ravel(), region_w2e2.mean().values.ravel()]
+        region_values = [region_w1e1.mean().values.ravel() * lapse_rate, region_w2e0.mean().values.ravel()*lapse_rate, 
+                         region_w2e1.mean().values.ravel()*lapse_rate, region_w2e2.mean().values.ravel()*lapse_rate]
        
     else:
         region_values = [region_w1e1.values.ravel(), region_w2e0.values.ravel(), 
@@ -206,7 +207,7 @@ def extract_var_for_section_all_topo(varname, units, maxlon, minlon,
 
 def plot_cross_section(varname, units, data, hue, ax=None, path_to_store=None, filename=None,
                        colors=None, xlabel=True, ylabel=True, title=None, ax_legend=True,
-                       ymin=None, ymax=None):
+                       ymin=None, ymax=None, points_data=None, point_hue=None):
     
     topo_names = ["W1E1", "W2E0", "W2E1", "W2E2"]
     apply_style(fontsize=22, style=None, linewidth=2)
@@ -214,8 +215,14 @@ def plot_cross_section(varname, units, data, hue, ax=None, path_to_store=None, f
         fig,ax = plt.subplots(1,1, sharex=False, figsize=(20, 15))
         
     boxplot = sns.violinplot(data=data, x="Paleoclimate", y="value", saturation=0.8, ax=ax,
-                          hue=hue)
+                          hue=hue, scale="width") # count, width, area
     
+    
+    if points_data is not None:
+        
+        pointplot = sns.pointplot(data=points_data, x="Paleoclimate", y="value", ax=ax,
+                              hue=point_hue, markers="x", linestyles="", scale=2,
+                              dodge=True)
     if colors is not None:
         
         for patch, color in zip(boxplot["boxes"], colors):
@@ -223,14 +230,14 @@ def plot_cross_section(varname, units, data, hue, ax=None, path_to_store=None, f
             
             
     if ylabel:
-        ax.set_ylabel(varname + " [" + units + "]", fontweight="bold", fontsize=20)
+        ax.set_ylabel(varname + " [" + units + "]", fontweight="bold", fontsize=28)
         ax.grid(True, linestyle="--", color="grey")
     else:
         ax.grid(True, linestyle="--", color="grey")
         ax.set_yticklabels([])
     
     if xlabel is not None:
-        ax.set_xlabel("Paleoclimate Experiment", fontweight="bold", fontsize=20)
+        ax.set_xlabel("Experiment", fontweight="bold", fontsize=28)
         ax.grid(True, linestyle="--", color="grey")
     else:
         ax.grid(True, linestyle="--", color="grey")
@@ -240,15 +247,15 @@ def plot_cross_section(varname, units, data, hue, ax=None, path_to_store=None, f
         ax.set_ylim(ymin, ymax)
         
     if ax_legend:
-        ax.legend(frameon=True, fontsize=22,
-                  bbox_to_anchor=(0.01, 1.02, 1, 0.102,), loc=3, borderaxespad=0,
+        ax.legend(frameon=True, fontsize=24,
+                  bbox_to_anchor=(0.01, 1.05, 1, 0.102,), loc=3, borderaxespad=0,
                   ncol=4)
     else:
         ax.legend([],[], frameon=False)
         
        
     if title is not None:
-        ax.set_title(title, fontdict= {"fontsize": 22, "fontweight":"bold"}, loc="center")
+        ax.set_title(title, fontdict= {"fontsize": 28, "fontweight":"bold"}, loc="center")
         
     
         
@@ -292,21 +299,21 @@ elev_mdfs = estimate_all_transect(varname="elev", units="m", cal_mean=True)
 
 # plotting 
 
-apply_style(fontsize=28, style=None, linewidth=2,)
+apply_style(fontsize=28, style="seaborn-paper", linewidth=2,)
 
 fig,(ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(24, 15))
 
 plot_cross_section(varname="$\delta^{18}$Op vs SMOW", units="‰", data=d18op_mdfs.get("low_elev"), 
-                   hue="d18op", xlabel=True, title="Low elevation", ax_legend=True, ymin=-25, ymax=-2,
-                   ax=ax1)
+                   hue="d18op", xlabel=True, title="Low elevation", ax_legend=True, ymin=-24, ymax=0,
+                   ax=ax1, points_data=elev_mdfs.get("low_elev"), point_hue="elev")
 
 plot_cross_section(varname="$\delta^{18}$Op vs SMOW", units="‰", data=d18op_mdfs.get("high_elev"), 
-                   hue="d18op", xlabel=True, title="High elevation", ax_legend=False, ymin=-25, ymax=-2,
-                   ax=ax2)
+                   hue="d18op", xlabel=True, title="High elevation", ax_legend=False, ymin=-24 , ymax=0,
+                   ax=ax2, points_data=elev_mdfs.get("high_elev"), point_hue="elev")
 
 
 plt.tight_layout()
 plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05)
-plt.savefig(os.path.join(path_to_plots, "cross_section_low_high_d18op.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_plots, "transect_low_high_d18op.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
         

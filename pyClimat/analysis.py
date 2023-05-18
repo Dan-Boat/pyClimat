@@ -29,7 +29,8 @@ except:
 
 
 
-def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None, lev_units=None, lev=None):
+def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None, lev_units=None, lev=None,
+                use_PDB=False):
     """
     This function extracts some defined variables from a netCDF file. Moreover, if the variable require calculation 
     or unit conversion, the user speficication can be pass to such task. For example, echam out put the differrent 
@@ -142,6 +143,7 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
         if Dataset_wiso is not None:
              var_data_wiso = Dataset_wiso["wisoaprl"][:,1,:,:] + Dataset_wiso["wisoaprc"][:,1,:,:]
         SMOW = 0.2228  #20./18*2005.2e-4
+        PDB = 0.22969 #
         wiso_wtgs = var_data_wiso / var_data_echam
         var_data = ((wiso_wtgs/SMOW) -1)
         
@@ -151,6 +153,41 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
                 var_data.attrs["units"] = units
             else:
                 print("Define unit well or the default is isotopic ratio")
+                
+    elif varname == "d18o_carbonate":
+        
+        # cal d18Ow
+        var_data_echam = Dataset["aprl"] + Dataset["aprc"]
+        if Dataset_wiso is not None:
+             var_data_wiso = Dataset_wiso["wisoaprl"][:,1,:,:] + Dataset_wiso["wisoaprc"][:,1,:,:]
+        
+        if use_PDB:
+            PDB = 0.22969 #
+            wiso_wtgs = var_data_wiso / var_data_echam
+            var_data = ((wiso_wtgs/PDB) -1)
+        else:
+            SMOW = 0.2228  #20./18*2005.2e-4
+            wiso_wtgs = var_data_wiso / var_data_echam
+            var_data = ((wiso_wtgs/SMOW) -1)
+        
+        # cal ln(alpha) * 1e-3
+        soil_temp = Dataset["tsoil"].sel(belowsurface=698)   
+        factor = ((18.03*1000)/soil_temp) - 32.23    
+        
+        
+        if units is not None:
+            if units == "per mil":
+                var_data = var_data *1000 # convert to permil
+                var_data.attrs["units"] = units
+            else:
+                print("Define unit well or the default is isotopic ratio")
+        
+        if use_PDB:
+            var_data = var_data + factor
+            
+        else:
+            var_data = ((var_data + factor) -30.91)/1.03091
+            
                 
                 
     # dD in Precipitation
