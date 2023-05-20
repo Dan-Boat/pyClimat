@@ -28,9 +28,12 @@ from pyClimat.analysis import extract_var, compute_lterm_mean, extract_transect,
 path_to_data = "D:/Datasets/Model_output_pst"
 path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Alps/Miocene/plots"
 
-proxies_path = "C:/Users/dboateng/Desktop/Datasets/Alps_d18op/synthetic_data.csv"
+proxies_path_low = "C:/Users/dboateng/Desktop/Datasets/Alps_d18op/low_elevation.csv"
+proxies_path_high = "C:/Users/dboateng/Desktop/Datasets/Alps_d18op/high_elevation.csv"
 
-proxy_data = pd.read_csv(proxies_path)
+
+proxy_data_low = pd.read_csv(proxies_path_low)
+proxy_data_high = pd.read_csv(proxies_path_high)
 
 # read data
 
@@ -100,12 +103,12 @@ W1E1_PI_data, W1E1_PI_wiso = read_ECHAM_processed(main_path=path_to_data, exp_na
 def extract_vars_and_analysis(data, wiso):
 
     # d18op = extract_var(Dataset=data , varname="d18op", units="per mil", Dataset_wiso= wiso)
-    d18op_carb = extract_var(Dataset=data , varname="d18o_carbonate", units="per mil", Dataset_wiso= wiso,
+    d18op_carb = extract_var(Dataset=data , varname="d18op", units="per mil", Dataset_wiso= wiso,
                                   use_PDB=True)
     
     d18op_carb_alt = compute_lterm_mean(data=d18op_carb, time="annual")
     
-    lon_d18op_carb = extract_profile(d18op_carb_alt, maxlon=25, minlon=-2, maxlat=47, minlat=45, dim="lon",
+    lon_d18op_carb = extract_profile(d18op_carb_alt, maxlon=25, minlon=-5, maxlat=47, minlat=45, dim="lon",
                                      to_pandas=True)
     lat_d18op_carb = extract_profile(d18op_carb_alt, maxlon=11, minlon=9, maxlat=54, minlat=40, dim="lat", 
                                      to_pandas=True)
@@ -119,7 +122,8 @@ def extract_vars_and_analysis(data, wiso):
 
 def plot_profiles_all(varname, units, data_mio278, data_mio450, ax=None, path_to_store=None, filename=None,
                        colors=None, xlabel=True, ylabel=True, title=None, ax_legend=True,
-                       ymin=None, ymax=None, dim="lon", proxy=None, control_data=None):
+                       ymin=None, ymax=None, dim="lon", proxy=None, control_data=None,
+                       marker="v", proxy_label="low elevation samples", vmax=25, vmin=5, fig=None):
     
     topo_names = ["W1E1", "W2E0", "W2E1", "W2E1.5", "W2E2"]
     
@@ -137,10 +141,17 @@ def plot_profiles_all(varname, units, data_mio278, data_mio450, ax=None, path_to
         control_data.plot(ax=ax, linestyle="-", color=black, linewidth=3)
     
     if proxy is not None:
-        ax.scatter(x=proxy[dim], y=proxy["d18op"], s=120, alpha=0.5)
+        p = ax.scatter(x=proxy[dim], y=proxy["d18op"], s=500, c=proxy["age"], cmap="winter",
+                   marker=marker, vmax=vmax, vmin=vmin, alpha=0.95)
+        
         ax.errorbar(x=proxy[dim], y=proxy["d18op"], yerr=proxy["d18op_error"], xerr=None,
-                    ls="none", color="black", capthick=2, capsize=3, label="Would get from Armelle")
-            
+                    ls="none", color="black", capthick=3, capsize=4, label=proxy_label)
+        
+        cbar_pos = [0.94, 0.30, 0.03, 0.45]
+        
+        cbar_ax = fig.add_axes(cbar_pos)
+        
+        plt.colorbar(p, label="age (Ma)", shrink=0.3, cax=cbar_ax)
             
     if ylabel:
         ax.set_ylabel(varname + " [" + units + "]", fontweight="bold", fontsize=28)
@@ -222,43 +233,49 @@ df_PI_lat = pd.DataFrame(index=PI_profile.get("lat").index.values, columns=["PI(
 df_PI_lat["PI(W1E1)"] = PI_profile.get("lat")
 
 
-apply_style(fontsize=28, style="seaborn-talk", linewidth=3,)
 
-# fig, (ax1, ax2) = plt.subplots(nrows = 1, ncols = 2, figsize=(30, 15), sharey=False)
+def plot_profile_low():
+    apply_style(fontsize=28, style="seaborn-talk", linewidth=3,)
+    
+    fig, (ax1, ax2) = plt.subplots(nrows = 1, ncols = 2, figsize=(30, 15), sharey=False)
+    
+    
+    plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lon, 
+                      data_mio450=df_mio450_lon, ax=ax1, ax_legend=True,ymax=-2, ymin=-20, dim="lon", 
+                      control_data=df_PI_lon, proxy=proxy_data_low, fig=fig, 
+                      proxy_label="Low elevation proxies", marker="v",  vmax=20, vmin=10)
+    
+    plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lat, 
+                      data_mio450=df_mio450_lat, ax=ax2, ax_legend=False,ymax=-2, ymin=-20, dim="lat", 
+                      control_data=df_PI_lat, proxy=proxy_data_low, ylabel=True, fig=fig, 
+                      proxy_label="Low elevation proxies",  marker="v", vmax=20, vmin=10)
+    
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.05, right=0.90, top=0.97, bottom=0.05, wspace=0.12)
+    plt.savefig(os.path.join(path_to_plots, "d18Op_profile_with_low.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    
+    
+    
+def plot_profile_high():
+    apply_style(fontsize=28, style="seaborn-talk", linewidth=3,)
+    
+    fig, (ax1, ax2) = plt.subplots(nrows = 1, ncols = 2, figsize=(30, 15), sharey=False)
+    
+    
+    plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lon, 
+                      data_mio450=df_mio450_lon, ax=ax1, ax_legend=True,ymax=-2, ymin=-20, dim="lon", 
+                      control_data=df_PI_lon, proxy=proxy_data_high, fig=fig, 
+                      proxy_label="High elevation proxies", marker="o",  vmax=20, vmin=10)
+    
+    plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lat, 
+                      data_mio450=df_mio450_lat, ax=ax2, ax_legend=False,ymax=-2, ymin=-20, dim="lat", 
+                      control_data=df_PI_lat, proxy=proxy_data_high, ylabel=True, fig=fig, 
+                      proxy_label="High elevation proxies",  marker="o", vmax=20, vmin=10)
+    
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.05, right=0.90, top=0.97, bottom=0.05, wspace=0.12)
+    plt.savefig(os.path.join(path_to_plots, "d18Op_profile_with_high.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
-# plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lon, 
-#                   data_mio450=df_mio450_lon, ax=ax1, ax_legend=True,ymax=-2, ymin=-20, dim="lon", 
-#                   control_data=df_PI_lon, proxy=proxy_data)
-
-# plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lat, 
-#                   data_mio450=df_mio450_lat, ax=ax2, ax_legend=False,ymax=-2, ymin=-20, dim="lat", 
-#                   control_data=df_PI_lat, proxy=proxy_data, ylabel=True)
-
-# plt.tight_layout()
-# plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05, wspace=0.12)
-# plt.savefig(os.path.join(path_to_plots, "d18Op_profile.svg"), format= "svg", bbox_inches="tight", dpi=600)
-
-
-
-
-apply_style(fontsize=28, style="seaborn-talk", linewidth=3,)
-
-fig, (ax1, ax2) = plt.subplots(nrows = 1, ncols = 2, figsize=(30, 15), sharey=False)
-
-
-plot_profiles_all(varname="$\delta^{18}$Oc vs PDB", units="‰", data_mio278=df_mio278_lon, 
-                  data_mio450=df_mio450_lon, ax=ax1, ax_legend=True,ymax=-2, ymin=-14, dim="lon", 
-                  control_data=df_PI_lon, proxy=None)
-
-plot_profiles_all(varname="$\delta^{18}$Oc vs PDB", units="‰", data_mio278=df_mio278_lat, 
-                  data_mio450=df_mio450_lat, ax=ax2, ax_legend=False,ymax=-2, ymin=-14, dim="lat", 
-                  control_data=df_PI_lat, proxy=None, ylabel=True)
-
-plt.tight_layout()
-plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05, wspace=0.12)
-plt.savefig(os.path.join(path_to_plots, "d18O_carbonate_profile.svg"), format= "svg", bbox_inches="tight", dpi=600)
-      
-
-
-print(None)
+plot_profile_low()
+plot_profile_high()
