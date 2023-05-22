@@ -55,15 +55,15 @@ def extract_eofs_data(data, figname, units, variable, vmax=15, vmin=-15, plot_co
     
     if save_files:
         
-        eofs.to_netcdf(os.path.join(path_to_files, filename + "_eofsAsCovariance.nc"))
+        eofs.to_netcdf(os.path.join(path_to_files, filename + "_" + season + "_eofsAsCovariance.nc"))
         #eofs_corr.to_netcdf(os.path.join(path_to_files, filename + "_eofsAsCorrelation.nc"))
         #eofs_pvals.to_netcdf(os.path.join(path_to_files, filename + "_eofsAsCorrelation_pvals.nc"))
-        pcs.to_csv(os.path.join(path_to_files, filename + "_pcs.csv"))
-        variance.to_csv(os.path.join(path_to_files, filename + "_pcs_variance.csv"))
+        pcs.to_csv(os.path.join(path_to_files, filename + "_" + season + "_pcs.csv"))
+        variance.to_csv(os.path.join(path_to_files, filename + "_" + season + "_pcs_variance.csv"))
         
     if plot_covariance:
     # loop through this !!
-        plot_eofs(data=eofs, variance=variance, figname=figname, units=units, variable=variable, vmax=vmax, 
+        plot_eofs(data=eofs, variance=variance, figname=figname + "_" + season, units=units, variable=variable, vmax=vmax, 
                   vmin=vmin, is_era=is_era, path_to_plots=path_to_plots, method=method)
     
     

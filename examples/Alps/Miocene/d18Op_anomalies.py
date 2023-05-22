@@ -120,7 +120,8 @@ def extract_d18Op_elev_and_analysis(exp_data, exp_wiso, W1E1_data, W1E1_wiso, di
     
     
     return_data_monthly = {"control_mon": w1e1_d18op_data, "simulated_change_mon": simulated_d18op_change,
-                           "missing_mon": missing, "simulated_mon": exp_d18op_data}
+                           "missing_mon": missing, "simulated_mon": exp_d18op_data, "expected_mon": expected_d18op_change}
+    
     return_data_ltm = {"simulated_change_ltm": simulated_d18op_change_alt, "expected_change_ltm": expected_d18op_change_alt,
                        "missing_ltm": missing_alt}
     
@@ -184,7 +185,7 @@ def plot_d18Op_missing():
                             orientation="horizontal", plot_coastlines=False, bottom_labels=False,
                             left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             plot_projection=projection, domain="Europe", compare_data1=data[i].get("simulated_change_mon"), 
-                            compare_data2=data[i].get("missing_mon"), max_pvalue=0.2, plot_stats=True,
+                            compare_data2=data[i].get("expected_mon"), max_pvalue=0.1, plot_stats=True,
                             hatches=".", title=label)
             
         else:
@@ -193,7 +194,7 @@ def plot_d18Op_missing():
                             levels=22, level_ticks=11, add_colorbar=False, plot_coastlines=False, bottom_labels=False,
                             left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             plot_projection=projection, domain="Europe", compare_data1=data[i].get("simulated_change_mon"), 
-                            compare_data2=data[i].get("missing_mon"), max_pvalue=0.2, plot_stats=True,
+                            compare_data2=data[i].get("expected_mon"), max_pvalue=0.1, plot_stats=True,
                             hatches=".", title=label)
             
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
@@ -222,21 +223,21 @@ def plot_d18Op_simulated():
         if i == 0:
             
             plot_annual_mean(variable="$\delta^{18}$Op vs SMOW difference", data_alt=data[i].get("simulated_change_ltm"), 
-                             ax=axes[i], cmap="PRGn", units="‰", vmax=5, vmin=-5, 
+                             ax=axes[i], cmap="PRGn", units="‰", vmax=8, vmin=-8, 
                             levels=22, level_ticks=11, add_colorbar=True, cbar_pos= [0.30, 0.05, 0.45, 0.02], 
                             orientation="horizontal", plot_coastlines=False, bottom_labels=False,
                             left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             plot_projection=projection, domain="Europe", compare_data1=data[i].get("simulated_mon"), 
-                            compare_data2=data[i].get("control_mon"), max_pvalue=0.2, plot_stats=True,
+                            compare_data2=data[i].get("control_mon"), max_pvalue=0.1, plot_stats=True,
                             hatches=".", title=label)
             
         else:
             plot_annual_mean(variable="$\delta^{18}$Op vs SMOW difference", data_alt=data[i].get("simulated_change_ltm"), ax=axes[i],
-                             cmap="PRGn", units="‰", vmax=5, vmin=-5, 
+                             cmap="PRGn", units="‰", vmax=8, vmin=-8, 
                             levels=22, level_ticks=11, add_colorbar=False, plot_coastlines=False, bottom_labels=False,
                             left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             plot_projection=projection, domain="Europe", compare_data1=data[i].get("simulated_mon"), 
-                            compare_data2=data[i].get("control_mon"), max_pvalue=0.2, plot_stats=True,
+                            compare_data2=data[i].get("control_mon"), max_pvalue=0.1, plot_stats=True,
                             hatches=".", title=label)
             
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
@@ -266,7 +267,7 @@ def plot_d18Op_expected():
         if i == 0:
             
             plot_annual_mean(variable="$\delta^{18}$Op vs SMOW difference", data_alt=data[i].get("expected_change_ltm"), 
-                             ax=axes[i], cmap="PRGn", units="‰", vmax=5, vmin=-5, 
+                             ax=axes[i], cmap="PRGn", units="‰", vmax=8, vmin=-8, 
                             levels=22, level_ticks=11, add_colorbar=True, cbar_pos= [0.30, 0.05, 0.45, 0.02], 
                             orientation="horizontal", plot_coastlines=False, bottom_labels=False,
                             left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
@@ -274,7 +275,7 @@ def plot_d18Op_expected():
             
         else:
             plot_annual_mean(variable="$\delta^{18}$Op vs SMOW difference", data_alt=data[i].get("expected_change_ltm"), ax=axes[i],
-                             cmap="PRGn", units="‰", vmax=5, vmin=-5, 
+                             cmap="PRGn", units="‰", vmax=8, vmin=-8, 
                             levels=22, level_ticks=11, add_colorbar=False, plot_coastlines=False, bottom_labels=False,
                             left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             plot_projection=projection, domain="Europe", title=label)
@@ -288,6 +289,6 @@ def plot_d18Op_expected():
 
 if __name__ == "__main__":
     plot_d18Op_missing()
-    #plot_d18Op_expected()
+    plot_d18Op_expected()
     plot_d18Op_simulated()
 
