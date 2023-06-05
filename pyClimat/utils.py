@@ -74,6 +74,9 @@ def extract_region(data, maxlon=60, minlon=-80, maxlat=80, minlat=10, time="seas
         elif month == "ONDJFM":
             data = data.sel(time=data.time.dt.month.isin([1, 2, 3, 10, 11, 12]))
             
+        elif month == "JJAS":
+            data = data.sel(time=data.time.dt.month.isin([6, 7, 8, 9]))
+            
         elif month == "AMJJAS":
             data = data.sel(time=data.time.dt.month.isin([4, 5, 6, 7, 8, 9]))
             
