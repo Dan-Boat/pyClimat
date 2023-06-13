@@ -83,7 +83,9 @@ def extract_var(Dataset, varname, units=None, Dataset_wiso=None, other_data=None
     if hasattr(Dataset, "mlev"):
         Dataset = Dataset.rename({"mlev":"lev"})
         
-        if Dataset_wiso is not None:
+    if Dataset_wiso is not None:
+        if hasattr(Dataset, "mlev"):
+            
             Dataset_wiso = Dataset_wiso.rename({"mlev":"lev"})
         
     if varname == "temp2":

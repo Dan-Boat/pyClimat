@@ -39,7 +39,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                      hatches=None, fig=None, cbar_pos=None, use_colorbar_default=False, plot_winds=False,
                      orientation = "horizontal", time=None, plot_projection=None, plot_coastlines=True, sea_land_mask=None,
                      show_arrow_scale=False, wind_scale=50, label_format="%.0f", plot_contour=False, c_data=None, c_vmax=None, c_vmin=None,
-                     c_label_ticks=None, c_levels=None, coast_resolution=None, plot_borders=False):
+                     c_label_ticks=None, c_levels=None, coast_resolution=None, plot_borders=False, add_c_label=True):
     """
     
 
@@ -242,7 +242,8 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
         c = c_data.plot.contour(ax=ax, levels=clevs, transform=projection, linewidth=1, colors="black",
                               add_labels=False)
         
-        c.clabel(fmt="%.1f", use_clabeltext=True, colors="black", fontsize=22)
+        if add_c_label:
+            c.clabel(fmt="%.1f", use_clabeltext=True, colors="black", fontsize=22)
     
     if plot_winds == True: 
         
@@ -1538,7 +1539,8 @@ def plot_hovmoller_space_time(variable, data, cmap, units, ax=None, fig=None, vm
 def plot_correlation(variable, data, cmap = None, levels=None, units=None, ax=None, domain=None, output_name=None, 
                      output_format=None, level_ticks=None, title=None, path_to_store=None, cbar = None, cbar_orientation=None, 
                      cbar_pos = None,plot_pvalues=False, pvalue_data=None,use_AlbersEqualArea=False,
-                     fig=None, vmax=None, vmin=None, left_labels= True, bottom_labels=True,
+                     fig=None, vmax=None, vmin=None, left_labels= True, bottom_labels=True, plot_coastlines=True,
+                     plot_projection=None, coast_resolution=None, plot_borders=False,sea_land_mask=None,
                      ):
     import cartopy.crs as ccrs
     import cartopy.feature as cfeature
@@ -1591,16 +1593,23 @@ def plot_correlation(variable, data, cmap = None, levels=None, units=None, ax=No
                                  cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": cbar_orientation, 
                                                "shrink": 0.50, "format": "%.1f", "ticks":ticks}, extend= "both")
     
-        
+    if plot_coastlines==False:
+        if sea_land_mask is not None:
+            sea_land_mask.plot.contour(colors="k", linestyles="-", ax=ax, transform=projection, levels=[0], linewidths=1.0,
+                                       add_labels=False)
+            
     
-
-    plot_background(p, domain= domain, bottom_labels=bottom_labels, left_labels=left_labels,
+    
+    # ploting background extent
+    plot_background(p, domain= domain, left_labels=left_labels, bottom_labels=bottom_labels,
+                    plot_coastlines=plot_coastlines, coast_resolution=coast_resolution, plot_borders=plot_borders,
                     use_AlbersEqualArea=use_AlbersEqualArea)
+    
     
     if plot_pvalues:
         if pvalue_data is not None:
             pvalue_data.plot.contourf(ax=ax, colors="none", hatches=["."], add_colorbar=False,
-                                      add_labels=False)
+                                      add_labels=False, transform = projection)
     
     if title is not None:
         ax.set_title(title , fontsize=22, weight="bold", loc="left")

@@ -10,13 +10,31 @@ Note: it is structured solely for the personal needs of the author, therefore, i
 """
 #Importing ClimatPackages (this will later be compile into a package wheere __init__.py with import all the functions)
 
-import sys
-sys.path.append("/home/dboateng/Python_scripts/ClimatPackage_repogit") 
+import os 
+import numpy as np
+import pandas as pd 
+import matplotlib.pyplot as plt
+import seaborn as sns
+import xarray as xr
+import matplotlib.colors as col
+import matplotlib as mpl 
+from cartopy.util import add_cyclic_point
+from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+import cartopy.crs as ccrs
 
-from Package import *
+
+# import pyClimat models 
+from pyClimat.plot_utils import *
+from pyClimat.plots import scatter_plot_laspe_rate
+from pyClimat.data import read_ECHAM_processed
+from pyClimat.analysis import extract_var, compute_lterm_mean, extract_transect, extract_profile
+
+
 
 # Path to experiments
-module_output_main_path = "/home/dboateng/Model_output_pst"
+module_output_main_path = "D:/Datasets/Model_output_pst"
+path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Alps/Miocene/plots"
+
 exp_name_aw100e100 = "a002_hpc-bw_e5w2.3_t159_PI_Alps_east_100_t159l31.6h"
 exp_name_aw100e0 = "a003_hpc-bw_e5w2.3_t159_PI_Alps_east_0_t159l31.6h"
 exp_name_aw100e200 = "a001_hpc-bw_e5w2.3_t159_PI_Alps_east_300_t159l31.6h"
@@ -56,213 +74,196 @@ aw0e0_data, aw0e0_wiso = read_ECHAM_processed(main_path=module_output_main_path 
 
 #extracting variables and computing long-term means
 
-#aw100e100
-d18op_aw100e100 = extract_var(Dataset=aw100e100_data , varname="d18op", units="per mil", Dataset_wiso= aw100e100_wiso)
-elev_aw100e100 = extract_var(Dataset=aw100e100_data , varname="elev", units="m")
+def extract_vars_and_analysis(data, wiso, time="season", season="JJA", 
+                              season_calendar="standard"):
 
-d18op_aw100e100_slt = compute_lterm_mean(data=d18op_aw100e100, time="season", season_calendar="standard")
-elev_aw100e100_slt = compute_lterm_mean(data=elev_aw100e100 , time="season", season_calendar="standard")
-
-#aw100e0
-d18op_aw100e0 = extract_var(Dataset=aw100e0_data , varname="d18op", units="per mil", Dataset_wiso= aw100e0_wiso)
-elev_aw100e0 = extract_var(Dataset=aw100e0_data , varname="elev", units="m")
-
-d18op_aw100e0_slt = compute_lterm_mean(data=d18op_aw100e0, time="season", season_calendar="standard")
-elev_aw100e0_slt = compute_lterm_mean(data=elev_aw100e0 , time="season", season_calendar="standard")
-
-#aw100e200
-d18op_aw100e200 = extract_var(Dataset=aw100e200_data , varname="d18op", units="per mil", Dataset_wiso= aw100e200_wiso)
-elev_aw100e200 = extract_var(Dataset=aw100e200_data , varname="elev", units="m")
-
-d18op_aw100e200_slt = compute_lterm_mean(data=d18op_aw100e200, time="season", season_calendar="standard")
-elev_aw100e200_slt = compute_lterm_mean(data=elev_aw100e200 , time="season", season_calendar="standard")
-
-#aw100e150
-d18op_aw100e150 = extract_var(Dataset=aw100e150_data , varname="d18op", units="per mil", Dataset_wiso= aw100e150_wiso)
-elev_aw100e150 = extract_var(Dataset=aw100e150_data , varname="elev", units="m")
-
-d18op_aw100e150_slt = compute_lterm_mean(data=d18op_aw100e150, time="season", season_calendar="standard")
-elev_aw100e150_slt = compute_lterm_mean(data=elev_aw100e150 , time="season", season_calendar="standard")
-
-
-#aw200e100
-d18op_aw200e100 = extract_var(Dataset=aw200e100_data , varname="d18op", units="per mil", Dataset_wiso= aw200e100_wiso)
-elev_aw200e100 = extract_var(Dataset=aw200e100_data , varname="elev", units="m")
-
-d18op_aw200e100_slt = compute_lterm_mean(data=d18op_aw200e100, time="season", season_calendar="standard")
-elev_aw200e100_slt = compute_lterm_mean(data=elev_aw200e100 , time="season", season_calendar="standard")
-
-#aw200e0
-d18op_aw200e0 = extract_var(Dataset=aw200e0_data , varname="d18op", units="per mil", Dataset_wiso= aw200e0_wiso)
-elev_aw200e0 = extract_var(Dataset=aw200e0_data , varname="elev", units="m")
-
-d18op_aw200e0_slt = compute_lterm_mean(data=d18op_aw200e0, time="season", season_calendar="standard")
-elev_aw200e0_slt = compute_lterm_mean(data=elev_aw200e0 , time="season", season_calendar="standard")
-
-#aw200e200
-d18op_aw200e200 = extract_var(Dataset=aw200e200_data , varname="d18op", units="per mil", Dataset_wiso= aw200e200_wiso)
-elev_aw200e200 = extract_var(Dataset=aw200e200_data , varname="elev", units="m")
-
-d18op_aw200e200_slt = compute_lterm_mean(data=d18op_aw200e200, time="season", season_calendar="standard")
-elev_aw200e200_slt = compute_lterm_mean(data=elev_aw200e200 , time="season", season_calendar="standard")
-
-#aw0e0
-d18op_aw0e0 = extract_var(Dataset=aw0e0_data , varname="d18op", units="per mil", Dataset_wiso= aw0e0_wiso)
-elev_aw0e0 = extract_var(Dataset=aw0e0_data , varname="elev", units="m")
-
-d18op_aw0e0_slt = compute_lterm_mean(data=d18op_aw0e0, time="season", season_calendar="standard")
-elev_aw0e0_slt = compute_lterm_mean(data=elev_aw0e0 , time="season", season_calendar="standard")
-
-
-# extracting profiles 
-#coordinates 
-
-maxlon_A = 20
-minlon_A = -5
-maxlat_A = 47
-minlat_A = 46
-
-maxlon_B = 13
-minlon_B = 10
-maxlat_B = 54
-minlat_B = 40
-
-
-#aw100e100
-aw100e100_d18op_lon = extract_profile(data = d18op_aw100e100_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw100e100_geosp_lon = extract_profile(data = elev_aw100e100_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw100e100_d18op_lat = extract_profile(data = d18op_aw100e100_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-aw100e100_geosp_lat = extract_profile(data = elev_aw100e100_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-
-#aw100e0
-aw100e0_d18op_lon = extract_profile(data = d18op_aw100e0_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw100e0_geosp_lon = extract_profile(data = elev_aw100e0_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw100e0_d18op_lat = extract_profile(data = d18op_aw100e0_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-aw100e0_geosp_lat = extract_profile(data = elev_aw100e0_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-
-#aw100e200
-aw100e200_d18op_lon = extract_profile(data = d18op_aw100e200_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw100e200_geosp_lon = extract_profile(data = elev_aw100e200_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw100e200_d18op_lat = extract_profile(data = d18op_aw100e200_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-aw100e200_geosp_lat = extract_profile(data = elev_aw100e200_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-
-#aw100e150
-aw100e150_d18op_lon = extract_profile(data = d18op_aw100e150_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw100e150_geosp_lon = extract_profile(data = elev_aw100e150_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw100e150_d18op_lat = extract_profile(data = d18op_aw100e150_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-aw100e150_geosp_lat = extract_profile(data = elev_aw100e150_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-
-#aw200e200
-aw200e200_d18op_lon = extract_profile(data = d18op_aw200e200_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw200e200_geosp_lon = extract_profile(data = elev_aw200e200_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw200e200_d18op_lat = extract_profile(data = d18op_aw200e200_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-aw200e200_geosp_lat = extract_profile(data = elev_aw200e200_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-
-#aw200e100
-aw200e100_d18op_lon = extract_profile(data = d18op_aw200e100_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw200e100_geosp_lon = extract_profile(data = elev_aw200e100_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw200e100_d18op_lat = extract_profile(data = d18op_aw200e100_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-aw200e100_geosp_lat = extract_profile(data = elev_aw200e100_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-
-#aw200e0
-aw200e0_d18op_lon = extract_profile(data = d18op_aw200e0_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw200e0_geosp_lon = extract_profile(data = elev_aw200e0_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw200e0_d18op_lat = extract_profile(data = d18op_aw200e0_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-aw200e0_geosp_lat = extract_profile(data = elev_aw200e0_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-
-
-#aw0e0
-aw0e0_d18op_lon = extract_profile(data = d18op_aw0e0_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw0e0_geosp_lon = extract_profile(data = elev_aw0e0_slt, maxlon=maxlon_A, minlon=minlon_A, maxlat=maxlat_A, minlat=minlat_A, dim="lon", to_pandas=True)
-aw0e0_d18op_lat = extract_profile(data = d18op_aw0e0_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-aw0e0_geosp_lat = extract_profile(data = elev_aw0e0_slt, maxlon=maxlon_B, minlon=minlon_B, maxlat=maxlat_B, minlat=minlat_B, dim="lat", to_pandas=True)
-
-# visualisation
-path_to_store = os.path.join(module_output_main_path, "plots")
-
-#apply font and style 
-
-apply_style(fontsize=22, style=None, linewidth=2)
-
-def main_text():
-
-    fig, ((ax1,ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15),sharey=False, sharex=False)
+    d18op = extract_var(Dataset=data , varname="d18op", units="per mil", Dataset_wiso= wiso)
+    elev = extract_var(Dataset=data, varname="elev", units="m")
     
-    plot_iso_profiles(df_iso=aw100e100_d18op_lon , df_geosp=aw100e100_geosp_lon , dim="lon", iso_color=black, iso_label="CTL",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax1, title="[A]", 
-                      right_labels =False, bottom_labels=False, shade_color="dimgrey", shade_alpha=0.15, edgecolor=black)
+    d18op_alt = compute_lterm_mean(data=d18op, time=time, season=season,
+                                   season_calendar=season_calendar)
     
-    plot_iso_profiles(df_iso=aw100e0_d18op_lon , df_geosp=aw100e0_geosp_lon , dim="lon", iso_color=blue, iso_label="W1E0",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax1,
-                      right_labels =False, bottom_labels=False, shade_color="dimgrey", shade_alpha=0.2, edgecolor=blue)
-    
-    plot_iso_profiles(df_iso=aw100e200_d18op_lon , df_geosp=aw100e200_geosp_lon , dim="lon", iso_color=red, iso_label="W1E2",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax1,
-                      right_labels =False, bottom_labels=False, shade_color="dimgrey", shade_alpha=0.3, edgecolor=red)
-    
-    plot_iso_profiles(df_iso=aw100e150_d18op_lon , df_geosp=aw100e150_geosp_lon , dim="lon", iso_color=green, iso_label="W1E1.5",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax1,
-                      right_labels =False, bottom_labels=False, shade_color="dimgrey", shade_alpha=0.25, edgecolor=green)
-    
-    ax1.grid(visible=True, linestyle="--", linewidth=0.8, color=grey)
-    
-    plot_iso_profiles(df_iso=aw100e100_d18op_lon , df_geosp=aw100e100_geosp_lon , dim="lon", iso_color=black, iso_label=None,
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax3, title="[C]", 
-                      right_labels =False, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.2, edgecolor=black)
-    
-    plot_iso_profiles(df_iso=aw200e100_d18op_lon , df_geosp=aw200e100_geosp_lon , dim="lon", iso_color=golden, iso_label="W2E1",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax3, 
-                      right_labels =False, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.3, edgecolor=golden)
-    
-    plot_iso_profiles(df_iso=aw200e0_d18op_lon , df_geosp=aw200e0_geosp_lon , dim="lon", iso_color=purple, iso_label="W2E0",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax3,  
-                      right_labels =False, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.4, edgecolor=purple)
-    
-    ax3.grid(visible=True, linestyle="--", linewidth=0.8, color=grey)
-    ax3.text(-5, -350, "W", fontsize=20)
-    ax3.text(20, -350, "E", fontsize=20)
-    
-    plot_iso_profiles(df_iso=aw100e100_d18op_lat , df_geosp=aw100e100_geosp_lat , dim="lat", iso_color=black, iso_label=None,
-                      season="JJA", xmax=54, xmin=40, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax2, title="[B]", left_labels=False,
-                      bottom_labels=False, shade_color="dimgrey", shade_alpha=0.15, edgecolor=black)
-    
-    plot_iso_profiles(df_iso=aw100e0_d18op_lat , df_geosp=aw100e0_geosp_lat , dim="lat", iso_color=blue, iso_label=None,
-                      season="JJA", xmax=54, xmin=40, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax2, left_labels=False,
-                      bottom_labels=False, shade_color="dimgrey", shade_alpha=0.2, edgecolor=blue)
-    
-    plot_iso_profiles(df_iso=aw100e200_d18op_lat , df_geosp=aw100e200_geosp_lat , dim="lat", iso_color=red, iso_label=None,
-                      season="JJA", xmax=54, xmin=40, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax2,  left_labels=False,
-                      bottom_labels=False, shade_color="dimgrey", shade_alpha=0.3, edgecolor=red)
-    
-    plot_iso_profiles(df_iso=aw100e150_d18op_lat , df_geosp=aw100e150_geosp_lat , dim="lat", iso_color=green, iso_label=None,
-                      season="JJA", xmax=54, xmin=40, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax2,  left_labels=False,
-                      bottom_labels=False, shade_color="dimgrey", shade_alpha=0.25, edgecolor=green)
+    elev_alt = compute_lterm_mean(data=elev, time=time, season=season,
+                                   season_calendar=season_calendar)
     
     
-    ax2.grid(visible=True, linestyle="--", linewidth=0.8, color=grey)
     
-    plot_iso_profiles(df_iso=aw100e100_d18op_lat , df_geosp=aw100e100_geosp_lat , dim="lat", iso_color=black, iso_label=None,
-                      season="JJA", xmax=54, xmin=40, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax4, title="[D]", left_labels=False,
-                      shade_color="dimgrey", shade_alpha=0.2, edgecolor=black)
+    lon_d18op = extract_profile(d18op_alt, maxlon=20, minlon=-5, maxlat=47, minlat=46, dim="lon",
+                                     to_pandas=True)
+    lat_d18op = extract_profile(d18op_alt, maxlon=13, minlon=10, maxlat=54, minlat=40, dim="lat", 
+                                     to_pandas=True)
     
-    plot_iso_profiles(df_iso=aw200e100_d18op_lat , df_geosp=aw200e100_geosp_lat , dim="lat", iso_color=golden, iso_label=None,
-                      season="JJA", xmax=54, xmin=40, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax4,  left_labels=False,
-                      shade_color="dimgrey", shade_alpha=0.3, edgecolor=golden)
+    lon_elev = extract_profile(elev_alt, maxlon=20, minlon=-5, maxlat=47, minlat=46, dim="lon",
+                                     to_pandas=True)
+    lat_elev = extract_profile(elev_alt, maxlon=13, minlon=10, maxlat=54, minlat=40, dim="lat", 
+                                     to_pandas=True)
     
-    plot_iso_profiles(df_iso=aw200e0_d18op_lat , df_geosp=aw200e0_geosp_lat , dim="lat", iso_color=purple, iso_label=None,
-                      season="JJA", xmax=54, xmin=40, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax4, left_labels=False,
-                      shade_color="dimgrey", shade_alpha=0.4, edgecolor=purple)
+    return_data = {"d18Op_lon": lon_d18op, "d18Op_lat": lat_d18op,
+                   "elev_lon": lon_elev, "elev_lat": lat_elev}
+    
+    return return_data
+
+# plot function
+def plot_profiles_all(varname, units, data_d18Op, data_elev, ax=None, path_to_store=None, filename=None,
+                       colors=None, title=None, ax_legend=True,
+                       ymin=None, ymax=None, dim="lon", fig=None, labels=None,
+                       elev_max=None, elev_min=None, right_label=True, left_label=True,
+                       bottom_label=True):
     
     
-    ax4.grid(visible=True, linestyle="--", linewidth=0.8, color=grey)
-    ax4.text(40, -350, "S", fontsize=20)
-    ax4.text(54, -350, "N", fontsize=20)
+    if ax is None:
+        fig,ax = plt.subplots(1,1, sharex=False, figsize=(20, 15))
+        
     
-    fig.legend(frameon=True, fontsize=22, loc="upper right",)
-    plt.tight_layout() 
-    plt.subplots_adjust(left=0.04, right=0.84, top=0.94, bottom=0.04)
-    plt.savefig(os.path.join(path_to_store, "fig5.svg"), format= "svg", bbox_inches="tight", dpi=300)
-    plt.savefig(os.path.join(path_to_store, "fig5.png"), format= "png", bbox_inches="tight", dpi=300)
+    data_d18Op.plot(ax=ax, linestyle="--", color=colors, linewidth=3) 
+    
+            
+    if left_label:
+        ax.set_ylabel(varname + " [" + units + "]", fontweight="bold", fontsize=28)
+        ax.grid(True, linestyle="--", color="grey")
+    else:
+        ax.grid(True, linestyle="--", color="grey")
+        ax.set_yticklabels([])
+    
+    if bottom_label:
+        if dim == "lon":
+             ax.set_xlabel("Longitude [E°]", fontsize=28, fontweight="bold")
+        elif dim == "lat":
+             ax.set_xlabel("Latitude [N°]", fontsize=28, fontweight="bold")
+        else:
+            raise ValueError("Define dim as lat or lon")
+        
+        
+        ax.grid(True, linestyle="--", color="grey")
+    else:
+        ax.grid(True, linestyle="--", color="grey")
+        ax.set_xticklabels([])
+
+        
+    if all(parameter is not None for parameter in [ymax, ymin]):
+        ax.set_ylim(ymin, ymax)
+       
+    if ax_legend:
+        ax.legend(frameon=True, fontsize=24, bbox_to_anchor=(0.01, 1.05, 1, 0.102,), loc="best",
+                  borderaxespad=0, ncol=2)
+    else:
+        ax.legend([],[], frameon=False)
+        
+        
+    ax2 = ax.twinx()
+    ax2.grid(False)
+    data_elev.plot(ax=ax2, linestyle="-", color=colors, linewidth=2, legend=False)
+    data_elev.plot(kind="area", color=colors, alpha=0.1, legend=False, stacked=False,
+                   ax=ax2) 
+
+    if all(parameter is not None for parameter in [elev_max, elev_min]):
+        ax2.set_ylim(elev_min, elev_max)
+    
+    if right_label == True:
+    
+        ax2.set_ylabel( "Elevation [m]", fontsize=24)
+        
+    else:
+        ax2.set_yticklabels([])
+        
+    ax2.tick_params(axis= "y")
+    ax2.tick_params(axis= "x")     
+       
+    if title is not None:
+        ax.set_title(title, fontdict= {"fontsize": 22, "fontweight":"bold"}, loc="center")
+        
+    
+        
+        
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05)
+    
+    if path_to_store is not None:
+        plt.savefig(os.path.join(path_to_store, filename), bbox_inches="tight", format= "svg")
+
+
+# extract all data 
+
+labels_W1 = ["CTL", "W1E0", "W1E2", "W1E1.5"]
+labels_W2 = ["CTL", "W2E1", "W2E0"]
+
+data_W1 = [aw100e100_data, aw100e0_data, aw100e200_data, aw100e150_data]
+wiso_W1 = [aw100e100_wiso, aw100e0_wiso, aw100e200_wiso, aw100e150_wiso]
+
+data_W2 = [aw100e100_data, aw200e100_data, aw200e0_data]
+wiso_W2 = [aw100e100_wiso, aw200e100_wiso, aw200e0_wiso]
+
+extracts_W1 = {}
+extracts_W2 = {}
+
+
+def extract_all(labels, data_W1, wiso_W1, time="season", season="JJA", season_calendar="standard"):
+    extracts_W1 = {}
+    
+    for i,topo in enumerate(labels):
+        extracts_W1[topo] = extract_vars_and_analysis(data=data_W1[i], wiso=wiso_W1[i],
+                                                      time=time, season=season, 
+                                                      season_calendar=season_calendar)
+        
+        if i ==0:
+            df_d18Op_W1_lon = pd.DataFrame(index=extracts_W1.get(topo)["d18Op_lon"].index.values,
+                                           columns=labels_W1)
+            df_d18Op_W1_lat = pd.DataFrame(index=extracts_W1.get(topo)["d18Op_lat"].index.values,
+                                           columns=labels_W1)
+            
+            df_elev_W1_lon = pd.DataFrame(index=extracts_W1.get(topo)["elev_lon"].index.values,
+                                           columns=labels_W1)
+            df_elev_W1_lat = pd.DataFrame(index=extracts_W1.get(topo)["elev_lat"].index.values,
+                                           columns=labels_W1)
+            
+            
+        
+        df_d18Op_W1_lon[topo] = extracts_W1.get(topo)["d18Op_lon"]
+        df_d18Op_W1_lat[topo] = extracts_W1.get(topo)["d18Op_lat"]
+        
+        df_elev_W1_lon[topo] = extracts_W1.get(topo)["elev_lon"]
+        df_elev_W1_lat[topo] = extracts_W1.get(topo)["elev_lat"]
+        
+    return df_d18Op_W1_lon, df_d18Op_W1_lat, df_elev_W1_lon, df_elev_W1_lat
+    
+df_d18Op_W1_lon, df_d18Op_W1_lat, df_elev_W1_lon, df_elev_W1_lat = extract_all(labels=labels_W1, 
+                                                                               data_W1=data_W1, wiso_W1=wiso_W1) 
+
+df_d18Op_W2_lon, df_d18Op_W2_lat, df_elev_W2_lon, df_elev_W2_lat = extract_all(labels=labels_W2, 
+                                                                               data_W1=data_W2, wiso_W1=wiso_W2) 
+    
+    
+colors_W1 = ["black", "blue", "red", "green"]  
+colors_W2 = ["black", "darkgoldenrod", "purple"] 
+
+apply_style(fontsize=28, style="seaborn-talk", linewidth=3,)
+
+fig, ((ax1,ax2), (ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15),sharey=False, sharex=False)
+
+plot_profiles_all(varname = "$\delta^{18}$Op vs SMOW", units="‰", data_d18Op=df_d18Op_W1_lon,
+                  data_elev=df_elev_W1_lon, ax=ax1, ax_legend=True,ymax=-2, ymin=-16, dim="lon",
+                  fig=fig, labels=labels_W1,bottom_label=False, right_label=False, elev_max=3500,
+                  elev_min=0, colors=colors_W1)
+
+plot_profiles_all(varname = "$\delta^{18}$Op vs SMOW", units="‰", data_d18Op=df_d18Op_W1_lat,
+                  data_elev=df_elev_W1_lat, ax=ax2, ax_legend=False,ymax=-2, ymin=-16, dim="lat",
+                  fig=fig, labels=labels_W1, bottom_label=False, right_label=True, left_label=False,elev_max=3500,
+                  elev_min=0, colors=colors_W1)
+
+plot_profiles_all(varname = "$\delta^{18}$Op vs SMOW", units="‰", data_d18Op=df_d18Op_W2_lon,
+                  data_elev=df_elev_W2_lon, ax=ax3, ax_legend=False,ymax=-2, ymin=-16, dim="lon",
+                  fig=fig, labels=labels_W2, bottom_label=True, right_label=False, elev_max=3500,
+                  elev_min=0, colors=colors_W2)
+
+plot_profiles_all(varname = "$\delta^{18}$Op vs SMOW", units="‰", data_d18Op=df_d18Op_W2_lat,
+                  data_elev=df_elev_W2_lat, ax=ax4, ax_legend=False,ymax=-2, ymin=-16, dim="lat",
+                  fig=fig, labels=labels_W2, bottom_label=True, left_label=False, elev_max=3500,
+                  elev_min=0, colors=colors_W2)
+plt.tight_layout()
+plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05, wspace=0.05)
+plt.savefig(os.path.join(path_to_plots, "d18Op_profile_JJA.svg"), format= "svg", bbox_inches="tight", dpi=600)
+
+
     
     
 def supplementary():
@@ -309,58 +310,8 @@ def supplementary():
     plt.savefig(os.path.join(path_to_store, "figS8.png"), format= "png", bbox_inches="tight", dpi=300)
     
 
-def fig_for_egu_talk():
-    
-    fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(19, 13), sharey=False, sharex=False)
-    
-    plot_iso_profiles(df_iso=aw100e100_d18op_lon , df_geosp=aw100e100_geosp_lon , dim="lon", iso_color=black, iso_label="CTL",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=0, isomin=-16, ax=ax2, title=None, 
-                      right_labels =True, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.15)
-    
-    plot_iso_profiles(df_iso=aw100e0_d18op_lon , df_geosp=aw100e0_geosp_lon , dim="lon", iso_color=blue, iso_label="W1E0",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=0, isomin=-16, ax=ax2,
-                      right_labels =True, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.2)
-    
-    plot_iso_profiles(df_iso=aw100e200_d18op_lon , df_geosp=aw100e200_geosp_lon , dim="lon", iso_color=red, iso_label="W1E2",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=0, isomin=-16, ax=ax2,
-                      right_labels =True, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.3)
-    
-    plot_iso_profiles(df_iso=aw100e150_d18op_lon , df_geosp=aw100e150_geosp_lon , dim="lon", iso_color=green, iso_label="W1E1.5",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=0, isomin=-16, ax=ax2,
-                      right_labels =True, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.25)
-    
-    ax1.grid(visible=True, linestyle="--", linewidth=0.8, color=grey)
-    ax1.grid(visible=True, linestyle="--", linewidth=0.8, color=grey)
-    ax1.text(-5, -250, "W", fontsize=24)
-    ax1.text(20, -250, "E", fontsize=24)
-    
-    
-    plot_iso_profiles(df_iso=aw100e100_d18op_lon , df_geosp=aw100e100_geosp_lon , dim="lon", iso_color=black, iso_label=None,
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax1, title=None, 
-                      right_labels =True, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.2)
-    
-    plot_iso_profiles(df_iso=aw200e100_d18op_lon , df_geosp=aw200e100_geosp_lon , dim="lon", iso_color=golden, iso_label="W2E1",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax1, 
-                      right_labels =True, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.3)
-    
-    plot_iso_profiles(df_iso=aw200e0_d18op_lon , df_geosp=aw200e0_geosp_lon , dim="lon", iso_color=purple, iso_label="W2E0",
-                      season="JJA", xmax=20, xmin=-5, ymin=0, ymax=3500, isomax=-2, isomin=-16, ax=ax1,  
-                      right_labels =True, bottom_labels=True, shade_color="dimgrey", shade_alpha=0.1)
-    
-    ax2.grid(visible=True, linestyle="--", linewidth=0.8, color=grey)
-    ax2.text(-5, -350, "W", fontsize=24)
-    ax2.text(20, -350, "E", fontsize=24)
-    
-    fig.legend(frameon=True, fontsize=22, loc="upper right",)
-    plt.tight_layout() 
-    plt.subplots_adjust(left=0.04, right=0.86, top=0.94, bottom=0.04)
-    plt.savefig(os.path.join(path_to_store, "egu1.svg"), format= "svg", bbox_inches="tight", dpi=300)
-    plt.savefig(os.path.join(path_to_store, "egu1.png"), format= "png", bbox_inches="tight", dpi=300)
-    
-if __name__ == '__main__':
-    #supplementary()
-    main_text()
-    # fig_for_egu_talk()
+
+
     
     
     
