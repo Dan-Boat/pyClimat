@@ -21,7 +21,8 @@ import cartopy.crs as ccrs
 from pyClimat.plot_utils import *
 from pyClimat.plots import plot_annual_mean
 from pyClimat.data import read_ECHAM_processed
-from pyClimat.analysis import extract_var, compute_lterm_mean, compute_lterm_diff
+from pyClimat.analysis import compute_lterm_mean, compute_lterm_diff
+from pyClimat.variables import extract_var
 
 
 module_output_main_path = "D:/Datasets/Model_output_pst"
@@ -82,6 +83,11 @@ def extract_and_analysis(exp_data, exp_wiso, W1E1_data, W1E1_wiso, diff="missing
     # changes in elevation 
     elev_change = exp_elev_data - w1e1_elev_data
     
+    # lat_range = (elev_change.lat > 50) & (elev_change.lat < 40)
+    # lon_range = (elev_change.lon > 20) & (elev_change.lon < 0)
+    
+    #elev_change_modified = elev_change.where((lat_range & lon_range), 0,)
+    
     expected_d18op_change = elev_change * d18Op_lapse_rate # per mil 
     
     simulated_d18op_change = exp_d18op_data - w1e1_d18op_data
@@ -100,15 +106,17 @@ def extract_and_analysis(exp_data, exp_wiso, W1E1_data, W1E1_wiso, diff="missing
     
     temp_missing_alt = compute_lterm_mean(data=temp_missing, time="annual")
     
-    return_data = {"d18Op": d18Op_missing_alt, "temp": temp_missing_alt}
+    temp_expected_alt = compute_lterm_mean(data=expected_temp_change, time="annual")
+    
+    return_data = {"d18Op": d18Op_missing_alt, "temp": temp_missing_alt, "temp_exp": temp_expected_alt}
     
     
     return return_data
 
 
-labels = ["W1E1.5", "W2E1", "W1E0", "W2E0", "W1E2", "W2E2"]
-data_all = [aw100e150_data, aw200e100_data, aw100e0_data, aw200e0_data, aw100e200_data, aw200e200_data]
-wiso_all = [aw100e150_wiso, aw200e100_wiso, aw100e0_wiso, aw200e0_wiso, aw100e200_wiso, aw200e200_wiso]
+labels = ["W2E1", "W1E0", "W2E0", "W1E2",]
+data_all = [aw200e100_data,  aw100e0_data, aw200e0_data, aw100e200_data]
+wiso_all = [aw200e100_wiso,  aw100e0_wiso, aw200e0_wiso, aw100e200_wiso]
 
 extracts = {}
 
@@ -120,50 +128,50 @@ for i,topo in enumerate(labels):
     
 projection = ccrs.PlateCarree()
 
-#apply figure font and style
+
 apply_style(fontsize=28, style=None, linewidth=2.5)
 
-fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15),
+fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15),
                                                       subplot_kw={"projection": projection})
-axes = [ax1, ax2, ax3, ax4, ax5, ax6]
+axes = [ax1, ax2, ax3, ax4]
 
 
 for i,label in enumerate(labels):
     if i == 0:
         
         plot_annual_mean(variable="Temperature difference", data_alt=extracts[label].get("temp"), ax=axes[i],
-                         cmap=RdBu_r, units="°C", vmax=2, vmin=-2, 
-                        levels=22, level_ticks=11, add_colorbar=True, cbar_pos= [0.30, 0.05, 0.45, 0.02], 
+                          cmap=RdBu_r, units="°C", vmax=2.5, vmin=-2.5, 
+                        levels=18, level_ticks=6, add_colorbar=True, cbar_pos= [0.30, 0.05, 0.45, 0.02], 
                         orientation="horizontal", plot_coastlines=True, bottom_labels=True,
                         left_labels=True, fig=fig, plot_borders=False, plot_projection=projection, 
-                        domain="Europe", title=label)
+                        domain="Europe", title=label, label_format="%.1f")
         
     else:
         plot_annual_mean(variable="Temperature difference", data_alt=extracts[label].get("temp"), ax=axes[i],
-                         cmap=RdBu_r, units="°C", vmax=2, vmin=-2, 
-                        levels=22, level_ticks=11, add_colorbar=False, plot_coastlines=True, bottom_labels=True,
+                          cmap=RdBu_r, units="°C", vmax=2.5, vmin=-2.5, 
+                        levels=18, level_ticks=6, add_colorbar=False, plot_coastlines=True, bottom_labels=True,
                         left_labels=True, fig=fig, plot_borders=False, plot_projection=projection, domain="Europe", 
                         max_pvalue=0.1, title=label)
         
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
-plt.savefig(os.path.join(path_to_plots, "d18Op_missing.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_plots, "temp_correction.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
 
 apply_style(fontsize=28, style=None, linewidth=2.5)
 
-fig, ((ax1,ax2),(ax3, ax4), (ax5,ax6)) = plt.subplots(nrows = 3, ncols = 2, figsize=(20, 15),
+fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(20, 15),
                                                       subplot_kw={"projection": projection})
-axes = [ax1, ax2, ax3, ax4, ax5, ax6]
+axes = [ax1, ax2, ax3, ax4]
 
 
 for i,label in enumerate(labels):
     if i == 0:
         
         plot_annual_mean(variable="$\delta^{18}$Op vs SMOW difference", data_alt=extracts[label].get("d18Op"), ax=axes[i],
-                         cmap="RdBu", units="‰", vmax=4, vmin=-4, 
+                          cmap="RdBu", units="‰", vmax=4, vmin=-4, 
                         levels=22, level_ticks=11, add_colorbar=True, cbar_pos= [0.30, 0.05, 0.45, 0.02], 
                         orientation="horizontal", plot_coastlines=True, bottom_labels=True,
                         left_labels=True, fig=fig, plot_borders=False, plot_projection=projection, 
@@ -171,7 +179,7 @@ for i,label in enumerate(labels):
         
     else:
         plot_annual_mean(variable="$\delta^{18}$Op vs SMOW difference", data_alt=extracts[label].get("d18Op"), ax=axes[i],
-                         cmap="RdBu", units="‰", vmax=4, vmin=-4, 
+                          cmap="RdBu", units="‰", vmax=4, vmin=-4, 
                         levels=22, level_ticks=11, add_colorbar=False, plot_coastlines=True, bottom_labels=True,
                         left_labels=True, fig=fig, plot_borders=False, plot_projection=projection, domain="Europe", 
                         title=label)
@@ -179,4 +187,5 @@ for i,label in enumerate(labels):
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
-plt.savefig(os.path.join(path_to_plots, "temp_non_adiabatic.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_plots, "d18Op_correction.svg"), format= "svg", bbox_inches="tight", dpi=600)
+

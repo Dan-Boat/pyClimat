@@ -223,11 +223,19 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
             minLat = 0
             maxLat = 45
             
+        elif domain == "NH Wide":
+            minLon = -100
+            maxLon = 100
+            minLat = 25
+            maxLat = 85
+            
         elif domain == "Europe Wide":
             minLon = -35
             maxLon = 35
             minLat = 32
             maxLat = 75
+            
+        
             
         else:
             print("ERROR: invalid geographical domain passed in options")

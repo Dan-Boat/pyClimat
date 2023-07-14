@@ -17,7 +17,8 @@ from pyClimat.plot_utils import *
 from pyClimat.plots import plot_correlation, plot_annual_mean
 from pyClimat.stats import sliding_correlation, StatCorr, GrangerCausality
 from pyClimat.data import read_ERA_processed, read_from_path
-from pyClimat.analysis import extract_var, extract_transect
+from pyClimat.analysis import extract_transect
+from pyClimat.variables import extract_var
 from pyClimat.utils import extract_region
 
 
@@ -76,15 +77,18 @@ def perform_correlation_composite(atmos_index, path_to_data, pcs_path=None, file
                           varname="prec")
     
     
+    maxlon = 150
+    minlon = -140
+    maxlat = 86
+    minlat = 24
     
-    
-    t2m_season = extract_region(data=temp, maxlon=40, minlon=-40, maxlat=80, minlat=30, time="season", 
+    t2m_season = extract_region(data=temp, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, time="season", 
                                  season="DJF") 
     
-    prec_season = extract_region(data=prec, maxlon=40, minlon=-40, maxlat=80, minlat=30, time="season", 
+    prec_season = extract_region(data=prec, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, time="season", 
                                  season="DJF") 
     
-    d18O_season = extract_region(data=d18O, maxlon=40, minlon=-40, maxlat=80, minlat=30, time="season", 
+    d18O_season = extract_region(data=d18O, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, time="season", 
                                  season="DJF")
         
     
@@ -141,16 +145,19 @@ def cal_diff_OP_EQ(atmos_index_op, atmos_index_eq, path_to_data, pcs_path=None, 
     prec = read_from_path(path=path_to_data, filename=filename_data, decode=True,
                           varname="prec")
     
+    maxlon = 150
+    minlon = -140
+    maxlat = 86
+    minlat = 24
     
     
-    
-    t2m_season = extract_region(data=temp, maxlon=40, minlon=-40, maxlat=80, minlat=30, time="season", 
+    t2m_season = extract_region(data=temp, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, time="season", 
                                  season="DJF") 
     
-    prec_season = extract_region(data=prec, maxlon=40, minlon=-40, maxlat=80, minlat=30, time="season", 
+    prec_season = extract_region(data=prec, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, time="season", 
                                  season="DJF") 
     
-    d18O_season = extract_region(data=d18O, maxlon=40, minlon=-40, maxlat=80, minlat=30, time="season", 
+    d18O_season = extract_region(data=d18O, maxlon=maxlon, minlon=minlon, maxlat=maxlat, minlat=minlat, time="season", 
                                  season="DJF")
     
     
@@ -217,9 +224,10 @@ data_diff = [cesm_data_diff, giss_data_diff, hadcm3_data_diff]
 
 def plot_nao_t2m():
     apply_style(fontsize=22, style=None, linewidth=2)
-    projection = ccrs.PlateCarree()
+    #projection = ccrs.PlateCarree()
+    projection = ccrs.Robinson(central_longitude=0, globe=None)
     fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9)) = plt.subplots(nrows = 3, ncols=3, 
-                                                     figsize=(22, 28), subplot_kw={"projection": projection})
+                                                     figsize=(32, 28), subplot_kw={"projection": projection})
     
     axes_op = [ax2, ax5, ax8,]
     axes_eq = [ax1, ax4, ax7,]
@@ -229,48 +237,49 @@ def plot_nao_t2m():
         if i == 0:
             
             plot_correlation(variable="Spearman Coefficients", data=data_eq[i].get("nao_reg_temp"), units="-", vmax=0.8,
-                             vmin=-0.8, cmap="PRGn", domain="Europe Wide", levels=22,cbar=True, cbar_orientation="horizontal",
+                             vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=True, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_eq[i], fig=fig, cbar_pos= [0.05, 0.01, 0.30, 0.02],
                              plot_pvalues=True, pvalue_data=data_eq[i].get("nao_sig_temp"), bottom_labels=True, 
-                             title="NAO-t2m (EQ)-"+ label)
+                             title="NAO-t2m (EQ)-"+ label, plot_projection=projection)
             
             plot_correlation(variable="Spearman Coefficients", data=data_op[i].get("nao_reg_temp"), units="-", vmax=0.8,
-                             vmin=-0.8, cmap="PRGn", domain="Europe Wide", levels=22,cbar=False, cbar_orientation="horizontal",
+                             vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=data_op[i].get("nao_sig_temp"), bottom_labels=True,
-                             left_labels=True, title="NAO-t2m (OP)-"+ label)
+                             left_labels=True, title="NAO-t2m (OP)-"+ label, plot_projection=projection)
             
             plot_annual_mean(variable='Temperature', data_alt=data_diff[i].get("t2m_diff"), cmap=RdBu, units="°C",
-                 ax=axes_diff[i], fig=fig, vmax=4, vmin=-4, levels=22, domain="Europe Wide", level_ticks=11, 
+                 ax=axes_diff[i], fig=fig, vmax=4, vmin=-4, levels=22, domain="NH Wide", level_ticks=11, 
                  cbar_pos = [0.60, 0.01, 0.30, 0.02], title="[F] t2m (OP-EQ)",
-                 left_labels=True, bottom_labels=True, label_format="%.1f", add_colorbar=True)
+                 left_labels=True, bottom_labels=True, label_format="%.1f", add_colorbar=True, plot_projection=projection)
         else:
             plot_correlation(variable="Spearman Coefficients", data=data_eq[i].get("nao_reg_temp"), units="-", vmax=0.8,
-                             vmin=-0.8, cmap="PRGn", domain="Europe Wide", levels=22,cbar=False,
+                             vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False,
                              level_ticks=7, ax=axes_eq[i], fig=fig,
                              plot_pvalues=True, pvalue_data=data_eq[i].get("nao_sig_temp"), bottom_labels=True, 
-                             title="NAO-t2m (EQ)-"+ label)
+                             title="NAO-t2m (EQ)-"+ label, plot_projection=projection)
             
             plot_correlation(variable="Spearman Coefficients", data=data_op[i].get("nao_reg_temp"), units="-", vmax=0.8,
-                             vmin=-0.8, cmap="PRGn", domain="Europe Wide", levels=22,cbar=False, cbar_orientation="horizontal",
+                             vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=data_op[i].get("nao_sig_temp"), bottom_labels=True,
-                             left_labels=True, title="NAO-t2m (OP)-"+ label)
+                             left_labels=True, title="NAO-t2m (OP)-"+ label, plot_projection=projection)
             
             plot_annual_mean(variable='Temperature', data_alt=data_diff[i].get("t2m_diff"), cmap=RdBu, units="°C",
-                 ax=axes_diff[i], fig=fig, vmax=4, vmin=-4, levels=22, domain="Europe Wide", level_ticks=11, 
+                 ax=axes_diff[i], fig=fig, vmax=4, vmin=-4, levels=22, domain="NH Wide", level_ticks=11, 
                  cbar_pos = [0.60, 0.01, 0.30, 0.02], title="[F] t2m (OP-EQ)",
-                 left_labels=True, bottom_labels=True, label_format="%.1f", add_colorbar=False)
+                 left_labels=True, bottom_labels=True, label_format="%.1f", add_colorbar=False, plot_projection=projection)
             
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.10,)
-    plt.savefig(os.path.join(path_to_plots, "composite_nao_ea_lm_t2m.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_plots, "composite_nao_ea_lm_t2m_nh.svg"), format= "svg", bbox_inches="tight", dpi=300)
 
 
 def plot_nao_prec():
     apply_style(fontsize=22, style=None, linewidth=2)
-    projection = ccrs.PlateCarree()
+    #projection = ccrs.PlateCarree()
+    projection = ccrs.Robinson(central_longitude=0, globe=None)
     fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9)) = plt.subplots(nrows = 3, ncols=3, 
-                                                     figsize=(22, 28), subplot_kw={"projection": projection})
+                                                     figsize=(32, 28), subplot_kw={"projection": projection})
     
     axes_op = [ax2, ax5, ax8]
     axes_eq = [ax1, ax4, ax7]
@@ -280,47 +289,48 @@ def plot_nao_prec():
         if i == 0:
             
             plot_correlation(variable="Spearman Coefficients", data=data_eq[i].get("nao_reg_prec"), units="-", vmax=0.8,
-                             vmin=-0.8, cmap="PRGn", domain="Europe Wide", levels=22,cbar=True, cbar_orientation="horizontal",
+                             vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=True, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_eq[i], fig=fig, cbar_pos= [0.05, 0.01, 0.30, 0.02],
                              plot_pvalues=True, pvalue_data=data_eq[i].get("nao_sig_prec"), bottom_labels=True, 
-                             title="NAO-Prec (EQ)-"+ label)
+                             title="NAO-Prec (EQ)-"+ label, plot_projection=projection)
             
             plot_correlation(variable="Spearman Coefficients", data=data_op[i].get("nao_reg_prec"), units="-", vmax=0.8,
-                             vmin=-0.8, cmap="PRGn", domain="Europe Wide", levels=22,cbar=False, cbar_orientation="horizontal",
+                             vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=data_op[i].get("nao_sig_prec"), bottom_labels=True,
-                             left_labels=True, title="NAO-Prec (OP)-"+ label)
+                             left_labels=True, title="NAO-Prec (OP)-"+ label, plot_projection=projection)
             
             plot_annual_mean(variable='Precipitation', data_alt=data_diff[i].get("prec_diff"), cmap=BrBG, units="mm/month",
-                 ax=axes_diff[i], fig=fig, vmax=50, vmin=-50, levels=22, domain="Europe Wide", level_ticks=9, 
+                 ax=axes_diff[i], fig=fig, vmax=50, vmin=-50, levels=22, domain="NH Wide", level_ticks=9, 
                  cbar_pos = [0.60, 0.01, 0.30, 0.02], title="[F] Prec (OP-EQ)",
-                 left_labels=True, bottom_labels=True, add_colorbar=True)
+                 left_labels=True, bottom_labels=True, add_colorbar=True, plot_projection=projection)
         else:
             plot_correlation(variable="Spearman Coefficients", data=data_eq[i].get("nao_reg_prec"), units="-", vmax=0.8,
-                             vmin=-0.8, cmap="PRGn", domain="Europe Wide", levels=22,cbar=False,
+                             vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False,
                              level_ticks=7, ax=axes_eq[i], fig=fig,
                              plot_pvalues=True, pvalue_data=data_eq[i].get("nao_sig_prec"), bottom_labels=True, 
-                             title="NAO-Prec (EQ)-"+ label)
+                             title="NAO-Prec (EQ)-"+ label, plot_projection=projection)
             
             plot_correlation(variable="Spearman Coefficients", data=data_op[i].get("nao_reg_prec"), units="-", vmax=0.8,
-                             vmin=-0.8, cmap="PRGn", domain="Europe Wide", levels=22,cbar=False, cbar_orientation="horizontal",
+                             vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=data_op[i].get("nao_sig_prec"), bottom_labels=True,
-                             left_labels=True, title="NAO-Prec (OP)-"+ label)
+                             left_labels=True, title="NAO-Prec (OP)-"+ label, plot_projection=projection)
             
             plot_annual_mean(variable='Precipitation', data_alt=data_diff[i].get("prec_diff"), cmap=BrBG, units="mm/month",
-                 ax=axes_diff[i], fig=fig, vmax=50, vmin=-50, levels=22, domain="Europe Wide", level_ticks=9, 
+                 ax=axes_diff[i], fig=fig, vmax=50, vmin=-50, levels=22, domain="NH Wide", level_ticks=9, 
                  cbar_pos = [0.60, 0.01, 0.30, 0.02], title="[F] Prec (OP-EQ)",
-                 left_labels=True, bottom_labels=True, add_colorbar=False)
+                 left_labels=True, bottom_labels=True, add_colorbar=False, plot_projection=projection)
             
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.10)
-    plt.savefig(os.path.join(path_to_plots, "composite_nao_ea_lm_prec.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_plots, "composite_nao_ea_lm_prec_nh.svg"), format= "svg", bbox_inches="tight", dpi=300)
     
 def plot_nao_d18O():
     apply_style(fontsize=22, style=None, linewidth=2)
-    projection = ccrs.PlateCarree()
+    #projection = ccrs.PlateCarree()
+    projection = ccrs.Robinson(central_longitude=0, globe=None)
     fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9)) = plt.subplots(nrows = 3, ncols=3, 
-                                                     figsize=(22, 28), subplot_kw={"projection": projection})
+                                                     figsize=(32, 28), subplot_kw={"projection": projection})
     
     axes_op = [ax2, ax5, ax8]
     axes_eq = [ax1, ax4, ax7]
@@ -330,41 +340,41 @@ def plot_nao_d18O():
         if i == 0:
             
             plot_correlation(variable="Spearman Coefficients", data=data_eq[i].get("nao_reg_d18O"), units="-", vmax=0.8,
-                             vmin=-0.8, cmap="PRGn", domain="Europe Wide", levels=22,cbar=True, cbar_orientation="horizontal",
+                             vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=True, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_eq[i], fig=fig, cbar_pos= [0.05, 0.01, 0.30, 0.02],
                              plot_pvalues=True, pvalue_data=data_eq[i].get("nao_sig_d18O"), bottom_labels=True, 
-                             title="NAO-$\delta^{18}$Op (EQ)-"+ label)
+                             title="NAO-$\delta^{18}$Op (EQ)-"+ label, plot_projection=projection)
             
             plot_correlation(variable="Spearman Coefficients", data=data_op[i].get("nao_reg_d18O"), units="-", vmax=0.8,
-                             vmin=-0.8, cmap="PRGn", domain="Europe Wide", levels=22,cbar=False, cbar_orientation="horizontal",
+                             vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=data_op[i].get("nao_sig_d18O"), bottom_labels=True,
-                             left_labels=True, title="NAO-$\delta^{18}$Op (OP)-"+ label)
+                             left_labels=True, title="NAO-$\delta^{18}$Op (OP)-"+ label, plot_projection=projection)
             
             plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=data_diff[i].get("d18O_diff"), cmap="PiYG", units="mm/month",
-                 ax=axes_diff[i], fig=fig, vmax=2, vmin=-2, levels=22, domain="Europe Wide", level_ticks=11, 
+                 ax=axes_diff[i], fig=fig, vmax=2, vmin=-2, levels=22, domain="NH Wide", level_ticks=11, 
                  cbar_pos = [0.60, 0.01, 0.30, 0.02], title="[F] $\delta^{18}$Op (OP-EQ)",
-                 left_labels=True, bottom_labels=True, add_colorbar=True, label_format="%.1f")
+                 left_labels=True, bottom_labels=True, add_colorbar=True, label_format="%.1f", plot_projection=projection)
         else:
             plot_correlation(variable="Spearman Coefficients", data=data_eq[i].get("nao_reg_d18O"), units="-", vmax=0.8,
-                             vmin=-0.8, cmap="PRGn", domain="Europe Wide", levels=22,cbar=False,
+                             vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False,
                              level_ticks=7, ax=axes_eq[i], fig=fig,
                              plot_pvalues=True, pvalue_data=data_eq[i].get("nao_sig_d18O"), bottom_labels=True, 
-                             title="NAO-$\delta^{18}$Op (EQ)-"+ label)
+                             title="NAO-$\delta^{18}$Op (EQ)-"+ label, plot_projection=projection)
             
             plot_correlation(variable="Spearman Coefficients", data=data_op[i].get("nao_reg_d18O"), units="-", vmax=0.8,
-                             vmin=-0.8, cmap="PRGn", domain="Europe Wide", levels=22,cbar=False, cbar_orientation="horizontal",
+                             vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=data_op[i].get("nao_sig_d18O"), bottom_labels=True,
-                             left_labels=True, title="NAO-$\delta^{18}$Op (OP)-"+ label)
+                             left_labels=True, title="NAO-$\delta^{18}$Op (OP)-"+ label, plot_projection=projection)
             
             plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=data_diff[i].get("d18O_diff"), cmap="PiYG", units="mm/month",
-                 ax=axes_diff[i], fig=fig, vmax=2, vmin=-2, levels=22, domain="Europe Wide", level_ticks=11, 
+                 ax=axes_diff[i], fig=fig, vmax=2, vmin=-2, levels=22, domain="NH Wide", level_ticks=11, 
                  cbar_pos = [0.60, 0.01, 0.30, 0.02], title="[F] $\delta^{18}$Op (OP-EQ)",
-                 left_labels=True, bottom_labels=True, add_colorbar=False, label_format="%.1f")
+                 left_labels=True, bottom_labels=True, add_colorbar=False, label_format="%.1f", plot_projection=projection)
             
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.10)
-    plt.savefig(os.path.join(path_to_plots, "composite_nao_ea_lm_d18O.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_plots, "composite_nao_ea_lm_d18O_nh.svg"), format= "svg", bbox_inches="tight", dpi=300)
   
 if __name__ == "__main__":
     plot_nao_prec()      
