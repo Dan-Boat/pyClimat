@@ -28,7 +28,8 @@ import seaborn as sns
 from pyClimat.plot_utils import *
 from pyClimat.plots import scatter_plot_laspe_rate
 from pyClimat.data import read_ECHAM_processed
-from pyClimat.analysis import extract_var, compute_lterm_mean, extract_transect, linregression
+from pyClimat.analysis import compute_lterm_mean, extract_transect, linregression
+from pyClimat.variables import extract_var
 
 
 module_output_main_path = "D:/Datasets/Model_output_pst"
@@ -90,15 +91,19 @@ def extract_vars_and_analysis(data, wiso, maxlon=5, maxlat=46, minlon=-1, minlat
                                   Dataset=data)
    
    
-    reg, df = linregression(data_x=elev_transect, data_y=d18op_transect, return_yhat=True)
+    reg, df, pred = linregression(data_x=elev_transect, data_y=d18op_transect, return_yhat=True, get_ci=True)
     
     
-    return_data = {"reg":reg, "df":df}
+    return_data = {"reg":reg, "df":df, "pred":pred}
+    
     
     return return_data
 
+
+
 # plot function 
 def extract_label(data):
+    
     # labels
     slope_pi = data.get("reg").slope*1000
     coef_err_pi = data.get("reg").stderr*1000
@@ -108,10 +113,11 @@ def extract_label(data):
     
     return label
 
+
+
+
 def plot_section_lapse_rate(dataset, makers, colors, labels, ax=None, xlabel=True, ylabel=True, title=None, 
                             ax_legend=True, ymin=None, ymax=None, xmax=None, xmin=None):
-    
-   
     
 
     if ax is None:
@@ -126,8 +132,16 @@ def plot_section_lapse_rate(dataset, makers, colors, labels, ax=None, xlabel=Tru
         
         label_data = extract_label(data)
         sns.regplot(data=data.get("df"), x="X", y="Y", marker=makers[i], 
-                   scatter_kws={"color":colors[i], "s":200}, color=colors[i],ax=ax,
+                   scatter_kws={"color":colors[i], "s":200, "alpha":0.9}, color=colors[i],ax=ax,
                    label=label_data + topo + ")")
+        
+        # plot the prediction interval
+        
+        ax.plot(data.get("df")["X"], data.get("pred")['obs_ci_lower'], linestyle="-",
+                linewidth=0.3, color=colors[i],)
+        
+        ax.plot(data.get("df")["X"], data.get("pred")['obs_ci_upper'], linestyle="-",
+                linewidth=0.3, color=colors[i],)
     
     
     # add the labels (with pvalues estimates)
@@ -240,7 +254,7 @@ def plot_lapse_rate_JJA():
     
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05)
-    plt.savefig(os.path.join(path_to_plots, "W1_lapse_rate_JJA.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    plt.savefig(os.path.join(path_to_plots, "W1_lapse_rate_JJA_ci.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
     
     fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(25, 14), )
@@ -263,7 +277,7 @@ def plot_lapse_rate_JJA():
     
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05)
-    plt.savefig(os.path.join(path_to_plots, "W2_lapse_rate_JJA.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    plt.savefig(os.path.join(path_to_plots, "W2_lapse_rate_JJA_ci.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
 # plotting 
@@ -307,7 +321,7 @@ def plot_lapse_rate_annual():
     
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05)
-    plt.savefig(os.path.join(path_to_plots, "W1_lapse_rate_annual.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    plt.savefig(os.path.join(path_to_plots, "W1_lapse_rate_annual_ci.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
     
     fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(25, 14), )
@@ -330,9 +344,9 @@ def plot_lapse_rate_annual():
     
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05)
-    plt.savefig(os.path.join(path_to_plots, "W2_lapse_rate_annual.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    plt.savefig(os.path.join(path_to_plots, "W2_lapse_rate_annual_ci.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
-plot_lapse_rate_JJA()
+#plot_lapse_rate_JJA()
 plot_lapse_rate_annual()
 

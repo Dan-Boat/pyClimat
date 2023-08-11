@@ -16,6 +16,7 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 from eofs.xarray import Eof
+import statsmodels.api as sm
 
 #importing other routines
 
@@ -363,7 +364,7 @@ def extract_vertical_section(data, maxlon, minlon, maxlat, minlat, dim, sea_land
     
     
     
-def linregression(data_x, data_y, season=None, month=None, return_yhat=True):
+def linregression(data_x, data_y, season=None, month=None, return_yhat=True, get_ci=False):
     """
     
 
@@ -403,6 +404,15 @@ def linregression(data_x, data_y, season=None, month=None, return_yhat=True):
     data_y = data_y[~np.isnan(data_y)]
     
     regression_stats = stats.linregress(data_x, data_y)
+    
+    # get the prediction interval
+    data_xx = sm.add_constant(data_x)
+    model = sm.OLS(data_y, data_xx)
+    r = model.fit()
+    
+    predictions = r.get_prediction(exog=data_xx, transform=False).summary_frame(alpha=0.05)
+    predictions["X"] = data_x
+    
     print("y = {:.5f}x [‰/100m]+ {:.2f}, r²={:.2f}".format(regression_stats.slope*100, regression_stats.intercept, 
                                                            regression_stats.rvalue*-1))
     if return_yhat == True:
@@ -414,6 +424,9 @@ def linregression(data_x, data_y, season=None, month=None, return_yhat=True):
         df_x_y_yhat["yhat"] = yhat
         df_x_y_yhat["X"] = data_x
         df_x_y_yhat["Y"] = data_y
+        
+        if get_ci == True:
+            return regression_stats, df_x_y_yhat, predictions 
             
         return regression_stats, df_x_y_yhat
             
