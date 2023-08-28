@@ -18,6 +18,7 @@ import matplotlib.colors as col
 import matplotlib as mpl 
 from cartopy.util import add_cyclic_point
 from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+from matplotlib.ticker import (MultipleLocator, AutoMinorLocator)
 import cartopy.crs as ccrs
 
 
@@ -25,7 +26,8 @@ import cartopy.crs as ccrs
 from pyClimat.plot_utils import *
 from pyClimat.plots import scatter_plot_laspe_rate
 from pyClimat.data import read_ECHAM_processed
-from pyClimat.analysis import extract_var, compute_lterm_mean, extract_transect, linregression
+from pyClimat.analysis import compute_lterm_mean, extract_transect, linregression
+from pyClimat.variables import extract_var
 
 
 path_to_data = "D:/Datasets/Model_output_pst"
@@ -269,9 +271,9 @@ def plot_cross_section(varname, units, data, hue, ax=None, path_to_store=None, f
 
 # extract
 def estimate_all_transect(varname, units, cal_mean=False):        
-    mdf_low = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=19, minlon=0, maxlat=51, minlat=42,
+    mdf_low = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=19, minlon=-2, maxlat=51, minlat=42,
                                      maxelev=500, land_mask=True, cal_mean=cal_mean)
-    mdf_high = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=19, minlon=0, maxlat=51, minlat=42,
+    mdf_high = extract_var_for_section_all_topo(varname=varname, units=units, maxlon=19, minlon=-2, maxlat=51, minlat=42,
                                      minelev=1000, land_mask=True, cal_mean=cal_mean)
     
     
@@ -305,11 +307,19 @@ fig,(ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(24, 15))
 
 plot_cross_section(varname="$\delta^{18}$Op vs SMOW", units="‰", data=d18op_mdfs.get("low_elev"), 
                    hue="d18op", xlabel=True, title="Low elevation", ax_legend=True, ymin=-24, ymax=0,
-                   ax=ax1, points_data=elev_mdfs.get("low_elev"), point_hue="elev")
+                   ax=ax1, points_data=None,)
 
 plot_cross_section(varname="$\delta^{18}$Op vs SMOW", units="‰", data=d18op_mdfs.get("high_elev"), 
                    hue="d18op", xlabel=True, title="High elevation", ax_legend=False, ymin=-24 , ymax=0,
-                   ax=ax2, points_data=elev_mdfs.get("high_elev"), point_hue="elev")
+                   ax=ax2, points_data=None, )
+
+ax1.yaxis.set_minor_locator(AutoMinorLocator())
+ax1.tick_params(axis='y', which='major', length=8, width=3)
+ax1.tick_params(axis='y', which='minor', length=4, width=1.5)
+
+ax2.yaxis.set_minor_locator(AutoMinorLocator())
+ax2.tick_params(axis='y', which='major', length=8, width=3)
+ax2.tick_params(axis='y', which='minor', length=4, width=1.5)
 
 
 plt.tight_layout()

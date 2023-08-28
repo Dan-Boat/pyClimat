@@ -85,6 +85,22 @@ PuBu_r = plt.cm.PuBu_r
 plasma = plt.cm.plasma
 hot = plt.cm.hot_r
 
+#customized plots
+GryBr = matplotlib.colors.LinearSegmentedColormap.from_list('my_gradient', (
+    (0.000, (0.000, 0.000, 0.000)),
+    (0.250, (0.533, 0.533, 0.533)),
+    (0.500, (1.000, 1.000, 1.000)),
+    (0.750, (0.886, 0.537, 0.137)),
+    (1.000, (0.412, 0.129, 0.000))))
+
+
+GryBr_r = matplotlib.colors.LinearSegmentedColormap.from_list('my_gradient', (
+    (0.000, (0.412, 0.129, 0.000)),
+    (0.250, (0.886, 0.537, 0.137)),
+    (0.500, (1.000, 1.000, 1.000)),
+    (0.750, (0.533, 0.533, 0.533)),
+    (1.000, (0.000, 0.000, 0.000))))
+
 
 
 
@@ -113,6 +129,7 @@ def apply_style(fontsize=28, style=None, linewidth=2):
     rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
     mpl.rc('text', usetex=True)
     mpl.rc('xtick', labelsize=fontsize)
+    mpl.rc('ytick.major', size=6)
     mpl.rc('ytick', labelsize=fontsize)
     mpl.rc('legend', fontsize=fontsize)
     mpl.rc('axes', labelsize=fontsize)

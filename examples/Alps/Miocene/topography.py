@@ -288,15 +288,15 @@ def plot_topo_exps():
         if i ==0:
             plot_echam_topo(variable="Elevation", data=data_to_plot[i], ax=axes[i], cmap=terrain, units="m", vmax=4000, vmin=-100, 
                             levels=31, level_ticks=6, cbar=True, cbar_position= [0.35, 0.05, 0.25, 0.02], 
-                            cbar_orientation="horizontal", norm=norm, plot_coastlines=False, bottom_labels=False,
-                            left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                            cbar_orientation="horizontal", norm=norm, plot_coastlines=False, bottom_labels=True,
+                            left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             projection=projection, domain="Europe", title=label)
             
         else:
     
             plot_echam_topo(variable="Elevation", data=data_to_plot[i], ax=axes[i], cmap=terrain, units="m", vmax=4000, vmin=-100, 
-                            levels=31, level_ticks=6, cbar=False, norm=norm, plot_coastlines=False, bottom_labels=False,
-                            left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                            levels=31, level_ticks=6, cbar=False, norm=norm, plot_coastlines=False, bottom_labels=True,
+                            left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             projection=projection, domain="Europe", title=label)
             
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
@@ -371,8 +371,8 @@ def plot_topo_with_profile_transect():
     
     plot_echam_topo(variable="Elevation", data=W1E1_topo, ax=ax, cmap=terrain, units="m", vmax=4000, vmin=-100, 
                     levels=31, level_ticks=6, cbar=True, cbar_position= [0.30, 0.05, 0.45, 0.02], 
-                    cbar_orientation="horizontal", norm=norm, plot_coastlines=False, bottom_labels=False,
-                    left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                    cbar_orientation="horizontal", norm=norm, plot_coastlines=False, bottom_labels=True,
+                    left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                     projection=projection, domain="Europe")
     add_patches(ax)
     

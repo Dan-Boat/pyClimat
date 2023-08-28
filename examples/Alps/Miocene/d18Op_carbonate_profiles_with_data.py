@@ -15,6 +15,7 @@ import matplotlib.colors as col
 import matplotlib as mpl 
 from cartopy.util import add_cyclic_point
 from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+from matplotlib.ticker import (MultipleLocator, AutoMinorLocator)
 import cartopy.crs as ccrs
 
 
@@ -22,7 +23,8 @@ import cartopy.crs as ccrs
 from pyClimat.plot_utils import *
 from pyClimat.plots import scatter_plot_laspe_rate
 from pyClimat.data import read_ECHAM_processed
-from pyClimat.analysis import extract_var, compute_lterm_mean, extract_transect, extract_profile
+from pyClimat.analysis import compute_lterm_mean, extract_transect, extract_profile
+from pyClimat.variables import extract_var
 
 
 path_to_data = "D:/Datasets/Model_output_pst"
@@ -30,8 +32,9 @@ path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/
 
 proxies_path_low = "C:/Users/dboateng/Desktop/Datasets/Alps_d18op/low_elevation.csv"
 proxies_path_high = "C:/Users/dboateng/Desktop/Datasets/Alps_d18op/high_elevation.csv"
+proxies_from_paper = "C:/Users/dboateng/Desktop/Datasets/Alps_d18op/from_knisk_et_al.csv"
 
-
+proxy_paper = pd.read_csv(proxies_from_paper)
 proxy_data_low = pd.read_csv(proxies_path_low)
 proxy_data_high = pd.read_csv(proxies_path_high)
 
@@ -122,8 +125,9 @@ def extract_vars_and_analysis(data, wiso):
 
 def plot_profiles_all(varname, units, data_mio278, data_mio450, ax=None, path_to_store=None, filename=None,
                        colors=None, xlabel=True, ylabel=True, title=None, ax_legend=True,
-                       ymin=None, ymax=None, dim="lon", proxy=None, control_data=None,
-                       marker="v", proxy_label="low elevation samples", vmax=25, vmin=5, fig=None):
+                       ymin=None, ymax=None, dim="lon", proxy_low=None, control_data=None,
+                       marker_low="v", proxy_low_label="low elevation samples", vmax=25, vmin=5, fig=None,
+                       proxy_high=None, marker_high="o", proxy_high_label="high elevation samples"):
     
     topo_names = ["W1E1", "W2E0", "W2E1", "W2E1.5", "W2E2"]
     
@@ -140,18 +144,36 @@ def plot_profiles_all(varname, units, data_mio278, data_mio450, ax=None, path_to
     if control_data is not None:
         control_data.plot(ax=ax, linestyle="-", color=black, linewidth=3)
     
-    if proxy is not None:
-        p = ax.scatter(x=proxy[dim], y=proxy["d18op"], s=500, c=proxy["age"], cmap="winter",
-                   marker=marker, vmax=vmax, vmin=vmin, alpha=0.95)
+    if proxy_low is not None:
         
-        ax.errorbar(x=proxy[dim], y=proxy["d18op"], yerr=proxy["d18op_error"], xerr=None,
-                    ls="none", color="black", capthick=3, capsize=4, label=proxy_label)
+        proxy_low = proxy_low.groupby(dim).mean()
+        
+        proxy_low = proxy_low.reset_index()
+        p = ax.scatter(x=proxy_low[dim], y=proxy_low["d18op"], s=600, c=proxy_low["age"], cmap="winter",
+                   marker=marker_low, vmax=vmax, vmin=vmin, alpha=0.95)
+        
+        ax.errorbar(x=proxy_low[dim], y=proxy_low["d18op"], yerr=proxy_low["d18op_error"], xerr=None,
+                    ls="none", color="black", capthick=3, capsize=4, label=proxy_low_label)
         
         cbar_pos = [0.94, 0.30, 0.03, 0.45]
         
         cbar_ax = fig.add_axes(cbar_pos)
         
         plt.colorbar(p, label="age (Ma)", shrink=0.3, cax=cbar_ax)
+        
+        
+    if proxy_high is not None:
+        
+        proxy_high = proxy_high.groupby(dim).mean()
+        
+        proxy_high = proxy_high.reset_index()
+        
+        p = ax.scatter(x=proxy_high[dim], y=proxy_high["d18op"], s=600, c=proxy_high["age"], cmap="winter",
+                   marker=marker_high, vmax=vmax, vmin=vmin, alpha=0.95)
+        
+        ax.errorbar(x=proxy_high[dim], y=proxy_high["d18op"], yerr=proxy_high["d18op_error"], xerr=None,
+                    ls="none", color="black", capthick=3, capsize=4, label=proxy_high_label)
+        
             
     if ylabel:
         ax.set_ylabel(varname + " [" + units + "]", fontweight="bold", fontsize=28)
@@ -234,48 +256,57 @@ df_PI_lat["PI(W1E1)"] = PI_profile.get("lat")
 
 
 
-def plot_profile_low():
+def plot_profile():
     apply_style(fontsize=28, style="seaborn-talk", linewidth=3,)
     
     fig, (ax1, ax2) = plt.subplots(nrows = 1, ncols = 2, figsize=(30, 15), sharey=False)
     
     
     plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lon, 
-                      data_mio450=df_mio450_lon, ax=ax1, ax_legend=True,ymax=-2, ymin=-20, dim="lon", 
-                      control_data=df_PI_lon, proxy=proxy_data_low, fig=fig, 
-                      proxy_label="Low elevation proxies", marker="v",  vmax=20, vmin=10)
+                      data_mio450=df_mio450_lon, ax=ax1, ax_legend=True,ymax=0, ymin=-22, dim="lon", 
+                      control_data=df_PI_lon, proxy_low=proxy_data_low, proxy_high=proxy_data_high, fig=fig, 
+                      vmax=16, vmin=13)
     
     plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lat, 
-                      data_mio450=df_mio450_lat, ax=ax2, ax_legend=False,ymax=-2, ymin=-20, dim="lat", 
-                      control_data=df_PI_lat, proxy=proxy_data_low, ylabel=True, fig=fig, 
-                      proxy_label="Low elevation proxies",  marker="v", vmax=20, vmin=10)
+                      data_mio450=df_mio450_lat, ax=ax2, ax_legend=False,ymax=0, ymin=-22, dim="lat", 
+                      control_data=df_PI_lat, proxy_low=proxy_data_low, proxy_high=proxy_data_high,
+                      ylabel=True, fig=fig, vmax=16, vmin=13)
+    
+    
+    ax1.yaxis.set_minor_locator(AutoMinorLocator())
+    ax1.tick_params(axis='y', which='major', length=8, width=3)
+    ax1.tick_params(axis='y', which='minor', length=4, width=1.5)
+
+    ax2.yaxis.set_minor_locator(AutoMinorLocator())
+    ax2.tick_params(axis='y', which='major', length=8, width=3)
+    ax2.tick_params(axis='y', which='minor', length=4, width=1.5)
     
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.90, top=0.97, bottom=0.05, wspace=0.12)
-    plt.savefig(os.path.join(path_to_plots, "d18Op_profile_with_low.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    plt.savefig(os.path.join(path_to_plots, "d18Op_profile_with_proxies.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
     
     
-def plot_profile_high():
-    apply_style(fontsize=28, style="seaborn-talk", linewidth=3,)
+# def plot_profile_high():
+#     apply_style(fontsize=28, style="seaborn-talk", linewidth=3,)
     
-    fig, (ax1, ax2) = plt.subplots(nrows = 1, ncols = 2, figsize=(30, 15), sharey=False)
+#     fig, (ax1, ax2) = plt.subplots(nrows = 1, ncols = 2, figsize=(30, 15), sharey=False)
     
     
-    plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lon, 
-                      data_mio450=df_mio450_lon, ax=ax1, ax_legend=True,ymax=-2, ymin=-20, dim="lon", 
-                      control_data=df_PI_lon, proxy=proxy_data_high, fig=fig, 
-                      proxy_label="High elevation proxies", marker="o",  vmax=20, vmin=10)
+#     plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lon, 
+#                       data_mio450=df_mio450_lon, ax=ax1, ax_legend=True,ymax=-2, ymin=-20, dim="lon", 
+#                       control_data=df_PI_lon, proxy=proxy_data_high, fig=fig, 
+#                       proxy_label="High elevation proxies", marker="o",  vmax=20, vmin=10)
     
-    plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lat, 
-                      data_mio450=df_mio450_lat, ax=ax2, ax_legend=False,ymax=-2, ymin=-20, dim="lat", 
-                      control_data=df_PI_lat, proxy=proxy_data_high, ylabel=True, fig=fig, 
-                      proxy_label="High elevation proxies",  marker="o", vmax=20, vmin=10)
+#     plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lat, 
+#                       data_mio450=df_mio450_lat, ax=ax2, ax_legend=False,ymax=-2, ymin=-20, dim="lat", 
+#                       control_data=df_PI_lat, proxy=proxy_data_high, ylabel=True, fig=fig, 
+#                       proxy_label="High elevation proxies",  marker="o", vmax=20, vmin=10)
     
-    plt.tight_layout()
-    plt.subplots_adjust(left=0.05, right=0.90, top=0.97, bottom=0.05, wspace=0.12)
-    plt.savefig(os.path.join(path_to_plots, "d18Op_profile_with_high.svg"), format= "svg", bbox_inches="tight", dpi=600)
+#     plt.tight_layout()
+    # plt.subplots_adjust(left=0.05, right=0.90, top=0.97, bottom=0.05, wspace=0.12)
+    # plt.savefig(os.path.join(path_to_plots, "d18Op_profile_with_high.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
-plot_profile_low()
-plot_profile_high()
+plot_profile()
+#plot_profile_high()

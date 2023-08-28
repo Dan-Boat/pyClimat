@@ -1138,7 +1138,7 @@ def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, 
         
         if sea_land_mask is not None:
             
-            sea_land_mask.plot.contour(colors="k", linestyles="-", ax=ax, transform=projection_p, levels=[0], linewidths=1.0,
+            sea_land_mask.plot.contour(colors="k", linestyles="-", ax=ax, transform=projection_p, levels=[0], linewidths=1.2,
                                       )
         
         

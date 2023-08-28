@@ -23,7 +23,8 @@ import cartopy.crs as ccrs
 from pyClimat.plot_utils import *
 from pyClimat.plots import plot_annual_mean
 from pyClimat.data import read_ECHAM_processed
-from pyClimat.analysis import extract_var, compute_lterm_mean, compute_lterm_diff
+from pyClimat.analysis import compute_lterm_mean, compute_lterm_diff
+from pyClimat.variables import extract_var
 
 
 path_to_data = "D:/Datasets/Model_output_pst"
@@ -105,7 +106,7 @@ def plot_d18Op_global(axes=None, fig=None):
             
             plot_annual_mean(variable="$\delta^{18}$Op vs SMOW", data_alt=data[i].get("d18Op"), ax=axes[i],
                              cmap=RdYlBu, units="‰", vmax=2, vmin=-28, 
-                            levels=22, level_ticks=11, add_colorbar=True, cbar_pos= [0.25, 0.05, 0.45, 0.02], 
+                            levels=22, level_ticks=11, add_colorbar=True, cbar_pos= [0.05, 0.05, 0.25, 0.02], 
                             orientation="horizontal", plot_coastlines=True, bottom_labels=False,
                             left_labels=False, fig=fig, plot_borders=False, coast_resolution="110m",
                             plot_projection=projection, title=label, center=False)
@@ -119,8 +120,8 @@ def plot_d18Op_global(axes=None, fig=None):
             
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout() 
-    plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
-    plt.savefig(os.path.join(path_to_plots, "d18Op_global.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    # plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
+    # plt.savefig(os.path.join(path_to_plots, "d18Op_global.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
     
 def plot_temperature_global(axes=None, fig=None):
@@ -139,7 +140,7 @@ def plot_temperature_global(axes=None, fig=None):
             
             plot_annual_mean(variable="Temperature", data_alt=data[i].get("temperature"), ax=axes[i],
                              cmap=Spectral_r, units="°C", vmax=40, vmin=-10, 
-                            levels=22, level_ticks=11, add_colorbar=True, cbar_pos= [0.25, 0.05, 0.45, 0.02], 
+                            levels=22, level_ticks=11, add_colorbar=True, cbar_pos= [0.35, 0.05, 0.25, 0.02], 
                             orientation="horizontal", plot_coastlines=True, bottom_labels=False,
                             left_labels=False, fig=fig, plot_borders=False, coast_resolution="110m",
                             plot_projection=projection, title=label, center=False)
@@ -153,8 +154,8 @@ def plot_temperature_global(axes=None, fig=None):
             
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout() 
-    plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
-    plt.savefig(os.path.join(path_to_plots, "temperature_global.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    # plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
+    # plt.savefig(os.path.join(path_to_plots, "temperature_global.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
 def plot_precipitation_global(axes=None, fig=None):
     apply_style(fontsize=28, style=None, linewidth=2.5) 
@@ -173,7 +174,7 @@ def plot_precipitation_global(axes=None, fig=None):
             
             plot_annual_mean(variable="Precipitation", data_alt=data[i].get("precipitation"), ax=axes[i],
                              cmap=YlGnBu, units="mm/month", vmax=450, vmin=0, 
-                            levels=22, level_ticks=7, add_colorbar=True, cbar_pos= [0.25, 0.05, 0.45, 0.02], 
+                            levels=22, level_ticks=7, add_colorbar=True, cbar_pos= [0.65, 0.05, 0.25, 0.02], 
                             orientation="horizontal", plot_coastlines=True, bottom_labels=False,
                             left_labels=False, fig=fig, plot_borders=False, coast_resolution="110m",
                             plot_projection=projection, title=label, center=False)
@@ -187,8 +188,8 @@ def plot_precipitation_global(axes=None, fig=None):
             
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout() 
-    plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
-    plt.savefig(os.path.join(path_to_plots, "precipitation_global.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    # plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
+    # plt.savefig(os.path.join(path_to_plots, "precipitation_global.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
 
@@ -209,7 +210,7 @@ def plot_all_on_fig():
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout() 
     plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05, hspace=0.01)
-    plt.savefig(os.path.join(path_to_plots, "all_global.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    plt.savefig(os.path.join(path_to_plots, "all_global_climatologies.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
 if __name__ == "__main__":
     # plot_precipitation_global()

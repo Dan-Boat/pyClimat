@@ -23,7 +23,8 @@ import cartopy.crs as ccrs
 from pyClimat.plot_utils import *
 from pyClimat.plots import plot_annual_mean
 from pyClimat.data import read_ECHAM_processed
-from pyClimat.analysis import extract_var, compute_lterm_mean, compute_lterm_diff
+from pyClimat.analysis import compute_lterm_mean, compute_lterm_diff
+from pyClimat.variables import extract_var
 
 
 path_to_data = "D:/Datasets/Model_output_pst"
@@ -180,19 +181,19 @@ def plot_d18Op_missing():
         if i == 0:
             
             plot_annual_mean(variable="$\delta^{18}$Op vs SMOW difference", data_alt=data[i].get("missing_ltm"), ax=axes[i],
-                             cmap="PRGn", units="‰", vmax=5, vmin=-5, 
+                             cmap=GryBr_r, units="‰", vmax=5, vmin=-5, 
                             levels=22, level_ticks=11, add_colorbar=True, cbar_pos= [0.30, 0.05, 0.45, 0.02], 
-                            orientation="horizontal", plot_coastlines=False, bottom_labels=False,
-                            left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                            orientation="horizontal", plot_coastlines=False, bottom_labels=True,
+                            left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             plot_projection=projection, domain="Europe", compare_data1=data[i].get("simulated_change_mon"), 
                             compare_data2=data[i].get("expected_mon"), max_pvalue=0.1, plot_stats=True,
                             hatches=".", title=label)
             
         else:
             plot_annual_mean(variable="$\delta^{18}$Op vs SMOW difference", data_alt=data[i].get("missing_ltm"), ax=axes[i],
-                             cmap="PRGn", units="‰", vmax=5, vmin=-5, 
-                            levels=22, level_ticks=11, add_colorbar=False, plot_coastlines=False, bottom_labels=False,
-                            left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                             cmap=GryBr_r, units="‰", vmax=5, vmin=-5, 
+                            levels=22, level_ticks=11, add_colorbar=False, plot_coastlines=False, bottom_labels=True,
+                            left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             plot_projection=projection, domain="Europe", compare_data1=data[i].get("simulated_change_mon"), 
                             compare_data2=data[i].get("expected_mon"), max_pvalue=0.1, plot_stats=True,
                             hatches=".", title=label)
@@ -223,19 +224,19 @@ def plot_d18Op_simulated():
         if i == 0:
             
             plot_annual_mean(variable="$\delta^{18}$Op vs SMOW difference", data_alt=data[i].get("simulated_change_ltm"), 
-                             ax=axes[i], cmap="PRGn", units="‰", vmax=8, vmin=-8, 
+                             ax=axes[i], cmap=GryBr_r, units="‰", vmax=10, vmin=-10, 
                             levels=22, level_ticks=11, add_colorbar=True, cbar_pos= [0.30, 0.05, 0.45, 0.02], 
-                            orientation="horizontal", plot_coastlines=False, bottom_labels=False,
-                            left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                            orientation="horizontal", plot_coastlines=False, bottom_labels=True,
+                            left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             plot_projection=projection, domain="Europe", compare_data1=data[i].get("simulated_mon"), 
                             compare_data2=data[i].get("control_mon"), max_pvalue=0.1, plot_stats=True,
                             hatches=".", title=label)
             
         else:
             plot_annual_mean(variable="$\delta^{18}$Op vs SMOW difference", data_alt=data[i].get("simulated_change_ltm"), ax=axes[i],
-                             cmap="PRGn", units="‰", vmax=8, vmin=-8, 
-                            levels=22, level_ticks=11, add_colorbar=False, plot_coastlines=False, bottom_labels=False,
-                            left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                             cmap=GryBr_r, units="‰", vmax=8, vmin=-8, 
+                            levels=22, level_ticks=11, add_colorbar=False, plot_coastlines=False, bottom_labels=True,
+                            left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             plot_projection=projection, domain="Europe", compare_data1=data[i].get("simulated_mon"), 
                             compare_data2=data[i].get("control_mon"), max_pvalue=0.1, plot_stats=True,
                             hatches=".", title=label)
@@ -267,17 +268,17 @@ def plot_d18Op_expected():
         if i == 0:
             
             plot_annual_mean(variable="$\delta^{18}$Op vs SMOW difference", data_alt=data[i].get("expected_change_ltm"), 
-                             ax=axes[i], cmap="PRGn", units="‰", vmax=8, vmin=-8, 
+                             ax=axes[i], cmap=GryBr_r, units="‰", vmax=10, vmin=-10, 
                             levels=22, level_ticks=11, add_colorbar=True, cbar_pos= [0.30, 0.05, 0.45, 0.02], 
-                            orientation="horizontal", plot_coastlines=False, bottom_labels=False,
-                            left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                            orientation="horizontal", plot_coastlines=False, bottom_labels=True,
+                            left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             plot_projection=projection, domain="Europe", title=label)
             
         else:
             plot_annual_mean(variable="$\delta^{18}$Op vs SMOW difference", data_alt=data[i].get("expected_change_ltm"), ax=axes[i],
-                             cmap="PRGn", units="‰", vmax=8, vmin=-8, 
-                            levels=22, level_ticks=11, add_colorbar=False, plot_coastlines=False, bottom_labels=False,
-                            left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                             cmap=GryBr_r, units="‰", vmax=8, vmin=-8, 
+                            levels=22, level_ticks=11, add_colorbar=False, plot_coastlines=False, bottom_labels=True,
+                            left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             plot_projection=projection, domain="Europe", title=label)
             
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
@@ -288,7 +289,7 @@ def plot_d18Op_expected():
 
 
 if __name__ == "__main__":
-    plot_d18Op_missing()
+    #plot_d18Op_missing()
     plot_d18Op_expected()
     plot_d18Op_simulated()
 
