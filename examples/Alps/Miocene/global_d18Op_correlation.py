@@ -21,7 +21,8 @@ import cartopy.crs as ccrs
 from pyClimat.plot_utils import *
 from pyClimat.plots import plot_correlation
 from pyClimat.data import read_ECHAM_processed, read_from_path
-from pyClimat.analysis import extract_var, compute_lterm_mean, compute_lterm_diff
+from pyClimat.analysis import compute_lterm_mean, compute_lterm_diff
+from pyClimat.variables import extract_var
 from pyClimat.stats import  StatCorr
 from pyClimat.utils import extract_region
 
@@ -127,8 +128,8 @@ for i,label in enumerate(labels):
     if i == 0:
 
         plot_correlation(variable="Spearman Coefficients", data=data.get(sval[i]), units="-", vmax=1,
-                         vmin=-1, cmap="coolwarm", domain="Europe Wide", levels=22,cbar=True, cbar_orientation="horizontal",
-                         level_ticks=7, ax=axes[i], fig=fig, cbar_pos= [0.35, 0.01, 0.30, 0.02],
+                         vmin=-1, cmap=corr, domain="Europe Wide", levels=22,cbar=True, cbar_orientation="horizontal",
+                         level_ticks=9, ax=axes[i], fig=fig, cbar_pos= [0.35, 0.01, 0.30, 0.02],
                          plot_pvalues=True, pvalue_data=data.get(sig[i]), bottom_labels=True, title=label,
                          plot_projection=projection, plot_coastlines=False, sea_land_mask=mio_slm)
         
@@ -136,8 +137,8 @@ for i,label in enumerate(labels):
         
 
         plot_correlation(variable="Spearman Coefficients", data=data.get(sval[i]), units="-", vmax=1,
-                         vmin=-1, cmap="coolwarm", domain="Europe Wide", levels=22,cbar=False, cbar_orientation="horizontal",
-                         level_ticks=7, ax=axes[i], fig=fig, plot_pvalues=True, pvalue_data=data.get(sig[i]),
+                         vmin=-1, cmap=corr, domain="Europe Wide", levels=22,cbar=False, cbar_orientation="horizontal",
+                         level_ticks=9, ax=axes[i], fig=fig, plot_pvalues=True, pvalue_data=data.get(sig[i]),
                          title=label, plot_projection=projection, plot_coastlines=False, sea_land_mask=mio_slm)
 
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 

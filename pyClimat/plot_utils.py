@@ -102,6 +102,23 @@ GryBr_r = matplotlib.colors.LinearSegmentedColormap.from_list('my_gradient', (
     (1.000, (0.000, 0.000, 0.000))))
 
 
+PrecAno = matplotlib.colors.LinearSegmentedColormap.from_list('precipitation_anomalies', (
+    # Edit this gradient at https://eltos.github.io/gradient/#precipitation_anomalies=6F3200-FF953F-FFFFFF-009B30-00551A
+    (0.000, (0.435, 0.196, 0.000)),
+    (0.250, (1.000, 0.584, 0.247)),
+    (0.500, (1.000, 1.000, 1.000)),
+    (0.750, (0.000, 0.608, 0.188)),
+    (1.000, (0.000, 0.333, 0.102))))
+
+corr = matplotlib.colors.LinearSegmentedColormap.from_list('correlation', (
+    # Edit this gradient at https://eltos.github.io/gradient/#correlation=0000D6-6F6FFF-FCFCFF-D7A959-815508
+    (0.000, (0.000, 0.000, 0.839)),
+    (0.250, (0.435, 0.435, 1.000)),
+    (0.500, (0.988, 0.988, 1.000)),
+    (0.750, (0.843, 0.663, 0.349)),
+    (1.000, (0.506, 0.333, 0.031))))
+
+
 
 
 

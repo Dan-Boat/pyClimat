@@ -21,7 +21,8 @@ import cartopy.crs as ccrs
 from pyClimat.plot_utils import *
 from pyClimat.plots import plot_annual_mean
 from pyClimat.data import read_ECHAM_processed
-from pyClimat.analysis import extract_var, compute_lterm_mean, compute_lterm_diff
+from pyClimat.analysis import compute_lterm_mean, compute_lterm_diff
+from pyClimat.variables import extract_var
 
 
 path_to_data = "D:/Datasets/Model_output_pst"
@@ -92,14 +93,14 @@ projection = ccrs.Robinson(central_longitude=0, globe=None)
 fig,((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(nrows=2, ncols=3, figsize=(24,18), subplot_kw={"projection":projection})
 
 plot_annual_mean(variable="$\delta^{18}$Op vs SMOW anomalies", data_alt=Mio278_data.get("d18Op"), ax=ax1,
-                 cmap="PRGn", units="‰", vmax=5, vmin=-5, 
+                 cmap=GryBr_r, units="‰", vmax=5, vmin=-5, 
                 levels=22, level_ticks=11, add_colorbar=True, plot_coastlines=False, bottom_labels=False,
                 left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                 plot_projection=projection, title="(a) MIO 278ppm - PI", orientation="horizontal",
                 cbar_pos= [0.05, 0.05, 0.25, 0.02])
 
 plot_annual_mean(variable="Precipitation anomalies", data_alt=Mio278_data.get("precipitation"), ax=ax2,
-                 cmap="BrBG", units="mm/month", vmax=150, vmin=-150, 
+                 cmap=PrecAno, units="mm/month", vmax=150, vmin=-150, 
                 levels=22, level_ticks=7, add_colorbar=True, plot_coastlines=False, bottom_labels=False,
                 left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                 plot_projection=projection, title="(b) MIO 278ppm - PI", orientation="horizontal",
@@ -114,13 +115,13 @@ plot_annual_mean(variable="Temperature anomalies", data_alt=Mio278_data.get("tem
 
 
 plot_annual_mean(variable="$\delta^{18}$Op vs SMOW anomalies", data_alt=Mio450_data.get("d18Op"), ax=ax4,
-                 cmap="PRGn", units="‰", vmax=5, vmin=-5, 
+                 cmap=GryBr_r, units="‰", vmax=5, vmin=-5, 
                 levels=22, level_ticks=11, add_colorbar=False, plot_coastlines=False, bottom_labels=False,
                 left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                 plot_projection=projection, title="(e) MIO 450ppm - PI", center=False,)
 
 plot_annual_mean(variable="Precipitation anomalies", data_alt=Mio450_data.get("precipitation"), ax=ax5,
-                 cmap="BrBG", units="mm/month", vmax=150, vmin=-150, 
+                 cmap=PrecAno, units="mm/month", vmax=150, vmin=-150, 
                 levels=22, level_ticks=7, add_colorbar=False, plot_coastlines=False, bottom_labels=False,
                 left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                 plot_projection=projection, title="(f) MIO 450ppm - PI",)

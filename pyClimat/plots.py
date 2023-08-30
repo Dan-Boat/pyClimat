@@ -1540,7 +1540,7 @@ def plot_correlation(variable, data, cmap = None, levels=None, units=None, ax=No
                      output_format=None, level_ticks=None, title=None, path_to_store=None, cbar = None, cbar_orientation=None, 
                      cbar_pos = None,plot_pvalues=False, pvalue_data=None,use_AlbersEqualArea=False,
                      fig=None, vmax=None, vmin=None, left_labels= True, bottom_labels=True, plot_coastlines=True,
-                     plot_projection=None, coast_resolution=None, plot_borders=False,sea_land_mask=None,
+                     plot_projection=None, coast_resolution=None, plot_borders=False,sea_land_mask=None, extend="neither",
                      ):
     import cartopy.crs as ccrs
     import cartopy.feature as cfeature
@@ -1576,7 +1576,7 @@ def plot_correlation(variable, data, cmap = None, levels=None, units=None, ax=No
             
             p = data.plot.imshow(ax=ax, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, transform = projection,
                                  cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": cbar_orientation, 
-                                               "shrink": 0.7, "format": "%.1f", "ticks":ticks}, extend= "both", 
+                                               "shrink": 0.7, "format": "%.1f", "ticks":ticks}, extend= extend, 
                                  add_colorbar=True, cbar_ax=cbar_ax,
                                  add_labels=False)
             
@@ -1591,7 +1591,7 @@ def plot_correlation(variable, data, cmap = None, levels=None, units=None, ax=No
     else:
         p = data.plot.imshow(ax =ax, cmap=cmap, transform = projection, 
                                  cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": cbar_orientation, 
-                                               "shrink": 0.50, "format": "%.1f", "ticks":ticks}, extend= "both")
+                                               "shrink": 0.50, "format": "%.1f", "ticks":ticks}, extend= extend)
     
     if plot_coastlines==False:
         if sea_land_mask is not None:

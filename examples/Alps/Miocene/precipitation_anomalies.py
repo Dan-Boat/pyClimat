@@ -21,7 +21,8 @@ import cartopy.crs as ccrs
 from pyClimat.plot_utils import *
 from pyClimat.plots import plot_annual_mean
 from pyClimat.data import read_ECHAM_processed
-from pyClimat.analysis import extract_var, compute_lterm_mean, compute_lterm_diff
+from pyClimat.analysis import compute_lterm_mean, compute_lterm_diff
+from pyClimat.variables import extract_var
 
 
 
@@ -100,10 +101,11 @@ def extract_prec_and_analysis(exp_data, exp_wiso, W1E1_data, W1E1_wiso):
     
     simulated_prec_change_alt = compute_lterm_diff(data_control=w1e1_prec_data, data_main=exp_prec_data,
                                           time="annual")
+    simulated_climatologies = compute_lterm_mean(data=exp_prec_data, time="annual")
     
     
     return_data_monthly = {"control_mon": w1e1_prec_data, "simulated_mon": exp_prec_data,}
-    return_data_ltm = {"simulated_change_ltm": simulated_prec_change_alt}
+    return_data_ltm = {"simulated_change_ltm": simulated_prec_change_alt, "climatology_means": simulated_climatologies}
     
     return_data = return_data_monthly | return_data_ltm
     
@@ -159,19 +161,19 @@ def plot_prec_simulated():
         if i == 0:
             
             plot_annual_mean(variable="Precipitation difference", data_alt=data[i].get("simulated_change_ltm"), ax=axes[i],
-                             cmap=BrBG, units="mm/month", vmax=60, vmin=-60, 
-                            levels=22, level_ticks=8, add_colorbar=True, cbar_pos= [0.30, 0.05, 0.45, 0.02], 
-                            orientation="horizontal", plot_coastlines=False, bottom_labels=False,
-                            left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                             cmap=PrecAno, units="mm/month", vmax=60, vmin=-60, 
+                            levels=22, level_ticks=9, add_colorbar=True, cbar_pos= [0.30, 0.05, 0.45, 0.02], 
+                            orientation="horizontal", plot_coastlines=False, bottom_labels=True,
+                            left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             plot_projection=projection, domain="Europe", compare_data1=data[i].get("simulated_mon"), 
                             compare_data2=data[i].get("control_mon"), max_pvalue=0.1, plot_stats=True,
                             hatches=".", title=label)
             
         else:
             plot_annual_mean(variable="Precipitation difference", data_alt=data[i].get("simulated_change_ltm"), ax=axes[i],
-                             cmap=BrBG, units="mm/month", vmax=60, vmin=-60, 
-                            levels=22, level_ticks=8, add_colorbar=False, plot_coastlines=False, bottom_labels=False,
-                            left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                             cmap=PrecAno, units="mm/month", vmax=60, vmin=-60, 
+                            levels=22, level_ticks=9, add_colorbar=False, plot_coastlines=False, bottom_labels=True,
+                            left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             plot_projection=projection, domain="Europe", compare_data1=data[i].get("simulated_mon"), 
                             compare_data2=data[i].get("control_mon"), max_pvalue=0.1, plot_stats=True,
                             hatches=".", title=label)
@@ -181,4 +183,45 @@ def plot_prec_simulated():
     plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
     plt.savefig(os.path.join(path_to_plots, "prec_change.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
-plot_prec_simulated()
+    
+def plot_prec_climatologies():
+    apply_style(fontsize=28, style=None, linewidth=2.5) 
+            
+    projection = ccrs.Robinson(central_longitude=0, globe=None)
+    
+    fig,((ax1, ax2), (ax3, ax4), (ax5, ax6), (ax7, ax8)) = plt.subplots(nrows=4, ncols=2, figsize=(22,28), 
+                                                                    subplot_kw={"projection":projection})
+    
+    axes = [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8]
+    labels = ["(a) W2E0 (MIO 278ppm)",  "(b) W2E0 (MIO 450ppm)",  "(c) W2E1 (MIO 278ppm)", 
+              "(d) W2E1 (MIO 450ppm)", "(e) W2E1.5 (MIO 278ppm)",  "(f) W2E1.5 (MIO 450ppm)",
+              "(g) W2E2 (MIO 278ppm)",  "(h) W2E2 (MIO 450ppm)"]
+    
+    data = [W2E0_278_diff, W2E0_450_diff, W2E1_278_diff, W2E1_450_diff, W2E15_278_diff, W2E15_450_diff,
+            W2E2_278_diff, W2E2_450_diff,]
+    
+    
+    for i,label in enumerate(labels):
+        if i == 0:
+            
+            plot_annual_mean(variable="Precipitation", data_alt=data[i].get("climatology_means"), ax=axes[i],
+                             cmap=YlGnBu, units="mm/month", vmax=300, vmin=0, 
+                            levels=22, level_ticks=7, add_colorbar=True, cbar_pos= [0.30, 0.05, 0.45, 0.02], 
+                            orientation="horizontal", plot_coastlines=False, bottom_labels=True,
+                            left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                            plot_projection=projection, domain="Europe", title=label)
+            
+        else:
+            plot_annual_mean(variable="Precipitation", data_alt=data[i].get("climatology_means"), ax=axes[i],
+                             cmap=YlGnBu, units="mm/month", vmax=300, vmin=0, 
+                            levels=22, level_ticks=7, add_colorbar=False, plot_coastlines=False, bottom_labels=True,
+                            left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                            plot_projection=projection, domain="Europe", title=label)
+            
+    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+    plt.tight_layout() 
+    plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
+    plt.savefig(os.path.join(path_to_plots, "prec_climatologies.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    
+#plot_prec_simulated()
+plot_prec_climatologies()

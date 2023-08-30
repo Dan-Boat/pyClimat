@@ -254,7 +254,59 @@ df_PI_lon["PI(W1E1)"] = PI_profile.get("lon")
 df_PI_lat = pd.DataFrame(index=PI_profile.get("lat").index.values, columns=["PI(W1E1)"]) 
 df_PI_lat["PI(W1E1)"] = PI_profile.get("lat")
 
+path_to_gtopo = "D:/Datasets/ECHAM5/Inputs/CTL_gtopo/global_gtopo30.nc"
 
+data = xr.open_dataset(path_to_gtopo)
+
+elev_data = data.z
+
+def extract_topo_profile(ax1=None, ax2=None,):
+    
+    extract_lon = extract_profile(data = elev_data, maxlon=25, minlon=-5, maxlat=46.5, minlat=46, 
+                              dim="lon", to_pandas=True)
+    
+    extract_lat = extract_profile(data = elev_data, maxlon=10.5, minlon=10, maxlat=54, minlat=40, 
+                              dim="lat", to_pandas=True)
+    
+    extract_lon = extract_lon/1000
+    
+    extract_lat = extract_lat/1000
+    
+    ax1_ = ax1.twinx()
+    ax1_.grid(False)
+    
+    ax2_ = ax2.twinx()
+    ax2_.grid(False)
+    
+    extract_lon.plot(ax=ax1_, linestyle="-", color="black", linewidth=2, legend=False)
+    extract_lon.plot(kind="area", color="black", alpha=0.1, legend=False, stacked=False,
+                   ax=ax1_) 
+    
+    ax1_.set_ylim(0, 9)
+    ax1_.yaxis.set_label_position("right")
+    ax1_.yaxis.tick_right()
+    #ax1_.set_ylabel("Elevation [km]", fontweight="bold", fontsize=28)
+    
+    ax1_.yaxis.set_minor_locator(AutoMinorLocator())
+    ax1_.tick_params(axis='y', which='major', length=8, width=3)
+    ax1_.tick_params(axis='y', which='minor', length=4, width=1.5)
+    
+    
+    extract_lat.plot(ax=ax2_, linestyle="-", color="black", linewidth=2, legend=False)
+    extract_lat.plot(kind="area", color="black", alpha=0.1, legend=False, stacked=False,
+                   ax=ax2_) 
+    
+    ax2_.set_ylim(0, 9)
+    ax2_.yaxis.set_label_position("right")
+    ax2_.yaxis.tick_right()
+    ax2_.set_ylabel("Elevation [km]", fontweight="bold", fontsize=28)
+    
+    ax2_.yaxis.set_minor_locator(AutoMinorLocator())
+    ax2_.tick_params(axis='y', which='major', length=8, width=3)
+    ax2_.tick_params(axis='y', which='minor', length=4, width=1.5)
+    
+    
+    
 
 def plot_profile():
     apply_style(fontsize=28, style="seaborn-talk", linewidth=3,)
@@ -263,14 +315,14 @@ def plot_profile():
     
     
     plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lon, 
-                      data_mio450=df_mio450_lon, ax=ax1, ax_legend=True,ymax=0, ymin=-22, dim="lon", 
+                      data_mio450=df_mio450_lon, ax=ax1, ax_legend=True,ymax=0, ymin=-22.5, dim="lon", 
                       control_data=df_PI_lon, proxy_low=proxy_data_low, proxy_high=proxy_data_high, fig=fig, 
                       vmax=16, vmin=13)
     
     plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lat, 
-                      data_mio450=df_mio450_lat, ax=ax2, ax_legend=False,ymax=0, ymin=-22, dim="lat", 
+                      data_mio450=df_mio450_lat, ax=ax2, ax_legend=False,ymax=0, ymin=-22.5, dim="lat", 
                       control_data=df_PI_lat, proxy_low=proxy_data_low, proxy_high=proxy_data_high,
-                      ylabel=True, fig=fig, vmax=16, vmin=13)
+                      ylabel=False, fig=fig, vmax=16, vmin=13)
     
     
     ax1.yaxis.set_minor_locator(AutoMinorLocator())
@@ -281,8 +333,9 @@ def plot_profile():
     ax2.tick_params(axis='y', which='major', length=8, width=3)
     ax2.tick_params(axis='y', which='minor', length=4, width=1.5)
     
+    extract_topo_profile(ax1=ax1, ax2=ax2)
     plt.tight_layout()
-    plt.subplots_adjust(left=0.05, right=0.90, top=0.97, bottom=0.05, wspace=0.12)
+    plt.subplots_adjust(left=0.05, right=0.90, top=0.97, bottom=0.05, wspace=0.18)
     plt.savefig(os.path.join(path_to_plots, "d18Op_profile_with_proxies.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
     

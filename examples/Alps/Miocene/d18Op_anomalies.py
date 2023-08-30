@@ -118,13 +118,14 @@ def extract_d18Op_elev_and_analysis(exp_data, exp_wiso, W1E1_data, W1E1_wiso, di
     missing_alt = compute_lterm_mean(data=missing, time="annual")
     expected_d18op_change_alt = compute_lterm_mean(data=expected_d18op_change, time="annual")
     simulated_d18op_change_alt = compute_lterm_mean(data=simulated_d18op_change, time="annual")
+    simulated_climatologies = compute_lterm_mean(data=exp_d18op_data, time="annual")
     
     
     return_data_monthly = {"control_mon": w1e1_d18op_data, "simulated_change_mon": simulated_d18op_change,
                            "missing_mon": missing, "simulated_mon": exp_d18op_data, "expected_mon": expected_d18op_change}
     
     return_data_ltm = {"simulated_change_ltm": simulated_d18op_change_alt, "expected_change_ltm": expected_d18op_change_alt,
-                       "missing_ltm": missing_alt}
+                       "missing_ltm": missing_alt, "climatology_means": simulated_climatologies}
     
     return_data = return_data_monthly | return_data_ltm
     
@@ -234,7 +235,7 @@ def plot_d18Op_simulated():
             
         else:
             plot_annual_mean(variable="$\delta^{18}$Op vs SMOW difference", data_alt=data[i].get("simulated_change_ltm"), ax=axes[i],
-                             cmap=GryBr_r, units="‰", vmax=8, vmin=-8, 
+                             cmap=GryBr_r, units="‰", vmax=10, vmin=-10, 
                             levels=22, level_ticks=11, add_colorbar=False, plot_coastlines=False, bottom_labels=True,
                             left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             plot_projection=projection, domain="Europe", compare_data1=data[i].get("simulated_mon"), 
@@ -276,7 +277,7 @@ def plot_d18Op_expected():
             
         else:
             plot_annual_mean(variable="$\delta^{18}$Op vs SMOW difference", data_alt=data[i].get("expected_change_ltm"), ax=axes[i],
-                             cmap=GryBr_r, units="‰", vmax=8, vmin=-8, 
+                             cmap=GryBr_r, units="‰", vmax=10, vmin=-10, 
                             levels=22, level_ticks=11, add_colorbar=False, plot_coastlines=False, bottom_labels=True,
                             left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                             plot_projection=projection, domain="Europe", title=label)
@@ -285,6 +286,46 @@ def plot_d18Op_expected():
     plt.tight_layout() 
     plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
     plt.savefig(os.path.join(path_to_plots, "d18Op_expected_change.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    
+    
+def plot_d18Op_climatologies():
+    apply_style(fontsize=28, style=None, linewidth=2.5) 
+            
+    projection = ccrs.Robinson(central_longitude=0, globe=None)
+    
+    fig,((ax1, ax2), (ax3, ax4), (ax5, ax6), (ax7, ax8)) = plt.subplots(nrows=4, ncols=2, figsize=(22,28), 
+                                                                    subplot_kw={"projection":projection})
+    
+    axes = [ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8]
+    labels = ["(a) W2E0 (MIO 278ppm)",  "(b) W2E0 (MIO 450ppm)",  "(c) W2E1 (MIO 278ppm)", 
+              "(d) W2E1 (MIO 450ppm)", "(e) W2E1.5 (MIO 278ppm)",  "(f) W2E1.5 (MIO 450ppm)",
+              "(g) W2E2 (MIO 278ppm)",  "(h) W2E2 (MIO 450ppm)"]
+    
+    data = [W2E0_278_diff, W2E0_450_diff, W2E1_278_diff, W2E1_450_diff, W2E15_278_diff, W2E15_450_diff,
+            W2E2_278_diff, W2E2_450_diff,]
+    
+    
+    for i,label in enumerate(labels):
+        if i == 0:
+            
+            plot_annual_mean(variable="$\delta^{18}$Op vs SMOW", data_alt=data[i].get("climatology_means"), 
+                             ax=axes[i], cmap=RdYlBu, units="‰", vmax=2, vmin=-28, 
+                            levels=22, level_ticks=11, add_colorbar=True, cbar_pos= [0.30, 0.05, 0.45, 0.02], 
+                            orientation="horizontal", plot_coastlines=False, bottom_labels=True,
+                            left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                            plot_projection=projection, domain="Europe", title=label, center=False)
+            
+        else:
+            plot_annual_mean(variable="$\delta^{18}$Op vs SMOW", data_alt=data[i].get("climatology_means"), ax=axes[i],
+                             cmap=RdYlBu, units="‰", vmax=2, vmin=-28, 
+                            levels=22, level_ticks=11, add_colorbar=False, plot_coastlines=False, bottom_labels=True,
+                            left_labels=True, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
+                            plot_projection=projection, domain="Europe", title=label, center=False)
+            
+    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+    plt.tight_layout() 
+    plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
+    plt.savefig(os.path.join(path_to_plots, "d18Op_climatologies.svg"), format= "svg", bbox_inches="tight", dpi=600)
 
 
 
@@ -292,4 +333,5 @@ if __name__ == "__main__":
     #plot_d18Op_missing()
     plot_d18Op_expected()
     plot_d18Op_simulated()
+    plot_d18Op_climatologies()
 
