@@ -119,6 +119,17 @@ corr = matplotlib.colors.LinearSegmentedColormap.from_list('correlation', (
     (1.000, (0.506, 0.333, 0.031))))
 
 
+vegetation = matplotlib.colors.LinearSegmentedColormap.from_list('correlation', (
+    # Edit this gradient at https://eltos.github.io/gradient/#correlation=0.1:FFFEFE-0.1:795519-30:D7A959-53.2:F6D743-77.7:2DD62D-100:125912
+    (0.000, (1.000, 0.996, 0.996)),
+    (0.001, (1.000, 0.996, 0.996)),
+    (0.001, (0.475, 0.333, 0.098)),
+    (0.300, (0.843, 0.663, 0.349)),
+    (0.532, (0.965, 0.843, 0.263)),
+    (0.777, (0.176, 0.839, 0.176)),
+    (1.000, (0.071, 0.349, 0.071))))
+
+
 
 
 

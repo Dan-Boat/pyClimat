@@ -10,7 +10,9 @@ import numpy as np
 import pandas as pd 
 
 
-from pyClimat.analysis import extract_var, compute_lterm_diff, compute_lterm_mean
+from pyClimat.analysis import compute_lterm_diff, compute_lterm_mean
+from pyClimat.variables import extract_var
+
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -36,6 +38,8 @@ data_plio = xr.open_dataset(os.path.join(path_to_input_plio, "T159_VGRATCLIM_pli
                             decode_cf=True, use_cftime=True)
 data_pi = xr.open_dataset(os.path.join(path_to_input_pi, "T159_VGRATCLIM.nc"),
                           decode_cf=True, use_cftime=True)
+
+
 
 lgm_path = os.path.join(main_path, "LGM", "MONTHLY_MEANS")
 plio_path = os.path.join(main_path, "PLIO", "MONTHLY_MEANS")
@@ -101,22 +105,22 @@ def plot_vegetation():
     fig, ((ax1,ax2),(ax3, ax4)) = plt.subplots(nrows = 2, ncols = 2, figsize=(24, 18), 
                                         subplot_kw={"projection": projection})
     
-    plot_annual_mean(variable="Vegetaion Ratio (fractional)", data_alt=veg_pi, cmap="tab20b", units="-", 
-                     fig=fig, ax=ax1, vmax=1, vmin=0, levels=23, level_ticks=11, add_colorbar=False, time="JJAS",
-                     bottom_labels=False, left_labels=False)
+    plot_annual_mean(variable="Vegetaion Ratio (fractional)", data_alt=veg_pi, cmap=vegetation, units="-", 
+                     fig=fig, ax=ax1, vmax=0.9, vmin=0.1, levels=23, level_ticks=11, add_colorbar=False, time="JJAS",
+                     bottom_labels=False, left_labels=False, title="[A] PI")
     
-    plot_annual_mean(variable="Vegetaion Ratio (fractional)", data_alt=veg_mh, cmap="tab20b", units="-", 
-                     fig=fig, ax=ax2, vmax=1, vmin=0, levels=23, level_ticks=11, add_colorbar=False, time="JJAS",
-                     bottom_labels=False, left_labels=False)
+    plot_annual_mean(variable="Vegetaion Ratio (fractional)", data_alt=veg_mh, cmap=vegetation, units="-", 
+                     fig=fig, ax=ax2, vmax=0.9, vmin=0.1, levels=23, level_ticks=11, add_colorbar=False, time="JJAS",
+                     bottom_labels=False, left_labels=False, title="[B] MH")
     
-    plot_annual_mean(variable="Vegetaion Ratio (fractional)", data_alt=veg_lgm, cmap="tab20b", units="-", 
-                     fig=fig, ax=ax3, vmax=1, vmin=0, levels=23, level_ticks=11, add_colorbar=False, time="JJAS",
-                     bottom_labels=False, left_labels=False)
+    plot_annual_mean(variable="Vegetaion Ratio (fractional)", data_alt=veg_lgm, cmap=vegetation, units="-", 
+                     fig=fig, ax=ax3, vmax=0.9, vmin=0.1, levels=23, level_ticks=11, add_colorbar=False, time="JJAS",
+                     bottom_labels=False, left_labels=False, title="[C] LGM")
     
-    plot_annual_mean(variable="Vegetaion Ratio (fractional)", data_alt=veg_plio, cmap="tab20b", units="-", 
-                     fig=fig, ax=ax4, vmax=1, vmin=0, levels=23, level_ticks=11, time="JJAS",orientation= "horizontal",
+    plot_annual_mean(variable="Vegetaion Ratio (fractional)", data_alt=veg_plio, cmap=vegetation, units="-", 
+                     fig=fig, ax=ax4, vmax=0.9, vmin=0.1, levels=23, level_ticks=11, time="JJAS",orientation= "horizontal",
                      bottom_labels=False, left_labels=False, add_colorbar=True, cbar_pos = [0.35, 0.01, 0.30, 0.03],
-                     label_format="%.1f")
+                     label_format="%.1f", title="[D] mPlio")
     
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
     plt.tight_layout()
@@ -124,4 +128,4 @@ def plot_vegetation():
     plt.savefig(os.path.join(path_to_store, "vegetation.svg"), format= "svg", bbox_inches="tight", dpi=600)
     
     
-    
+plot_vegetation() 
