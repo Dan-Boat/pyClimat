@@ -66,10 +66,17 @@ filename_to_climate = ["d18op_caused_by_NAO_EA_DJF.nc", "t2m_caused_by_NAO_EA_DJ
                    "d18op_caused_by_NAO_EA_JJA.nc", "t2m_caused_by_NAO_EA_JJA.nc", "prec_caused_by_NAO_EA_JJA.nc"]
 
 
-labels_NAO_EA_DJF_to_climate_JJA = ["(a) Y(NAO,EA)(DJF) to X($\delta^{18}$Op)(JJA)", "(b) Y(NAO,EA)(DJF) to X(Temperature)(JJA)",
-                 "(c) Y(NAO,EA)(DJF) to X(Precipitation)(JJA)"]
+labels_NAO_EA_DJF_to_climate_JJA = ["Y(NAO)(DJF) to X($\delta^{18}$Op)(JJA)", "Y(NAO)(DJF) to X(Temp)(JJA)",
+                 "Y(NAO)(DJF) to X(Prec)(JJA)", "Y(NAO,EA)(DJF) to X($\delta^{18}$Op)(JJA)", "Y(NAO,EA)(DJF) to X(Temp)(JJA)",
+                                  "Y(NAO,EA)(DJF) to X(Prec)(JJA)"]
 
-filename_NAO_EA_DJF_to_climate_JJA = ["d18op_JJA_caused_by_NAO_EA_DJF.nc", "t2m_JJA_caused_by_NAO_EA_DJF.nc", "prec_JJA_caused_by_NAO_EA_DJF.nc", ]
+filename_NAO_EA_DJF_to_climate_JJA = ["d18op_JJA_caused_by_NAO_DJF.nc", "temp_JJA_caused_by_NAO_DJF.nc", "prec_JJA_caused_by_NAO_DJF.nc", 
+                                      "d18op_JJA_caused_by_NAO_EA_DJF.nc", "temp_JJA_caused_by_NAO_EA_DJF.nc",
+                                      "prec_JJA_caused_by_NAO_EA_DJF.nc",]
+
+
+
+
 
 
 
@@ -101,14 +108,14 @@ def plot_causal(filenames, labels, figname):
         data = xr.open_dataarray(os.path.join(main_path_to_data, filename))
         
         if i == 0:
-            plot_causal_statistics(variable="p-value", data=data, ax=axes[i], cmap="Blues", levels=20,
-                                   domain = "Europe Wide", vmin=0, vmax=1, level_ticks=8, cbar=True, 
+            plot_causal_statistics(variable="p-value", data=data, ax=axes[i], cmap="Blues", levels=22,
+                                   domain = "Europe Wide", vmin=0, vmax=1, level_ticks=10, cbar=True, 
                                    cbar_orientation="horizontal", cbar_pos=[0.40, 0.05, 0.25, 0.02],fig=fig,
                                    title=labels[i], plot_less_than_pvalue=True)
             
         else:
-            plot_causal_statistics(variable="p-value", data=data, ax=axes[i], cmap="Blues", levels=20,
-                                   domain = "Europe Wide", vmin=0, vmax=1, level_ticks=8, cbar=False, 
+            plot_causal_statistics(variable="p-value", data=data, ax=axes[i], cmap="Blues", levels=22,
+                                   domain = "Europe Wide", vmin=0, vmax=1, level_ticks=10, cbar=False, 
                                    fig=fig, title=labels[i], plot_less_than_pvalue=True)
             
     fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
@@ -122,6 +129,7 @@ def plot_causal(filenames, labels, figname):
 #plot_causal(filenames=filename_to_climate, labels=labels_to_climate, figname="causal_to_climate_from_NAO_EA")
 plot_causal(filenames=filename_NAO_EA_DJF_to_climate_JJA, labels=labels_NAO_EA_DJF_to_climate_JJA,
             figname="causal_to_climate_JJA_from_NAO_EA_DJF")
+
 
 # plot_causal(filenames=filenames_NAO, labels=labels_NAO, figname="causal_NAO_climate")
 # plot_causal(filenames=filenames_EA, labels=labels_EA, figname="causal_EA_climate")

@@ -1686,12 +1686,12 @@ def plot_causal_statistics(variable, data, cmap = None, levels=None, units=None,
     
     if plot_sig_level:
         
-        data.plot.contour(colors="magenta", linestyles="-", ax=ax, transform=projection, levels=[0.30],
-                          linewidth=1.0, add_labels=False)
+        # data.plot.contour(colors="#9F500C", linestyles="-", ax=ax, transform=projection, levels=[0.30],
+        #                   linewidth=1.0, add_labels=False)
         
         if plot_less_than_pvalue:
-            pvalue_data = xr.where(data <= 0.05, data, data*np.nan)
-            pvalue_data.plot.contourf(colors="none", ax=ax, transform=projection, hatches=[".."], add_labels=False,
+            pvalue_data = xr.where(data <= 0.33, data, data*np.nan)
+            pvalue_data.plot.contourf(colors="none", ax=ax, transform=projection, hatches=["xx"], add_labels=False,
                                       add_colorbar=False,extend="both")
     
     if title is not None:

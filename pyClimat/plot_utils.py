@@ -129,7 +129,10 @@ vegetation = matplotlib.colors.LinearSegmentedColormap.from_list('correlation', 
     (0.777, (0.176, 0.839, 0.176)),
     (1.000, (0.071, 0.349, 0.071))))
 
-
+causal = matplotlib.colors.LinearSegmentedColormap.from_list('my_gradient', (
+    # Edit this gradient at https://eltos.github.io/gradient/#EEFBFA-00FFEB
+    (0.000, (0.933, 0.984, 0.980)),
+    (1.000, (0.000, 1.000, 0.922))))
 
 
 

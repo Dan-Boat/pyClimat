@@ -17,7 +17,8 @@ from pyClimat.plot_utils import *
 from pyClimat.plots import plot_eofsAsCovariance
 from pyClimat.stats import sliding_correlation, StatCorr, GrangerCausality
 from pyClimat.data import read_ERA_processed, read_from_path
-from pyClimat.analysis import extract_var, extract_transect
+from pyClimat.analysis import extract_transect
+from pyClimat.variables import extract_var
 from pyClimat.utils import extract_region
 
 
