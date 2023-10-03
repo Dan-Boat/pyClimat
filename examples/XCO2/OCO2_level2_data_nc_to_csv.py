@@ -17,10 +17,23 @@ from datetime import datetime
 
 # set paths 
 
-main_path_to_data = "D:/Datasets/OCO2/Data/"
-glob_name = "oco2_LtCO2_15*.nc4"
+main_path_to_data_oco3 = "D:/Datasets/OCO3/Data"
+glob_name_oco3 = "oco3_LtCO2_20*"
+
+main_path_to_data_oco2 = "D:/Datasets/OCO2/Data"
+glob_name_oco2 = "oco2_LtCO2_20*"
 
 # function to detect the number of files to load
+
+path_to_csv_files_oco3 = os.path.join(main_path_to_data_oco3, "csv_files")
+
+path_to_csv_files_oco2 = os.path.join(main_path_to_data_oco2, "csv_files")
+
+if not os.path.exists(path_to_csv_files_oco3):
+    os.makedirs(path_to_csv_files_oco3)
+    
+if not os.path.exists(path_to_csv_files_oco2):
+    os.makedirs(path_to_csv_files_oco2)
 
 def count_files_in_directory(path_to_data, glob_pattern="*.nc4"):
     files = glob.glob(path_to_data + "/" + glob_pattern)
@@ -59,9 +72,16 @@ def convHdf(path_file, frames_folder):
 
 
 if __name__=="__main__":
-    files = count_files_in_directory(main_path_to_data, glob_name)
-    for file in files:
-        convHdf(path_file=file, frames_folder=os.path.join(main_path_to_data, "csv_files"))
+    files_oco3 = count_files_in_directory(main_path_to_data_oco3, glob_name_oco3)
+    files_oco2 = count_files_in_directory(main_path_to_data_oco2, glob_name_oco2)
+    
+    
+    for file in files_oco3:
+        convHdf(path_file=file, frames_folder=path_to_csv_files_oco3)
+        
+    for file in files_oco2:
+        convHdf(path_file=file, frames_folder=path_to_csv_files_oco2)
+        
         
     
     
