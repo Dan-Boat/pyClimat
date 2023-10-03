@@ -11,15 +11,29 @@ Note: it is structured solely for the personal needs of the author, therefore, i
 """
 #Importing ClimatPackages (this will later be compile into a package wheere __init__.py with import all the functions)
 
-import sys
-sys.path.append("/home/dboateng/Python_scripts/ClimatPackage_repogit") 
+import os 
+import numpy as np
+import pandas as pd 
+import matplotlib.pyplot as plt
+import xarray as xr
+import matplotlib.colors as col
+import matplotlib as mpl 
+from cartopy.util import add_cyclic_point
+from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+import cartopy.crs as ccrs
 
-from Package import *
-import matplotlib.patches as patches
+
+# import pyClimat models 
+from pyClimat.plot_utils import *
+from pyClimat.plots import plot_annual_mean
+from pyClimat.data import read_ECHAM_processed
+from pyClimat.analysis import compute_lterm_mean, compute_lterm_diff
+from pyClimat.variables import extract_var
 
 
 # Paths
-module_output_main_path = "/home/dboateng/Model_output_pst"
+module_output_main_path = "D:/Datasets/Model_output_pst"
+
 exp_name = "t004_dkrz-mistral_e5w2.3_AMIP_t159l31.6h"    # simulation with present-day simulation (not different from PI simulations)
 
 #years= "1003_1017"
@@ -91,14 +105,14 @@ plot_annual_mean(ax=ax1, variable="Elevation", data_alt=elev_alt, cmap=Greys, un
                   levels=22, level_ticks=6, title="[A]", left_labels=True, bottom_labels=False, use_colorbar_default=True)
 # adding transects 
 
-ax1.add_patch(patches.Rectangle(xy =(lon_w, lat_w), width= w_w, height=h_w, ls= "--", color= red, transform = projection, 
-                                fc="None", lw=2.5,))
+# ax1.add_patch(patches.Rectangle(xy =(lon_w, lat_w), width= w_w, height=h_w, ls= "--", color= red, transform = projection, 
+#                                 fc="None", lw=2.5,))
 
-ax1.add_patch(patches.Rectangle(xy =(lon_n, lat_n), width= w_n, height=h_n, ls= "--", color= black, transform = projection, 
-                                fc="None", lw=2.5))
+# ax1.add_patch(patches.Rectangle(xy =(lon_n, lat_n), width= w_n, height=h_n, ls= "--", color= black, transform = projection, 
+#                                 fc="None", lw=2.5))
 
-ax1.add_patch(patches.Rectangle(xy =(lon_s, lat_s), width= w_s, height=h_s, ls= "--", color= green, transform = projection, 
-                                fc="None", lw=2.5))
+# ax1.add_patch(patches.Rectangle(xy =(lon_s, lat_s), width= w_s, height=h_s, ls= "--", color= green, transform = projection, 
+#                                 fc="None", lw=2.5))
 
 # d18Op
 plot_annual_mean(ax=ax2, variable='$\delta^{18}$Op vs SMOW', data_alt=d18op_alt, cmap=YlGnBu, units="‰", vmax=2, vmin=-16, domain="Europe", 
