@@ -135,7 +135,17 @@ causal = matplotlib.colors.LinearSegmentedColormap.from_list('my_gradient', (
     (1.000, (0.000, 1.000, 0.922))))
 
 
-
+PrecipitationCal = matplotlib.colors.LinearSegmentedColormap.from_list('my_gradient', (
+    # Edit this gradient at https://eltos.github.io/gradient/#FEFEFE-9394FF-0005FF-7EFF99-07FF00-FFFC74-FFF800-EA5E5A-FB0604
+    (0.000, (0.996, 0.996, 0.996)),
+    (0.125, (0.576, 0.580, 1.000)),
+    (0.250, (0.000, 0.020, 1.000)),
+    (0.375, (0.494, 1.000, 0.600)),
+    (0.500, (0.027, 1.000, 0.000)),
+    (0.625, (1.000, 0.988, 0.455)),
+    (0.750, (1.000, 0.973, 0.000)),
+    (0.875, (0.918, 0.369, 0.353)),
+    (1.000, (0.984, 0.024, 0.016))))
 # defining plot styles (which contains fonts and backgrouds)
 # plt.style.use (can be seaborn, dark_background, fivethirtyeight, bmh
 
@@ -282,6 +292,13 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
             maxLon = 35
             minLat = 32
             maxLat = 75
+            
+        elif domain =="West Africa ANDEL":
+            minLon = -20
+            maxLon = 10
+            minLat = 0
+            maxLat = 35
+            
             
         
             
