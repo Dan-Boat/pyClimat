@@ -115,7 +115,8 @@ def compute_lterm_mean(data, time="annual", month=None, season=None, season_cale
 
 
 
-def compute_lterm_diff(data_control, data_main, time="annual", month=None, season=None, season_calendar = None):
+def compute_lterm_diff(data_control, data_main, time="annual", month=None, season=None, season_calendar=None,
+                       time_range_main=None, time_range_control=None):
     """
     
 
@@ -142,8 +143,13 @@ def compute_lterm_diff(data_control, data_main, time="annual", month=None, seaso
     """
     # Use compute_lterm_diff to calculate the long-term mean before the the difference
     
-    data_ltmean_control = compute_lterm_mean(data=data_control, time=time, month=month, season=season, season_calendar = season_calendar)
-    data_ltmean_main = compute_lterm_mean(data=data_main, time=time, month=month, season=season, season_calendar = season_calendar)
+    data_ltmean_control = compute_lterm_mean(data=data_control, time=time, month=month, 
+                                             season=season, season_calendar = season_calendar, 
+                                             time_range=time_range_control)
+    
+    data_ltmean_main = compute_lterm_mean(data=data_main, time=time, month=month, 
+                                          season=season, season_calendar = season_calendar,
+                                          time_range=time_range_main)
     
     data_ltmean_diff = data_ltmean_main - data_ltmean_control
     

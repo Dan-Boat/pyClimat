@@ -168,10 +168,14 @@ def apply_style(fontsize=28, style=None, linewidth=2):
         plt.style.use(style)  #seaborn-talk 'seaborn-paper' 'seaborn-poster'
         
     rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+    mpl.rc('lines', linewidth=linewidth)
+    mpl.rc("font", weight="bold")
+    
     mpl.rc('text', usetex=True)
     mpl.rc('xtick', labelsize=fontsize)
-    mpl.rc('ytick.major', size=6)
     mpl.rc('ytick', labelsize=fontsize)
+    mpl.rc('ytick.major', size=6)
+    mpl.rc('xtick.major', size=6)
     mpl.rc('legend', fontsize=fontsize)
     mpl.rc('axes', labelsize=fontsize)
     mpl.rc('axes', titlesize=fontsize)
@@ -183,8 +187,6 @@ def apply_style(fontsize=28, style=None, linewidth=2):
     # mpl.rc('figure', titleweight="bold")
     # mpl.rc('figure', labelweight="bold")
     
-    mpl.rc('lines', linewidth=linewidth)
-    mpl.rc("font", weight="bold")
 
 # defining function for selecting background domain for cartopy
 

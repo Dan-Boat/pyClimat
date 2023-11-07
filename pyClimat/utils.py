@@ -43,7 +43,8 @@ def vert_coord_convertion(data, units):
 
 
 def extract_region(data, maxlon=60, minlon=-80, maxlat=80, minlat=10, time="season", 
-                              season="DJF", month=None, regional_mean=False):
+                              season="DJF", month=None, regional_mean=False, select_time=False, 
+                              time_range=None, use_slice=False, slice_start=None, slice_end=None):
     if hasattr(data, "longitude"):
         data = data.rename({"longitude":"lon", "latitude":"lat"})
         
@@ -53,7 +54,13 @@ def extract_region(data, maxlon=60, minlon=-80, maxlat=80, minlat=10, time="seas
     data = data.where((data.lat >= minlat) & (data.lat <= maxlat), drop=True)
     data = data.where((data.lon >= minlon) & (data.lon <= maxlon), drop=True)
     
-  
+    if select_time:
+        if use_slice:
+            data = data.sel(time= slice(slice_start, slice_end))
+        else:
+            data = data.sel(time= time_range)
+            
+        
         
     if time =="season":
         data_group = data.groupby("time.season")

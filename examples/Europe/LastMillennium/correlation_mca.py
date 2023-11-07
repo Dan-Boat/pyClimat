@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon May 22 15:56:05 2023
+Created on Wed Nov  1 19:24:54 2023
 
 @author: dboateng
 """
+
 
 import os
 import pandas as pd
@@ -144,41 +145,45 @@ def plot_climate_index_correlation(labels, data, figname, reg_name="nao_reg_temp
 # date_range_lia = xr.cftime_range(start="1489", end ="1850", freq="MS", calendar="noleap")  
   
     
-# cesm_data_mca  = perform_correlation_nao_ea_with_t2m_prec(pcs_path= CESM_DJF_PCs, path_to_data=main_path, nao_mode=1, 
-#                                                  ea_mode=3, nao_factor=-1, ea_factor=1, filename="CESM",
-#                                                  select_time=True, 
-#                                                  time_range=None, use_slice=True, slice_start="1489", 
-#                                                  slice_end="1850", slice_end_plus="1851")
-
 cesm_data  = perform_correlation_nao_ea_with_t2m_prec(pcs_path= CESM_DJF_PCs, path_to_data=main_path, nao_mode=1, 
-                                                 ea_mode=3, nao_factor=-1, ea_factor=1, filename="CESM")
+                                                  ea_mode=3, nao_factor=-1, ea_factor=1, filename="CESM",
+                                                  select_time=True, 
+                                                  time_range=None, use_slice=True, slice_start="0850", 
+                                                  slice_end="1160", slice_end_plus="1161")
+
 
 giss_data  = perform_correlation_nao_ea_with_t2m_prec(pcs_path= GISS_DJF_PCs, path_to_data=main_path, nao_mode=1, 
-                                                 ea_mode=3, nao_factor=-1, ea_factor=1, filename="GISS")
+                                                 ea_mode=3, nao_factor=-1, ea_factor=1, filename="GISS",
+                                                 select_time=True, 
+                                                 time_range=None, use_slice=True, slice_start="0850", 
+                                                 slice_end="1160", slice_end_plus="1161")
 
 hadcm3_data  = perform_correlation_nao_ea_with_t2m_prec(pcs_path=HADESM_DJF_PCs , path_to_data=main_path, nao_mode=1, 
-                                                 ea_mode=3, nao_factor=-1, ea_factor=1, filename="HADCM3")
+                                                 ea_mode=3, nao_factor=-1, ea_factor=1, filename="HADCM3",
+                                                 select_time=True, 
+                                                 time_range=None, use_slice=True, slice_start="0850", 
+                                                 slice_end="1160", slice_end_plus="1161")
 
 
-labels = ["iCESM", "GISS-E2-R", "iHadCM3"]
+labels = ["iCESM [MCA]", "GISS-E2-R [MCA]", "iHadCM3 [MCA]"]
 data = [cesm_data, giss_data, hadcm3_data]
 
 
 apply_style(fontsize=28, style=None, linewidth=2.5)
  
-plot_climate_index_correlation(labels=labels, data=data, figname="temp_nao_nh.svg", reg_name="nao_reg_temp", 
+plot_climate_index_correlation(labels=labels, data=data, figname="temp_nao_nh_mca.svg", reg_name="nao_reg_temp", 
                                sig_name="nao_sig_temp")
-plot_climate_index_correlation(labels=labels, data=data, figname="temp_ea_nh.svg", reg_name="ea_reg_temp", 
+plot_climate_index_correlation(labels=labels, data=data, figname="temp_ea_nh_mca.svg", reg_name="ea_reg_temp", 
                                sig_name="ea_sig_temp")
 
-plot_climate_index_correlation(labels=labels, data=data, figname="prec_nao_nh.svg", reg_name="nao_reg_prec", 
+plot_climate_index_correlation(labels=labels, data=data, figname="prec_nao_nh_mca.svg", reg_name="nao_reg_prec", 
                                sig_name="nao_sig_prec")
-plot_climate_index_correlation(labels=labels, data=data, figname="prec_ea_nh.svg", reg_name="ea_reg_prec", 
+plot_climate_index_correlation(labels=labels, data=data, figname="prec_ea_nh_mca.svg", reg_name="ea_reg_prec", 
                                sig_name="ea_sig_prec")
 
-plot_climate_index_correlation(labels=labels, data=data, figname="d18O_nao_nh.svg", reg_name="nao_reg_d18O", 
+plot_climate_index_correlation(labels=labels, data=data, figname="d18O_nao_nh_mca.svg", reg_name="nao_reg_d18O", 
                                sig_name="nao_sig_d18O")
-plot_climate_index_correlation(labels=labels, data=data, figname="d18O_ea_nh.svg", reg_name="ea_reg_d18O", 
+plot_climate_index_correlation(labels=labels, data=data, figname="d18O_ea_nh_mca.svg", reg_name="ea_reg_d18O", 
                                sig_name="ea_sig_d18O")
 
 plt.show()

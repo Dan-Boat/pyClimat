@@ -223,11 +223,11 @@ data_diff = [cesm_data_diff, giss_data_diff, hadcm3_data_diff]
 
 
 def plot_nao_t2m():
-    apply_style(fontsize=22, style=None, linewidth=2)
+    apply_style(fontsize=28, style=None, linewidth=2.5)
     #projection = ccrs.PlateCarree()
     projection = ccrs.Robinson(central_longitude=0, globe=None)
     fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9)) = plt.subplots(nrows = 3, ncols=3, 
-                                                     figsize=(32, 28), subplot_kw={"projection": projection})
+                                                     figsize=(32, 20), subplot_kw={"projection": projection})
     
     axes_op = [ax2, ax5, ax8,]
     axes_eq = [ax1, ax4, ax7,]
@@ -240,14 +240,14 @@ def plot_nao_t2m():
                              vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=True, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_eq[i], fig=fig, cbar_pos= [0.05, 0.01, 0.30, 0.02],
                              plot_pvalues=True, pvalue_data=data_eq[i].get("nao_sig_temp"), bottom_labels=True, 
-                             title="NAO-t2m (EQ)-"+ label, plot_projection=projection)
+                             title="NAO-t2m (EQ)-"+ label, plot_projection=projection, extend="both")
             
             plot_correlation(variable="Spearman Coefficients", data=data_op[i].get("nao_reg_temp"), units="-", vmax=0.8,
                              vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=data_op[i].get("nao_sig_temp"), bottom_labels=True,
-                             left_labels=True, title="NAO-t2m (OP)-"+ label, plot_projection=projection)
+                             left_labels=True, title="NAO-t2m (OP)-"+ label, plot_projection=projection, extend="both")
             
-            plot_annual_mean(variable='Temperature', data_alt=data_diff[i].get("t2m_diff"), cmap=RdBu, units="°C",
+            plot_annual_mean(variable='Temperature', data_alt=data_diff[i].get("t2m_diff"), cmap=RdBu_r, units="°C",
                  ax=axes_diff[i], fig=fig, vmax=4, vmin=-4, levels=22, domain="NH Wide", level_ticks=11, 
                  cbar_pos = [0.60, 0.01, 0.30, 0.02], title="[F] t2m (OP-EQ)",
                  left_labels=True, bottom_labels=True, label_format="%.1f", add_colorbar=True, plot_projection=projection)
@@ -256,14 +256,14 @@ def plot_nao_t2m():
                              vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False,
                              level_ticks=7, ax=axes_eq[i], fig=fig,
                              plot_pvalues=True, pvalue_data=data_eq[i].get("nao_sig_temp"), bottom_labels=True, 
-                             title="NAO-t2m (EQ)-"+ label, plot_projection=projection)
+                             title="NAO-t2m (EQ)-"+ label, plot_projection=projection, extend="both")
             
             plot_correlation(variable="Spearman Coefficients", data=data_op[i].get("nao_reg_temp"), units="-", vmax=0.8,
                              vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=data_op[i].get("nao_sig_temp"), bottom_labels=True,
-                             left_labels=True, title="NAO-t2m (OP)-"+ label, plot_projection=projection)
+                             left_labels=True, title="NAO-t2m (OP)-"+ label, plot_projection=projection, extend="both")
             
-            plot_annual_mean(variable='Temperature', data_alt=data_diff[i].get("t2m_diff"), cmap=RdBu, units="°C",
+            plot_annual_mean(variable='Temperature', data_alt=data_diff[i].get("t2m_diff"), cmap=RdBu_r, units="°C",
                  ax=axes_diff[i], fig=fig, vmax=4, vmin=-4, levels=22, domain="NH Wide", level_ticks=11, 
                  cbar_pos = [0.60, 0.01, 0.30, 0.02], title="[F] t2m (OP-EQ)",
                  left_labels=True, bottom_labels=True, label_format="%.1f", add_colorbar=False, plot_projection=projection)
@@ -275,11 +275,11 @@ def plot_nao_t2m():
 
 
 def plot_nao_prec():
-    apply_style(fontsize=22, style=None, linewidth=2)
+    apply_style(fontsize=28, style=None, linewidth=2.5)
     #projection = ccrs.PlateCarree()
     projection = ccrs.Robinson(central_longitude=0, globe=None)
     fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9)) = plt.subplots(nrows = 3, ncols=3, 
-                                                     figsize=(32, 28), subplot_kw={"projection": projection})
+                                                     figsize=(32, 20), subplot_kw={"projection": projection})
     
     axes_op = [ax2, ax5, ax8]
     axes_eq = [ax1, ax4, ax7]
@@ -292,12 +292,12 @@ def plot_nao_prec():
                              vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=True, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_eq[i], fig=fig, cbar_pos= [0.05, 0.01, 0.30, 0.02],
                              plot_pvalues=True, pvalue_data=data_eq[i].get("nao_sig_prec"), bottom_labels=True, 
-                             title="NAO-Prec (EQ)-"+ label, plot_projection=projection)
+                             title="NAO-Prec (EQ)-"+ label, plot_projection=projection, extend="both")
             
             plot_correlation(variable="Spearman Coefficients", data=data_op[i].get("nao_reg_prec"), units="-", vmax=0.8,
                              vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=data_op[i].get("nao_sig_prec"), bottom_labels=True,
-                             left_labels=True, title="NAO-Prec (OP)-"+ label, plot_projection=projection)
+                             left_labels=True, title="NAO-Prec (OP)-"+ label, plot_projection=projection, extend="both")
             
             plot_annual_mean(variable='Precipitation', data_alt=data_diff[i].get("prec_diff"), cmap=BrBG, units="mm/month",
                  ax=axes_diff[i], fig=fig, vmax=50, vmin=-50, levels=22, domain="NH Wide", level_ticks=9, 
@@ -308,12 +308,12 @@ def plot_nao_prec():
                              vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False,
                              level_ticks=7, ax=axes_eq[i], fig=fig,
                              plot_pvalues=True, pvalue_data=data_eq[i].get("nao_sig_prec"), bottom_labels=True, 
-                             title="NAO-Prec (EQ)-"+ label, plot_projection=projection)
+                             title="NAO-Prec (EQ)-"+ label, plot_projection=projection, extend="both")
             
             plot_correlation(variable="Spearman Coefficients", data=data_op[i].get("nao_reg_prec"), units="-", vmax=0.8,
                              vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=data_op[i].get("nao_sig_prec"), bottom_labels=True,
-                             left_labels=True, title="NAO-Prec (OP)-"+ label, plot_projection=projection)
+                             left_labels=True, title="NAO-Prec (OP)-"+ label, plot_projection=projection, extend="both")
             
             plot_annual_mean(variable='Precipitation', data_alt=data_diff[i].get("prec_diff"), cmap=BrBG, units="mm/month",
                  ax=axes_diff[i], fig=fig, vmax=50, vmin=-50, levels=22, domain="NH Wide", level_ticks=9, 
@@ -326,11 +326,11 @@ def plot_nao_prec():
     plt.savefig(os.path.join(path_to_plots, "composite_nao_ea_lm_prec_nh.svg"), format= "svg", bbox_inches="tight", dpi=300)
     
 def plot_nao_d18O():
-    apply_style(fontsize=22, style=None, linewidth=2)
+    apply_style(fontsize=28, style=None, linewidth=2.5)
     #projection = ccrs.PlateCarree()
     projection = ccrs.Robinson(central_longitude=0, globe=None)
     fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9)) = plt.subplots(nrows = 3, ncols=3, 
-                                                     figsize=(32, 28), subplot_kw={"projection": projection})
+                                                     figsize=(32, 20), subplot_kw={"projection": projection})
     
     axes_op = [ax2, ax5, ax8]
     axes_eq = [ax1, ax4, ax7]
@@ -343,14 +343,14 @@ def plot_nao_d18O():
                              vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=True, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_eq[i], fig=fig, cbar_pos= [0.05, 0.01, 0.30, 0.02],
                              plot_pvalues=True, pvalue_data=data_eq[i].get("nao_sig_d18O"), bottom_labels=True, 
-                             title="NAO-$\delta^{18}$Op (EQ)-"+ label, plot_projection=projection)
+                             title="NAO-$\delta^{18}$Op (EQ)-"+ label, plot_projection=projection, extend="both")
             
             plot_correlation(variable="Spearman Coefficients", data=data_op[i].get("nao_reg_d18O"), units="-", vmax=0.8,
                              vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=data_op[i].get("nao_sig_d18O"), bottom_labels=True,
-                             left_labels=True, title="NAO-$\delta^{18}$Op (OP)-"+ label, plot_projection=projection)
+                             left_labels=True, title="NAO-$\delta^{18}$Op (OP)-"+ label, plot_projection=projection, extend="both")
             
-            plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=data_diff[i].get("d18O_diff"), cmap="PiYG", units="mm/month",
+            plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=data_diff[i].get("d18O_diff"), cmap="PiYG", units="‰",
                  ax=axes_diff[i], fig=fig, vmax=2, vmin=-2, levels=22, domain="NH Wide", level_ticks=11, 
                  cbar_pos = [0.60, 0.01, 0.30, 0.02], title="[F] $\delta^{18}$Op (OP-EQ)",
                  left_labels=True, bottom_labels=True, add_colorbar=True, label_format="%.1f", plot_projection=projection)
@@ -359,14 +359,14 @@ def plot_nao_d18O():
                              vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False,
                              level_ticks=7, ax=axes_eq[i], fig=fig,
                              plot_pvalues=True, pvalue_data=data_eq[i].get("nao_sig_d18O"), bottom_labels=True, 
-                             title="NAO-$\delta^{18}$Op (EQ)-"+ label, plot_projection=projection)
+                             title="NAO-$\delta^{18}$Op (EQ)-"+ label, plot_projection=projection, extend="both")
             
             plot_correlation(variable="Spearman Coefficients", data=data_op[i].get("nao_reg_d18O"), units="-", vmax=0.8,
                              vmin=-0.8, cmap="PRGn", domain="NH Wide", levels=22,cbar=False, cbar_orientation="horizontal",
                              level_ticks=7, ax=axes_op[i], fig=fig, plot_pvalues=True, pvalue_data=data_op[i].get("nao_sig_d18O"), bottom_labels=True,
-                             left_labels=True, title="NAO-$\delta^{18}$Op (OP)-"+ label, plot_projection=projection)
+                             left_labels=True, title="NAO-$\delta^{18}$Op (OP)-"+ label, plot_projection=projection, extend="both")
             
-            plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=data_diff[i].get("d18O_diff"), cmap="PiYG", units="mm/month",
+            plot_annual_mean(variable='$\delta^{18}$Op vs SMOW', data_alt=data_diff[i].get("d18O_diff"), cmap="PiYG", units="‰",
                  ax=axes_diff[i], fig=fig, vmax=2, vmin=-2, levels=22, domain="NH Wide", level_ticks=11, 
                  cbar_pos = [0.60, 0.01, 0.30, 0.02], title="[F] $\delta^{18}$Op (OP-EQ)",
                  left_labels=True, bottom_labels=True, add_colorbar=False, label_format="%.1f", plot_projection=projection)
