@@ -99,6 +99,9 @@ def plot_monthly_period_per_section(PD, ERA, ax, title, ymax, ymin, varname=None
     #ax.grid(False, linestyle="--", color=grey, alpha=0.8)
     ax.set_ylim(bottom=ymin, top=ymax)
     ax.set_title(title, fontdict= {"fontsize": 22, "fontweight":"bold"}, loc= "left")
+    ax.axes.tick_params(which="both", labelsize=25)
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+         rotation_mode="anchor")
  
     
 
@@ -173,8 +176,8 @@ era_sahara, era_sahel, era_guinea = extract_sections(data=ERA5_tp_mon)
 apply_style(fontsize=22, style=None, linewidth=2) 
 
 def plot_monthly_variability():
-    apply_style(fontsize=22, style=None, linewidth=2) 
-    fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(28, 14), sharey=False)
+    apply_style(fontsize=25, style=None, linewidth=3) 
+    fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(30, 12), sharey=False)
     
     plot_monthly_period_per_section(PD=pd_sahara , ERA= era_sahara, ax=ax1,
                                     title="Sahara", varname="Precipitation [mm/month]", ymax=5,
@@ -196,7 +199,7 @@ def plot_monthly_variability():
     for ax in axes:
         ax.grid(True, linestyle="--", color="grey")
     plt.tight_layout()
-    plt.savefig(os.path.join(path_to_plots, "monthly_sections_sahara_sahel_coast_era_echam.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_plots, "monthly_sections_sahara_sahel_coast_era_echam.pdf"), format= "pdf", bbox_inches="tight", dpi=300)
 
 
 def plot_compare():
@@ -238,4 +241,4 @@ def plot_compare():
     
     
 plot_monthly_variability()
-plot_compare()
+#plot_compare()

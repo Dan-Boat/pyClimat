@@ -308,7 +308,8 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
             print("ERROR: invalid geographical domain passed in options")
         p.axes.set_extent([minLon, maxLon, minLat, maxLat], ccrs.PlateCarree())
     if domain is None: 
-        p.axes.set_extent([-180, 180, -90, 90], ccrs.PlateCarree())
+        #p.axes.set_extent([-180, 180, -90, 90], ccrs.PlateCarree())
+        print(None)
         
     if use_AlbersEqualArea == True:
         vertices = [(lon, 20) for lon in  range(-80, 21, 1)]

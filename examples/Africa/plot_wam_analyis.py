@@ -41,6 +41,9 @@ def plot_monthly_period_per_section(PI, MH, LGM, PLIO, ax, title, ymax, ymin, va
     #ax.grid(False, linestyle="--", color=grey, alpha=0.8)
     ax.set_ylim(bottom=ymin, top=ymax)
     ax.set_title(title, fontdict= {"fontsize": 22, "fontweight":"bold"}, loc= "left")
+    ax.axes.tick_params(which="both", labelsize=25)
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+         rotation_mode="anchor")
       
 # fonts and ploting stlye 
 
@@ -198,9 +201,9 @@ def plot_slp():
 
 def plot_monthly_variability():
     
-    apply_style(fontsize=22, style=None, linewidth=3) 
+    apply_style(fontsize=25, style=None, linewidth=3) 
     
-    fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(30, 15), sharey=False)
+    fig, (ax1,ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize=(25, 12), sharey=False)
     
     plot_monthly_period_per_section(PI=PI_month_sahara_prec , MH= MH_month_sahara_prec, LGM=LGM_month_sahara_prec, 
                                     PLIO=PLIO_month_sahara_prec, ax=ax1, title="Sahara", varname="Precipitation [mm/month]", ymax=14,
@@ -223,7 +226,7 @@ def plot_monthly_variability():
         ax.grid(True, linestyle="--", color="grey")
         
     plt.tight_layout()
-    plt.savefig(os.path.join(path_to_store, "monthly_sections_sahara_sahel_coast.svg"), format= "svg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(path_to_store, "monthly_sections_sahara_sahel_coast.pdf"), format= "pdf", bbox_inches="tight", dpi=300)
 
 
 def plot_vertical_sections():
@@ -305,8 +308,8 @@ def plot_vertical_sections():
 
 #run for all 
 #plot_PI_JJAS()
-plot_JJA_anomaly()
-#plot_monthly_variability()
+#plot_JJA_anomaly()
+plot_monthly_variability()
 #plot_vertical_sections()
 #plot_slp()
 

@@ -23,9 +23,83 @@ import statsmodels.api as sm
 try:
     from .data import *
     from .utils import vert_coord_convertion
+    from .variables import extract_var
 except:
     from data import *
     from utils import vert_coord_convertion
+    from variables import extract_var
+
+
+def compute_spatial_means(dataset, varname, time="annual", land=False, ocean=False, extract_region=False, lon_min=None, lon_max=None,
+                          lat_min=None, lat_max=None, units=None, Dataset_wiso=None):
+    
+    # select variable 
+    data = extract_var(Dataset=dataset, varname=varname, units=units, Dataset_wiso=Dataset_wiso,
+                       )
+    
+    if time == "season":
+        month_length = data.time.dt.days_in_month
+
+        # Calculate the weights by grouping by 'time.season'
+        time_weights = month_length.groupby('time.season') / month_length.groupby('time.season').sum()
+
+        # Test that the sum of the weights for each season is 1.0
+        np.testing.assert_allclose(time_weights.groupby('time.season').sum().values, np.ones(4))
+
+        # Calculate the weighted average
+        data_ltmean = (data * time_weights).groupby('time.season').sum(dim='time')
+    
+    elif time == "month":
+        data_ltmean = data.groupby("time.month").mean("time")
+        
+        if month is not None:
+            print("Calculating the monthly long-term mean for the month number:", month)
+            
+            if month == "JJAS": # useful for WAM analysis
+                data_ltmean = data_ltmean.sel(month=data_ltmean.month.isin([6, 7, 8, 9]))
+                data_ltmean = data_ltmean.mean(dim="month")
+                
+            elif isinstance(month, int):    
+                data_ltmean = data_ltmean.sel(month=month)
+                
+            else:
+                raise ValueError("The define month parameter is not right")
+                
+    else:
+        data_ltmean = data.mean(dim="time")
+                
+    if hasattr(data_ltmean, "longitude"):
+        data_ltmean = data_ltmean.rename({"longitude":"lon", "latitude":"lat"})
+        
+        
+    if extract_region==True:   
+        data_ltmean = data_ltmean.assign_coords({"lon": (((data.lon + 180) % 360) - 180)})
+    
+        data_ltmean = data_ltmean.where((data.lat >= minlat) & (data.lat <= maxlat), drop=True)
+        data_ltmean = data_ltmean.where((data.lon >= minlon) & (data.lon <= maxlon), drop=True)
+        
+    
+    if land==True:
+        land_mask_ds = dataset["slm"][0]
+        data_ltmean = data_ltmean.where(land_mask_ds == 1)
+        
+    if ocean==True:
+        land_mask_ds = dataset["slm"][0]
+        data_ltmean = data_ltmean.where(land_mask_ds == 0)
+        
+    
+    # compute area-weighted means
+    weights = np.cos(np.deg2rad(data_ltmean.lat)) #np.sqrt(np.abs(np.cos(data_raw.lat*np.pi/180)))
+
+    weights.name = "weights"
+
+    means = data_ltmean.weighted(weights).mean(dim=("lon", "lat"), skipna=True)
+    
+    
+    return means
+        
+        
+
     
     
     
