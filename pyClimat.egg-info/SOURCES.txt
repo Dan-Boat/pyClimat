@@ -6,7 +6,9 @@ pyClimat/data.py
 pyClimat/gtopo.py
 pyClimat/plot_utils.py
 pyClimat/plots.py
+pyClimat/stats.py
 pyClimat/utils.py
+pyClimat/variables.py
 pyClimat.egg-info/PKG-INFO
 pyClimat.egg-info/SOURCES.txt
 pyClimat.egg-info/dependency_links.txt

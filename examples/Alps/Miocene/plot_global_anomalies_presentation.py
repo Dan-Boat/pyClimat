@@ -183,7 +183,66 @@ def animate_temp(i):
         plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05,)
         plt.savefig(os.path.join(path_to_plots_temp,  str(i)+ mname + ".png"), format= "png", bbox_inches="tight", dpi=600)
 
+def animate_temp_anomaly_alt(i, data_alt, label):
+    lon = i
 
+   
+   
+    ax = plt.gca()
+    ax.remove()
+    projection = ccrs.Orthographic(central_latitude=20, central_longitude=lon)
+    
+    apply_style(fontsize=28, style=None, linewidth=2.5) 
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(12,12), subplot_kw={"projection":projection})
+
+    plot_annual_mean(variable="Temperature anomalies", data_alt=data_alt.get("temperature").mean(dim="month"), ax=ax,
+                      cmap="RdBu_r", units="°C", vmax=10, vmin=-10, 
+                    levels=22, level_ticks=11, add_colorbar=True, plot_coastlines=True, bottom_labels=False,
+                    left_labels=False, fig=fig, plot_borders=False, 
+                    plot_projection=projection, title=label, orientation="horizontal",
+                    cbar_pos= [0.28, 0.05, 0.45, 0.02], center=True)
+    
+    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+    plt.tight_layout() 
+    plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05,)
+    plt.savefig(os.path.join(path_to_plots_temp,  str(i) + ".png"), format= "png", bbox_inches="tight", dpi=300)
+
+
+
+def create_gif2(path_to_plots, output_name, resize_factor=0.5, duration=0.1):
+    # Output GIF file
+    output_gif = output_name + ".gif"
+
+    # Get a list of all PNG files in the directory and sort them by creation time
+    png_files = sorted(glob.glob(os.path.join(path_to_plots, "*.png")), key=os.path.getctime)
+
+    # Create a list to store the resized image objects
+    resized_images = []
+
+    # Calculate the new size
+    original_width, original_height = Image.open(png_files[0]).size
+    new_width = int(original_width * resize_factor)
+    new_height = int(original_height * resize_factor)
+
+    # Loop through the PNG files, resize, and append them to the resized_images list
+    for png_file in png_files:
+        img = Image.open(png_file)
+        resized_img = img.resize((new_width, new_height), Image.ANTIALIAS)
+        resized_images.append(resized_img)
+
+    # Save the list of resized images as a GIF
+    resized_images[0].save(
+        os.path.join(path_to_plots, output_gif),
+        save_all=True,
+        append_images=resized_images[1:],
+        loop=0,
+        duration=duration
+    )
+
+    # Remove the original PNG files
+    for png_file in png_files:
+        os.remove(png_file)
+        print(f"Deleted: {png_file}")
 
 def creat_git(path_to_plots, output_name):
     
@@ -215,12 +274,29 @@ def creat_git(path_to_plots, output_name):
         os.remove(png_file)
         print(f"Deleted: {png_file}")
         
-for i in np.arange(0, 360, 60):
-    animate_prec(i)
-    animate_d18Op(i)
-    animate_temp(i)
+# for i in np.arange(0, 360, 60):
+#     animate_prec(i)
+#     animate_d18Op(i)
+#     animate_temp(i)
     
     
-creat_git(path_to_plots_temp, "MIO_450_temp")
-creat_git(path_to_plots_prec, "MIO_450_prec")
-creat_git(path_to_plots_d18Op, "MIO_450_d18Op")
+# creat_git(path_to_plots_temp, "MIO_450_temp")
+# creat_git(path_to_plots_prec, "MIO_450_prec")
+# creat_git(path_to_plots_d18Op, "MIO_450_d18Op")
+
+
+
+
+for i in np.arange(0, 360, 20):
+    
+    animate_temp_anomaly_alt(i, Mio278_data, "Mio278-PI")
+
+create_gif2(path_to_plots_temp, "mio278", resize_factor=0.5, duration=500)
+
+
+
+for i in np.arange(0, 360, 20):
+    
+    animate_temp_anomaly_alt(i, Mio450_data, "Mio450-PI")
+
+create_gif2(path_to_plots_temp, "mio450", resize_factor=0.5, duration=500)

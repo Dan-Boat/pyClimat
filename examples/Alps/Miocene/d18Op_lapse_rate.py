@@ -78,7 +78,7 @@ W2E0_PI_data, W2E0_PI_wiso = read_ECHAM_processed(main_path=path_to_data, exp_na
                                           period=period, read_wiso=True)
 
 W2E0_278_data, W2E0_278_wiso = read_ECHAM_processed(main_path=path_to_data, exp_name=W2E0_Mio278_filename, 
-                                                    years=years_not_complete, period=period, read_wiso=True)
+                                                    years=years, period=period, read_wiso=True)
 
 W2E0_450_data, W2E0_450_wiso = read_ECHAM_processed(main_path=path_to_data, exp_name=W2E0_Mio450_filename, years=years, 
                                           period=period, read_wiso=True)
@@ -166,14 +166,14 @@ def plot_section_lapse_rate(data_pi, data_278, data_450, ax=None, xlabel=True, y
             
             
     if ylabel:
-        ax.set_ylabel(u'$\delta^{18}$O ‰ vs SMOW (‰)', fontweight="bold", fontsize=28)
+        ax.set_ylabel(u'$\delta^{18}$O ‰ vs SMOW (‰)', fontweight="bold", fontsize=22)
         ax.grid(True, linestyle="--", color="grey")
     else:
         ax.grid(True, linestyle="--", color="grey")
         ax.set_yticklabels([])
     
     if xlabel:
-        ax.set_xlabel("Elevation (m)", fontweight="bold", fontsize=28)
+        ax.set_xlabel("Elevation (m)", fontweight="bold", fontsize=22)
         ax.grid(True, linestyle="--", color="grey")
     else:
         ax.grid(True, linestyle="--", color="grey")
@@ -183,7 +183,7 @@ def plot_section_lapse_rate(data_pi, data_278, data_450, ax=None, xlabel=True, y
         ax.set_ylim(ymin, ymax)
         
     if ax_legend:
-        ax.legend(frameon=True, fontsize=28,
+        ax.legend(frameon=True, fontsize=22,
                   loc="lower left", borderaxespad=0,
                   ncol=1) #bbox_to_anchor=(0.01, 1.05, 1, 0.102,)
     else:
@@ -192,7 +192,7 @@ def plot_section_lapse_rate(data_pi, data_278, data_450, ax=None, xlabel=True, y
     ax.set_box_aspect(1)
     
     if title is not None:
-        ax.set_title(title, fontdict= {"fontsize": 28, "fontweight":"bold"}, loc="left")
+        ax.set_title(title, fontdict= {"fontsize": 22, "fontweight":"bold"}, loc="left")
         
     
         
@@ -202,56 +202,33 @@ def plot_section_lapse_rate(data_pi, data_278, data_450, ax=None, xlabel=True, y
     
 
 
-def plot_west_transect():
+def plot_west_north_transect():
 
-    W1E1_PI_stats = extract_vars_and_analysis(data=W1E1_PI_data, wiso=W1E1_PI_wiso, 
+    W1E1_PI_stats_west = extract_vars_and_analysis(data=W1E1_PI_data, wiso=W1E1_PI_wiso, 
                                             maxlon=8, maxlat=47, minlon=1, minlat=44)
-    W1E1_278_stats = extract_vars_and_analysis(data= W1E1_278_data, wiso=W1E1_278_wiso)
-    W1E1_450_stats = extract_vars_and_analysis(data= W1E1_450_data, wiso=W1E1_450_wiso)
+    W1E1_278_stats_west = extract_vars_and_analysis(data= W1E1_278_data, wiso=W1E1_278_wiso)
+    W1E1_450_stats_west = extract_vars_and_analysis(data= W1E1_450_data, wiso=W1E1_450_wiso)
     
-    W2E0_PI_stats = extract_vars_and_analysis(data=W2E0_PI_data, wiso=W2E0_PI_wiso, 
+    W2E0_PI_stats_west = extract_vars_and_analysis(data=W2E0_PI_data, wiso=W2E0_PI_wiso, 
                                             maxlon=8, maxlat=47, minlon=1, minlat=44)
-    W2E0_278_stats = extract_vars_and_analysis(data= W2E0_278_data, wiso=W2E0_278_wiso)
-    W2E0_450_stats = extract_vars_and_analysis(data= W2E0_450_data, wiso=W2E0_450_wiso)
+    W2E0_278_stats_west = extract_vars_and_analysis(data= W2E0_278_data, wiso=W2E0_278_wiso)
+    W2E0_450_stats_west = extract_vars_and_analysis(data= W2E0_450_data, wiso=W2E0_450_wiso)
     
     
-    W2E1_PI_stats = extract_vars_and_analysis(data=W2E1_PI_data, wiso=W2E1_PI_wiso, 
+    W2E1_PI_stats_west = extract_vars_and_analysis(data=W2E1_PI_data, wiso=W2E1_PI_wiso, 
                                             maxlon=8, maxlat=47, minlon=1, minlat=44)
-    W2E1_278_stats = extract_vars_and_analysis(data= W2E1_278_data, wiso=W2E1_278_wiso)
-    W2E1_450_stats = extract_vars_and_analysis(data= W2E1_450_data, wiso=W2E1_450_wiso)
+    W2E1_278_stats_west = extract_vars_and_analysis(data= W2E1_278_data, wiso=W2E1_278_wiso)
+    W2E1_450_stats_west = extract_vars_and_analysis(data= W2E1_450_data, wiso=W2E1_450_wiso)
     
     
-    W2E2_PI_stats = extract_vars_and_analysis(data=W2E2_PI_data, wiso=W2E2_PI_wiso, 
+    W2E2_PI_stats_west = extract_vars_and_analysis(data=W2E2_PI_data, wiso=W2E2_PI_wiso, 
                                             maxlon=8, maxlat=47, minlon=1, minlat=44)
-    W2E2_278_stats = extract_vars_and_analysis(data= W2E2_278_data, wiso=W2E2_278_wiso)
-    W2E2_450_stats = extract_vars_and_analysis(data= W2E2_450_data, wiso=W2E2_450_wiso)
+    W2E2_278_stats_west = extract_vars_and_analysis(data= W2E2_278_data, wiso=W2E2_278_wiso)
+    W2E2_450_stats_west = extract_vars_and_analysis(data= W2E2_450_data, wiso=W2E2_450_wiso)
     
+
     
-    apply_style(fontsize=28, style="seaborn-paper", linewidth=2,)
-    
-    fig,((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows=2, ncols=2, figsize=(24, 22))
-    
-    
-    plot_section_lapse_rate(data_pi=W1E1_PI_stats, data_278=W1E1_278_stats, data_450=W1E1_450_stats,
-                            ax=ax1, title="(a) W1E1")
-    
-    plot_section_lapse_rate(data_pi=W2E0_PI_stats, data_278=W2E0_278_stats, data_450=W2E0_450_stats,
-                            ax=ax2, title="(b) W2E0")
-    
-    plot_section_lapse_rate(data_pi=W2E1_PI_stats, data_278=W2E1_278_stats, data_450=W2E1_450_stats,
-                            ax=ax3, title="(c) W2E1")
-    
-    plot_section_lapse_rate(data_pi=W2E2_PI_stats, data_278=W2E2_278_stats, data_450=W2E2_450_stats,
-                            ax=ax4, title="(d) W2E2")
-    
-    
-    plt.tight_layout()
-    plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05)
-    plt.savefig(os.path.join(path_to_plots, "lapse_rate_west.svg"), format= "svg", bbox_inches="tight", dpi=600)
-    
-    
-    
-def plot_north_transect():
+
 
     W1E1_PI_stats = extract_vars_and_analysis(data=W1E1_PI_data, wiso=W1E1_PI_wiso, 
                                             maxlon=16, maxlat=50, minlon=5, minlat=46.5)
@@ -284,27 +261,42 @@ def plot_north_transect():
                                                maxlon=15, maxlat=49, minlon=4, minlat=45.5)
     
     
-    apply_style(fontsize=28, style="seaborn-paper", linewidth=2,)
+    apply_style2(fontsize=18, style="seaborn-paper", linewidth=2,)
     
-    fig,((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows=2, ncols=2, figsize=(24, 22))
+    fig,((ax1, ax2), (ax3, ax4), (ax5, ax6), (ax7, ax8)) = plt.subplots(nrows=4, ncols=2, figsize=(24, 28))
+    
+    
+    plot_section_lapse_rate(data_pi=W1E1_PI_stats_west, data_278=W1E1_278_stats_west, data_450=W1E1_450_stats_west,
+                            ax=ax1, title="(a) W1E1 (Western transect)")
+    
+    plot_section_lapse_rate(data_pi=W2E0_PI_stats_west, data_278=W2E0_278_stats_west, data_450=W2E0_450_stats_west,
+                            ax=ax3, title="(c) W2E0")
+    
+    plot_section_lapse_rate(data_pi=W2E1_PI_stats_west, data_278=W2E1_278_stats_west, data_450=W2E1_450_stats_west,
+                            ax=ax5, title="(e) W2E1")
+    
+    plot_section_lapse_rate(data_pi=W2E2_PI_stats_west, data_278=W2E2_278_stats_west, data_450=W2E2_450_stats_west,
+                            ax=ax7, title="(g) W2E2")
+   
+
     
     
     plot_section_lapse_rate(data_pi=W1E1_PI_stats, data_278=W1E1_278_stats, data_450=W1E1_450_stats,
-                            ax=ax1, title="(a) W1E1")
+                            ax=ax2, title="(b) W1E1 (Northern transect)")
     
     plot_section_lapse_rate(data_pi=W2E0_PI_stats, data_278=W2E0_278_stats, data_450=W2E0_450_stats,
-                            ax=ax2, title="(b) W2E0")
+                            ax=ax4, title="(d) W2E0")
     
     plot_section_lapse_rate(data_pi=W2E1_PI_stats, data_278=W2E1_278_stats, data_450=W2E1_450_stats,
-                            ax=ax3, title="(c) W2E1")
+                            ax=ax6, title="(f) W2E1")
     
     plot_section_lapse_rate(data_pi=W2E2_PI_stats, data_278=W2E2_278_stats, data_450=W2E2_450_stats,
-                            ax=ax4, title="(d) W2E2")
+                            ax=ax8, title="(h) W2E2")
     
     
     plt.tight_layout()
-    plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05)
-    plt.savefig(os.path.join(path_to_plots, "lapse_rate_north.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05, wspace=0.05)
+    plt.savefig(os.path.join(path_to_plots, "lapse_rate_fig.pdf"), format= "pdf", bbox_inches="tight", dpi=600)
     
     
     
@@ -365,6 +357,5 @@ def plot_south_transect():
     
     
 if __name__ == "__main__":
-    #plot_west_transect()
-    plot_north_transect()
+    plot_west_north_transect()
     #plot_south_transect()

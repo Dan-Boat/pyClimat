@@ -187,11 +187,44 @@ def apply_style(fontsize=28, style=None, linewidth=2):
     # mpl.rc('figure', titleweight="bold")
     # mpl.rc('figure', labelweight="bold")
     
+def apply_style2(fontsize=20, style=None, linewidth=2, usetex=True):
+    """
+    
+
+    Parameters
+    ----------
+    fontsize : TYPE, optional
+        DESCRIPTION. The default is 10.
+    style : TYPE, optional
+        DESCRIPTION. The default is "bmh". ["seaborn", "fivethirtyeight",]
+
+    Returns
+    -------
+    None.
+
+    """
+    if style is not None:
+        plt.style.use(style)  
+        
+    rc('font',**{'family':'sans-serif','sans-serif':['Arial'], 
+                 'size': 22, 'style': 'normal', 'weight': 'medium'})
+    
+    mpl.rc('text', usetex=usetex)
+    mpl.rc('xtick', labelsize=fontsize)
+    mpl.rc('ytick', labelsize=fontsize)
+    mpl.rc('legend', fontsize=fontsize)
+    mpl.rc('axes', labelsize=fontsize)
+    mpl.rc('lines', linewidth=linewidth)
+    mpl.rc("font", weight="bold")
+    plt.rcParams['pdf.use14corefonts'] = True
+    plt.rcParams['svg.fonttype'] = 'none'
+    
 
 # defining function for selecting background domain for cartopy
 
 def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labels=True,
-                    bottom_labels=True, plot_coastlines=True, plot_borders=False, coast_resolution=None):
+                    bottom_labels=True, plot_coastlines=True, plot_borders=False, coast_resolution=None,
+                    coast_color="black"):
     """
     This funtion defines the plotting domain and also specifies the background. It requires 
     the plot handle from xarray.plot.imshow and other optional arguments 
@@ -210,10 +243,10 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
     
     if plot_coastlines ==True:
         if coast_resolution is None:
-            p.axes.coastlines(resolution = "50m")  # add coastlines outlines to the current axis (110m, 50m , 10m)
+            p.axes.coastlines(resolution = "50m", linewidth=1.5, color=coast_color)  # add coastlines outlines to the current axis (110m, 50m , 10m)
             
         else:
-            p.axes.coastlines(resolution = coast_resolution, linewidth=1.5, color=black)  # add coastlines outlines to the current axis
+            p.axes.coastlines(resolution = coast_resolution, linewidth=1.5, color=coast_color)  # add coastlines outlines to the current axis
     
     if plot_borders == True:
         p.axes.add_feature(cfeature.BORDERS, edgecolor="black", linewidth = 0.3) #adding country boarder lines
@@ -223,7 +256,7 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
         if domain == "Europe":   # Europe
             minLon = -20
             maxLon = 35
-            minLat = 34
+            minLat = 35
             maxLat = 65
         elif domain == "South America":   # South America
             minLon = -83
@@ -308,6 +341,7 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
             print("ERROR: invalid geographical domain passed in options")
         p.axes.set_extent([minLon, maxLon, minLat, maxLat], ccrs.PlateCarree())
     if domain is None: 
+        #uncomment 
         #p.axes.set_extent([-180, 180, -90, 90], ccrs.PlateCarree())
         print(None)
         
@@ -343,6 +377,9 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
         
     gl.xformatter = LongitudeFormatter()     # axis formatter
     gl.yformatter = LatitudeFormatter()
+    
+    #uncoment
+    
     gl.xlabel_style = {"fontsize": 20, "color": "black", "fontweight": "semibold"}   #axis style 
     gl.ylabel_style = {"fontsize": 20, "color": "black", "fontweight": "semibold"}
 
@@ -384,11 +421,21 @@ class FixedPointNormalized(matplotlib.colors.Normalize):
 
 
 
-colors_ocean = plt.cm.terrain(np.linspace(0, 0.17, 56))   
-colors_land =  plt.cm.terrain(np.linspace(0.25, 1, 200))
-colors_combined = np.vstack((colors_ocean, colors_land))
+def creat_norm():
+    from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+    import matplotlib.colors as col
+    
+    levels = [i for i in range(-100, 4000, 100)]
+    terrain_new = mpl.cm.get_cmap("terrain", 256)
+    terrain_adjust = ListedColormap(terrain_new(np.linspace(0.23, 1, 256)))
+    new_colors = terrain_adjust(np.linspace(0,1,256))
+    
+    blue = np.array([135/256, 206/256, 250/256, 1])
+    new_colors[:1, :] = blue
+    terrain_shift = ListedColormap(new_colors)
 
-cut_terrain_map = matplotlib.colors.LinearSegmentedColormap.from_list('cut_terrain', 
-                                                                      colors_combined)
+    norm_new = col.BoundaryNorm(levels, ncolors=terrain_shift.N, clip=True)
+    
+    return norm_new, terrain_shift
 
 
