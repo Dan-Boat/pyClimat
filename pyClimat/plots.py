@@ -298,9 +298,12 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
         
         
         if center == True:
-            ax.scatter(x=GNIP_data["lon"], y=GNIP_data["lat"], c=GNIP_data["d18op"], cmap=cmap, vmax=vmax, vmin=vmin, norm=norm, edgecolor="k", s= 140)
+            ax.scatter(x=GNIP_data["lon"], y=GNIP_data["lat"], c=GNIP_data["d18op"], cmap=cmap, vmax=vmax, vmin=vmin, 
+                       norm=norm, edgecolor="k", s= 140, transform=projection)
         else:
-            ax.scatter(x=GNIP_data["lon"], y=GNIP_data["lat"], c=GNIP_data["d18op"], cmap=cmap, vmax=vmax, vmin=vmin, edgecolor="k", s= 140)
+            ax.scatter(x=GNIP_data["lon"], y=GNIP_data["lat"], c=GNIP_data["d18op"], 
+                       cmap=cmap, vmax=vmax, vmin=vmin, edgecolor="k", s= 140,
+                       transform=projection)
     
     if title is not None:
         ax.set_title(title, fontsize=20, weight="bold", loc="left")
