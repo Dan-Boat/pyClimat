@@ -286,10 +286,7 @@ if __name__=="__main__":
                     ax.scatter(x=lon, y=lat, c=mon_value, cmap=cmap_adj, norm=norm_adj, edgecolor="k", s= 140,
                                transform=projection)
                 
-                
-            
-            
-        
+                       
         fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
         plt.tight_layout() 
         plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10,)

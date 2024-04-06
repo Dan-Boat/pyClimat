@@ -5,8 +5,8 @@ Created on Wed Mar 29 14:08:06 2023
 @author: dboateng
 """
 
-import os 
-import cartopy.crs as ccrs
+import os
+import pandas as pd 
 import matplotlib.pyplot as plt
 
 from pyClimat.data import read_from_path
@@ -24,6 +24,8 @@ main_path_mh = "D:/Datasets/CMIP6/PMIP/postprocessed/MH"
 main_path_pi = "D:/Datasets/CMIP6/PMIP/postprocessed/PI"
 
 path_to_proxies = "C:/Users/dboateng/Desktop/Datasets/WAM reconstructions/map_delta_06ka_ALL_grid_2x2.csv"
+
+path_to_tierney = "C:/Users/dboateng/Desktop/Datasets/WAM reconstructions/tierney_data.csv"
 
 
 #PI
@@ -52,6 +54,7 @@ mh_miroc_path = os.path.join(main_path_mh, "MIROC-ES2L")
 mh_mpi_esm_path = os.path.join(main_path_mh, "MPI-ESM1-2-LR")
 
 MH_proxies_data = pd.read_csv(path_to_proxies)
+MH_tierney_data = pd.read_csv(path_to_tierney)
 
 
 from read_data import PI_data, MH_data
@@ -130,7 +133,8 @@ def plot_lat_sections_pmip(show_range=False, data_range=mh_echam_lat_cross_secti
               "HadGEM3-GC31-LL", "IPSL-CM6A-LR", "MIROC-ES2L", "MPI-ESM1-2-LR"]
     
     
-    apply_style(fontsize=23, style="seaborn-talk", linewidth=3,)
+    apply_style2(fontsize=23, style="seaborn-talk", linewidth=3, usetex=True)
+    
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(18, 16,))
     
     for i,data in enumerate(mh_cross_sections):
@@ -153,16 +157,17 @@ def plot_lat_sections_pmip(show_range=False, data_range=mh_echam_lat_cross_secti
     ax.xaxis.set_label_position('top') 
         
     #ax.set_title("(a) MH - PI", fontsize=20, fontweight="bold", loc="left")
-    
-    ax.scatter(x=MH_proxies_data["map_anm_mean"], y=MH_proxies_data["lat"], s=120, alpha=0.5)
+    ax.scatter(x=MH_tierney_data["map_anm_mean"], y=MH_tierney_data["lat"], s=250, marker="*", color="magenta", 
+               alpha=0.8, label="(Tierney et al., 2017)")
+    ax.scatter(x=MH_proxies_data["map_anm_mean"], y=MH_proxies_data["lat"], s=220, alpha=0.5)
     ax.errorbar(x=MH_proxies_data["map_anm_mean"], y=MH_proxies_data["lat"], xerr=MH_proxies_data["map_se_mean"],
                  yerr=None, ls="none", color="black", capthick=2, capsize=3,
                  label="(Bartlein et al., 2011)")
-    ax.set_ylim(-10, 30)
+    ax.set_ylim(-10, 32)
     ax.legend(bbox_to_anchor=(0.01, -0.15, 1., 0.102), loc=3, ncol=3, borderaxespad=0., frameon = True, 
                   fontsize=20)
    
-    plt.savefig(os.path.join(path_to_plots, "mh_compare_proxies.svg"), bbox_inches="tight", format= "svg")
+    plt.savefig(os.path.join(path_to_plots, "mh_compare_proxies.pdf"), bbox_inches="tight", format= "pdf")
 
 
 plot_lat_sections_pmip(show_range=True)
