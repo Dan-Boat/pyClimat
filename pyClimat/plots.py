@@ -38,7 +38,7 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
                      left_labels= True, bottom_labels=True, add_colorbar=True, plot_stats= False, compare_data1=None, compare_data2=None, max_pvalue=None,
                      hatches=None, fig=None, cbar_pos=None, use_colorbar_default=False, plot_winds=False,
                      orientation = "horizontal", time=None, plot_projection=None, plot_coastlines=True, sea_land_mask=None,
-                     show_arrow_scale=False, wind_scale=50, label_format="%.0f", plot_contour=False, c_data=None, c_vmax=None, c_vmin=None,
+                     show_arrow_scale=False, wind_scale=70, label_format="%.0f", plot_contour=False, c_data=None, c_vmax=None, c_vmin=None,
                      c_label_ticks=None, c_levels=None, coast_resolution=None, plot_borders=False, add_c_label=True):
     """
     

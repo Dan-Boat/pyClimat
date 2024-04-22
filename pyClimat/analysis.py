@@ -175,6 +175,10 @@ def compute_lterm_mean(data, time="annual", month=None, season=None, season_cale
                 data_ltmean = data_ltmean.sel(month=data_ltmean.month.isin([6, 7, 8, 9]))
                 data_ltmean = data_ltmean.mean(dim="month")
                 
+            elif month == "MAM": # useful for EAS
+                data_ltmean = data_ltmean.sel(month=data_ltmean.month.isin([3, 4, 5]))
+                data_ltmean = data_ltmean.mean(dim="month")
+                
             elif isinstance(month, int):    
                 data_ltmean = data_ltmean.sel(month=month)
                 

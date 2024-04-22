@@ -22,7 +22,7 @@ setup(
                         "xarray", 
                         "statsmodels",
                         "seaborn",
-                        "sklearn",
+                        "scikit-learn",
                         "scipy",
                         "eofs",
                         "Cartopy",

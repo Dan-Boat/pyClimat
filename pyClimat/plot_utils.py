@@ -288,6 +288,13 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
             maxLon = 55
             minLat = -35
             maxLat = 40
+            
+        elif domain == "East Africa":  # Africa
+            minLon = 20
+            maxLon = 55
+            minLat = -20
+            maxLat = 18
+            
         elif domain == "New Zealand":  # New Zealand 
             minLon = 165
             maxLon = 180

@@ -164,7 +164,7 @@ plot_annual_mean(variable="Precipitation anomalies", data_alt=holocene_diff, ax=
                 left_labels=False, fig=fig, plot_borders=False, plot_projection=projection, title="(c) Mid-Holocene - PI", 
                 domain="Africa")
 
-plot_annual_mean(variable="Precipitation anomalies", data_alt=pi_echam_alt, ax=ax4,
+plot_annual_mean(variable="Precipitation", data_alt=pi_echam_alt, ax=ax4,
                  cmap="YlGnBu", units="mm/month", vmax=300, vmin=50, 
                 levels=22, level_ticks=11, add_colorbar=True, plot_coastlines=True, bottom_labels=False,
                 left_labels=False, fig=fig, plot_borders=False, plot_projection=projection, title="(d) Pre-Industrial", 
