@@ -217,8 +217,8 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
     
     if add_colorbar == True:
         
-        p.colorbar.set_label(label=variable + " [" + units + "]", size= 20, fontweight="bold")
-        p.colorbar.ax.tick_params(labelsize=20, size=0,)
+        p.colorbar.set_label(label=variable + " [" + units + "]", size= 25, fontweight="bold")
+        p.colorbar.ax.tick_params(labelsize=25, size=0,)
     
     if plot_coastlines==False:
         if sea_land_mask is not None:
@@ -248,6 +248,10 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
     if plot_winds == True: 
         
         if all(data is not None for data in [data_v, data_u]):
+            if hasattr(data_v, "longitude"):
+                data_v = data_v.rename({"longitude":"lon", "latitude":"lat"})
+                data_u= data_u.rename({"longitude":"lon", "latitude":"lat"})
+                
             # extracting variables for quiver 
             x = data_v.coords["lon"].data
             y = data_v.coords["lat"].data
@@ -256,11 +260,11 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
             v = data_v.data
         
             X,Y = np.meshgrid(x,y)
-            skip = (slice(None, None, 3), slice(None, None, 3))  #for extracting the data on interval or use data[::3, ::3]
+            skip = (slice(None, None, 8), slice(None, None, 8))  #for extracting the data on interval or use data[::3, ::3]
             
             # ploting winds using quiver 
             q = ax.quiver(X[skip], Y[skip], u[skip], v[skip], transform=projection,  pivot= "mid", scale=wind_scale,
-                          headwidth=3, headlength=5, headaxislength=4.5)
+                          headwidth=3, headlength=5, headaxislength=4.5, color="grey")
             
             if show_arrow_scale:
                 qk = ax.quiverkey(q, 0.90, -0.1, 2, r'$2 \frac{m}{s}$', labelpos='E', coordinates='axes', fontproperties=
@@ -299,14 +303,14 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
         
         if center == True:
             ax.scatter(x=GNIP_data["lon"], y=GNIP_data["lat"], c=GNIP_data["d18op"], cmap=cmap, vmax=vmax, vmin=vmin, 
-                       norm=norm, edgecolor="k", s= 140, transform=projection)
+                       norm=norm, edgecolor="black", s= 140, transform=projection,linewidth=2)
         else:
             ax.scatter(x=GNIP_data["lon"], y=GNIP_data["lat"], c=GNIP_data["d18op"], 
-                       cmap=cmap, vmax=vmax, vmin=vmin, edgecolor="k", s= 140,
-                       transform=projection)
+                       cmap=cmap, vmax=vmax, vmin=vmin, edgecolor="black", s= 140,
+                       transform=projection,linewidth=2)
     
     if title is not None:
-        ax.set_title(title, fontsize=20, weight="bold", loc="left")
+        ax.set_title(title, fontsize=25, weight="bold", loc="left")
         
     #optional if one plot is required, alternatively save from the control script
     if all(parameter is not None for parameter in [output_format, output_name, path_to_store]):

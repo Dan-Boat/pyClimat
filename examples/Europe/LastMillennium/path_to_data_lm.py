@@ -7,7 +7,7 @@ Created on Mon May 22 15:57:48 2023
 import os
 
 main_path_to_data = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/plots/Last_Millennium/save_files"
-path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/plots/Last_Millennium"
+path_to_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/LastMillennium/plots"
 
 
 filenames = ["CESM", "ECHAM5", "GISS", "HADCM3", "CCSM"]

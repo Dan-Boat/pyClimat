@@ -209,15 +209,21 @@ def extract_var_for_section_all_topo(varname, units, maxlon, minlon,
 
 def plot_cross_section(varname, units, data, hue, ax=None, path_to_store=None, filename=None,
                        colors=None, xlabel=True, ylabel=True, title=None, ax_legend=True,
-                       ymin=None, ymax=None, points_data=None, point_hue=None):
+                       ymin=None, ymax=None, points_data=None, point_hue=None, violin_plot=False):
     
     topo_names = ["W1E1", "W2E0", "W2E1", "W2E2"]
     apply_style(fontsize=22, style=None, linewidth=2)
     if ax is None:
         fig,ax = plt.subplots(1,1, sharex=False, figsize=(20, 15))
+    
+    if violin_plot:
+        boxplot = sns.violinplot(data=data, x="Paleoclimate", y="value", saturation=0.8, ax=ax,
+                              hue=hue, scale="width") # count, width, area
         
-    boxplot = sns.violinplot(data=data, x="Paleoclimate", y="value", saturation=0.8, ax=ax,
-                          hue=hue, scale="width") # count, width, area
+    else:
+        boxplot = sns.boxplot(data=data, x="Paleoclimate", y="value", saturation=0.7, ax=ax,
+                              hue=hue, gap=0.1, linewidth=2) # count, width, area
+    
     
     
     if points_data is not None:
@@ -249,9 +255,9 @@ def plot_cross_section(varname, units, data, hue, ax=None, path_to_store=None, f
         ax.set_ylim(ymin, ymax)
         
     if ax_legend:
-        ax.legend(frameon=True, fontsize=24,
-                  bbox_to_anchor=(0.01, 1.05, 1, 0.102,), loc=3, borderaxespad=0,
-                  ncol=4)
+        ax.legend(frameon=True, fontsize=28,
+                  bbox_to_anchor=(0.01, 1.05, 1, 0.102,), loc=1, borderaxespad=0,
+                  ncol=2)
     else:
         ax.legend([],[], frameon=False)
         
@@ -301,15 +307,15 @@ elev_mdfs = estimate_all_transect(varname="elev", units="m", cal_mean=True)
 
 # plotting 
 
-apply_style(fontsize=28, style="seaborn-paper", linewidth=2,)
+apply_style(fontsize=28, style="seaborn-paper", linewidth=3,)
 
 fig,(ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(24, 15))
 
-plot_cross_section(varname="$\delta^{18}$Op vs SMOW", units="‰", data=d18op_mdfs.get("low_elev"), 
+plot_cross_section(varname="$\delta^{18}$Op VSMOW", units="‰", data=d18op_mdfs.get("low_elev"), 
                    hue="d18op", xlabel=True, title="Low elevation", ax_legend=True, ymin=-24, ymax=0,
                    ax=ax1, points_data=None,)
 
-plot_cross_section(varname="$\delta^{18}$Op vs SMOW", units="‰", data=d18op_mdfs.get("high_elev"), 
+plot_cross_section(varname="$\delta^{18}$Op VSMOW", units="‰", data=d18op_mdfs.get("high_elev"), 
                    hue="d18op", xlabel=True, title="High elevation", ax_legend=False, ymin=-24 , ymax=0,
                    ax=ax2, points_data=None, )
 
@@ -324,6 +330,6 @@ ax2.tick_params(axis='y', which='minor', length=4, width=1.5)
 
 plt.tight_layout()
 plt.subplots_adjust(left=0.05, right=0.95, top=0.97, bottom=0.05)
-plt.savefig(os.path.join(path_to_plots, "transect_low_high_d18op.svg"), format= "svg", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_plots, "transect_low_high_d18op.pdf"), format= "pdf", bbox_inches="tight", dpi=600)
 
         

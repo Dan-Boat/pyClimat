@@ -324,8 +324,8 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
             maxLat = 45
             
         elif domain == "NH Wide":
-            minLon = -100
-            maxLon = 100
+            minLon = -120
+            maxLon = 120
             minLat = 25
             maxLat = 85
             
@@ -387,8 +387,8 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
     
     #uncoment
     
-    gl.xlabel_style = {"fontsize": 20, "color": "black", "fontweight": "semibold"}   #axis style 
-    gl.ylabel_style = {"fontsize": 20, "color": "black", "fontweight": "semibold"}
+    gl.xlabel_style = {"fontsize": 25, "color": "black", "fontweight": "semibold"}   #axis style 
+    gl.ylabel_style = {"fontsize": 25, "color": "black", "fontweight": "semibold"}
 
 # for divergence plots
 class MidpointNormalize(colors.Normalize):

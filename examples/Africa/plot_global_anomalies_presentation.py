@@ -172,7 +172,7 @@ def animate_temp(i):
         fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(12,12), subplot_kw={"projection":projection})
 
         plot_annual_mean(variable="Temperature anomalies", data_alt=Mio450_data.get("temperature").sel(month=j+1), ax=ax,
-                          cmap="RdBu_r", units="°C", vmax=30, vmin=-30, 
+                          cmap="RdBu_r", units="°C", vmax=10, vmin=-10, 
                         levels=22, level_ticks=11, add_colorbar=True, plot_coastlines=False, bottom_labels=False,
                         left_labels=False, fig=fig, plot_borders=False, sea_land_mask=mio_slm,
                         plot_projection=projection, title="MIO 450ppm - PI (" + mname + ")", orientation="horizontal",
@@ -216,11 +216,11 @@ def creat_git(path_to_plots, output_name):
         print(f"Deleted: {png_file}")
         
 for i in np.arange(0, 360, 60):
-    animate_prec(i)
-    animate_d18Op(i)
+    #animate_prec(i)
+    #animate_d18Op(i)
     animate_temp(i)
     
     
 creat_git(path_to_plots_temp, "MIO_450_temp")
-creat_git(path_to_plots_prec, "MIO_450_prec")
-creat_git(path_to_plots_d18Op, "MIO_450_d18Op")
+#creat_git(path_to_plots_prec, "MIO_450_prec")
+#creat_git(path_to_plots_d18Op, "MIO_450_d18Op")

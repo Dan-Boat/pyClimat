@@ -316,12 +316,12 @@ def plot_profile():
     
     plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lon, 
                       data_mio450=df_mio450_lon, ax=ax1, ax_legend=True,ymax=0, ymin=-22.5, dim="lon", 
-                      control_data=df_PI_lon, proxy_low=proxy_data_low, proxy_high=proxy_data_high, fig=fig, 
+                      control_data=df_PI_lon, proxy_low=None, proxy_high=proxy_data_high, fig=fig, 
                       vmax=16, vmin=13)
     
     plot_profiles_all(varname="$\delta^{18}$Op vs SMOW", units="‰", data_mio278=df_mio278_lat, 
                       data_mio450=df_mio450_lat, ax=ax2, ax_legend=False,ymax=0, ymin=-22.5, dim="lat", 
-                      control_data=df_PI_lat, proxy_low=proxy_data_low, proxy_high=proxy_data_high,
+                      control_data=df_PI_lat, proxy_low=None, proxy_high=proxy_data_high,
                       ylabel=False, fig=fig, vmax=16, vmin=13)
     
     
@@ -336,7 +336,7 @@ def plot_profile():
     extract_topo_profile(ax1=ax1, ax2=ax2)
     plt.tight_layout()
     plt.subplots_adjust(left=0.05, right=0.90, top=0.97, bottom=0.05, wspace=0.18)
-    plt.savefig(os.path.join(path_to_plots, "d18Op_profile_with_proxies.svg"), format= "svg", bbox_inches="tight", dpi=600)
+    plt.savefig(os.path.join(path_to_plots, "d18Op_profile_with_proxies.pdf"), format= "pdf", bbox_inches="tight", dpi=600)
     
     
     

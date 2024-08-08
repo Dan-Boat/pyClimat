@@ -53,7 +53,7 @@ filename_mon = "Hol-T_echam5_wiso_wisoaprt_d_0004_to_7000_2.nc"
 
 data = read_from_path(path=path_to_data, filename=filename_mon, varname= "wisoaprt_d", decode=True)
 
-#data["time"] = dates
+data["time"] = dates
 
 
 # compute means

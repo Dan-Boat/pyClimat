@@ -50,18 +50,18 @@ def extract_climatologies(filename, time="annual", season=None):
                       varname="prec")
     
     
-    date_range_mca = xr.cftime_range(start="0851", end ="1160", freq="MS", calendar="noleap")
+    date_range_mca = xr.cftime_range(start="0951", end ="1250", freq="MS", calendar="noleap")
     
-    date_range_lia = xr.cftime_range(start="1489", end ="1850", freq="MS", calendar="noleap")
+    date_range_lia = xr.cftime_range(start="1650", end ="1850", freq="MS", calendar="noleap")
     
     if filename == "GISS": #slice only works for HadGEM3 temp.sel(time=slice("1000-01", "1250-01"))
-        date_range_mca = xr.cftime_range(start="0851", end ="1160", freq="M", calendar="noleap")
+        date_range_mca = xr.cftime_range(start="0951", end ="1250", freq="M", calendar="noleap")
         
-        date_range_lia = xr.cftime_range(start="1489", end ="1849", freq="M", calendar="noleap")
+        date_range_lia = xr.cftime_range(start="1650", end ="1849", freq="M", calendar="noleap")
         
     elif filename == "HADCM3":
-        date_range_mca = temp.sel(time= slice("0851-01", "1160-01")).time
-        date_range_lia = temp.sel(time= slice("1489-01", "1850-01")).time
+        date_range_mca = temp.sel(time= slice("0951-01", "1250-01")).time
+        date_range_lia = temp.sel(time= slice("1650-01", "1850-01")).time
         
         
     
@@ -105,8 +105,8 @@ def extract_climatologies(filename, time="annual", season=None):
 
 
 # test function 
-cesm_mca, cesm_lia, cesm_diff = extract_climatologies(filename="CESM", time="annual")
-giss_mca, giss_lia, giss_diff = extract_climatologies(filename="GISS", time="annual")
+#cesm_mca, cesm_lia, cesm_diff = extract_climatologies(filename="CESM", time="annual")
+#giss_mca, giss_lia, giss_diff = extract_climatologies(filename="GISS", time="annual")
 hadcm3_mca, hadcm3_lia, hadcm3_diff = extract_climatologies(filename="HADCM3", time="annual")
 
 def plot_d18Op_global(data_mca, data_lia, data_diff, axes=None, fig=None, axes_cbar=True, labels=None):
