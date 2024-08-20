@@ -21,7 +21,7 @@ from pyClimat.plots import plot_eofsAsCovariance
 from pyClimat.data import read_ECHAM_processed, read_from_path, read_ERA_processed
 
 
-def extract_eofs_data(data, figname, units, variable, vmax=15, vmin=-15, plot_covariance=True, is_era=False,
+def extract_eofs_data(data, figname, units, variable, vmax=15, vmin=-15, plot_covariance=False, is_era=False,
                       path_to_plots=None, apply_varimax=False, save_files=False,
                       path_to_files=None, filename=None, standardize=True, 
                       monthly_anomalies=True, method="Eof", season="DJF", time="season",
@@ -52,10 +52,14 @@ def extract_eofs_data(data, figname, units, variable, vmax=15, vmin=-15, plot_co
     #eofs_corr, eofs_pvals = EOF.eofs_as_correlation()
     pcs = EOF.pcs()
     variance = EOF.explained_variance_ratio()
+    cors, pvalues = EOF.eofs_as_correlation()
     
     if save_files:
         
         eofs.to_netcdf(os.path.join(path_to_files, filename + "_" + season + "_eofsAsCovariance.nc"))
+        cors.to_netcdf(os.path.join(path_to_files, filename + "_" + season + "_eofsAsCorrelation.nc"))
+        pvalues.to_netcdf(os.path.join(path_to_files, filename + "_" + season + "_eofsAsCorrelation_pvalues.nc"))
+        
         #eofs_corr.to_netcdf(os.path.join(path_to_files, filename + "_eofsAsCorrelation.nc"))
         #eofs_pvals.to_netcdf(os.path.join(path_to_files, filename + "_eofsAsCorrelation_pvals.nc"))
         pcs.to_csv(os.path.join(path_to_files, filename + "_" + season + "_pcs.csv"))

@@ -1162,7 +1162,7 @@ def plot_echam_topo(variable, data, cmap, units, ax=None, vmax=None, vmin=None, 
 def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=None, units=None, ax=None, domain=None, output_name=None, 
                      output_format=None, level_ticks=None, title=None, path_to_store=None, cbar = None, cbar_orientation=None, cbar_position = None,
                      fig=None, use_AlberEqualArea=None, vmax=None, vmin=None, left_labels= True, bottom_labels=True,
-                     plot_contour=True):
+                     plot_contour=True, coast_color="grey"):
     """
     
 
@@ -1249,12 +1249,12 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
             
             p = data.plot.imshow(ax=ax, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, transform = projection,
                                  cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": cbar_orientation, 
-                                               "shrink": 0.5, "format": "%.0f", "ticks":ticks}, extend= "both", add_colorbar=True, cbar_ax=cbar_ax,
+                                               "shrink": 0.5, "format": "%.1f", "ticks":ticks}, extend= "both", add_colorbar=True, cbar_ax=cbar_ax,
                                  add_labels=False)
             
             
-            p.colorbar.set_label(label=variable + " [" + units + "]", size= 22, fontweight="bold")
-            p.colorbar.ax.tick_params(labelsize=22, size=0,)
+            p.colorbar.set_label(label=variable + " [" + units + "]", size= 25, fontweight="bold")
+            p.colorbar.ax.tick_params(labelsize=25, size=0,)
             
         elif cbar == False:
             p = data.plot.imshow(ax =ax, cmap=cmap, vmin=vmin, vmax=vmax, levels=levels, transform = projection, add_colorbar=False, add_labels=False)
@@ -1262,7 +1262,7 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
     else:
         p = data.plot.imshow(ax =ax, cmap=cmap, transform = projection, 
                                  cbar_kwargs= {"pad":0.1, "drawedges": True, "orientation": "horizontal", 
-                                               "shrink": 0.70, "format": "%.0f", "ticks":ticks}, extend= "both")
+                                               "shrink": 0.70, "format": "%.1f", "ticks":ticks}, extend= "both")
     
         
     #plot contour 
@@ -1288,12 +1288,12 @@ def plot_eofsAsCovariance(variable, data, mode_var=None, cmap = None, levels=Non
     if title is not None:
         if mode_var is not None:
             if isinstance(mode_var, pd.Series):
-                ax.set_title(title + " ({:.2f})".format(float(mode_var)) , fontsize=22, weight="bold", loc="left")
+                ax.set_title(title + " ({:.2f})".format(float(mode_var)) , fontsize=25, weight="bold", loc="left")
                 
             else:
-                ax.set_title(title + " ({:.2f})".format(mode_var) , fontsize=22, weight="bold", loc="left")
+                ax.set_title(title + " ({:.2f})".format(mode_var) , fontsize=25, weight="bold", loc="left")
         else:
-            ax.set_title(title, fontsize=22, weight="bold", loc="left")
+            ax.set_title(title, fontsize=25, weight="bold", loc="left")
         
     #optional if one plot is required, alternatively save from the control script
     if all(parameter is not None for parameter in [output_format, output_name, path_to_store]):

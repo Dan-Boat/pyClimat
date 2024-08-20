@@ -28,7 +28,7 @@ from pyClimat.variables import extract_var
 from pyClimat.utils import extract_region
 
 
-from path_to_data_lm import *
+path_plots = "C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/LastMillennium/plots"
 
 main_path = "D:/Datasets/iGCM_datasets/"
 
@@ -48,6 +48,16 @@ def extract_climatologies(filename, time="annual", season=None):
     
     prec = read_from_path(path=main_path, filename=filename_data, decode=True,
                       varname="prec")
+    
+    slp = read_from_path(path=main_path, filename=filename_data, decode=True,
+                      varname="slp") /100 
+    
+    
+    if hasattr(slp, "lat_2"):
+        slp = slp.rename({"lat_2":"lat"})
+        
+    if hasattr(slp, "lon_2"):
+        slp = slp.rename({"lon_2":"lon"})
     
     
     date_range_mca = xr.cftime_range(start="0951", end ="1250", freq="MS", calendar="noleap")
@@ -71,8 +81,8 @@ def extract_climatologies(filename, time="annual", season=None):
     temp_lia = compute_lterm_mean(data=temp, time=time, time_range=date_range_lia, 
                                   season=season)
     temp_diff = compute_lterm_diff(data_control=temp, data_main=temp, time=time,
-                                           time_range_control=date_range_mca, 
-                                           time_range_main=date_range_lia,
+                                           time_range_control=date_range_lia, 
+                                           time_range_main=date_range_mca,
                                            season=season)
     
     
@@ -81,8 +91,8 @@ def extract_climatologies(filename, time="annual", season=None):
     d18O_lia = compute_lterm_mean(data=d18O, time=time, time_range=date_range_lia, 
                                   season=season)
     d18O_diff = compute_lterm_diff(data_control=d18O, data_main=d18O, time=time,
-                                           time_range_control=date_range_mca, 
-                                           time_range_main=date_range_lia,
+                                           time_range_control=date_range_lia, 
+                                           time_range_main=date_range_mca,
                                            season=season)
     
     
@@ -91,15 +101,25 @@ def extract_climatologies(filename, time="annual", season=None):
     prec_lia = compute_lterm_mean(data=prec, time=time, time_range=date_range_lia, 
                                   season=season)
     prec_diff = compute_lterm_diff(data_control=prec, data_main=temp, time=time,
-                                           time_range_control=date_range_mca, 
-                                           time_range_main=date_range_lia,
+                                           time_range_control=date_range_lia, 
+                                           time_range_main=date_range_mca,
                                            season=season)
     
-    data_mca ={"temp": temp_mca, "d18O": d18O_mca, "prec": prec_mca}
     
-    data_lia ={"temp": temp_lia, "d18O": d18O_lia, "prec": prec_lia}
+    slp_mca = compute_lterm_mean(data=slp, time=time, time_range=date_range_mca, 
+                                  season=season)
+    slp_lia = compute_lterm_mean(data=slp, time=time, time_range=date_range_lia, 
+                                  season=season)
+    slp_diff = compute_lterm_diff(data_control=slp, data_main=slp, time=time,
+                                           time_range_control=date_range_lia, 
+                                           time_range_main=date_range_mca,
+                                           season=season)
     
-    data_diff ={"temp": temp_diff, "d18O": d18O_diff, "prec": prec_diff}
+    data_mca ={"temp": temp_mca, "d18O": d18O_mca, "prec": prec_mca, "slp": slp_mca}
+    
+    data_lia ={"temp": temp_lia, "d18O": d18O_lia, "prec": prec_lia, "slp": slp_lia}
+    
+    data_diff ={"temp": temp_diff, "d18O": d18O_diff, "prec": prec_diff, "slp": slp_diff}
     
     return data_mca, data_lia, data_diff
 
@@ -107,7 +127,7 @@ def extract_climatologies(filename, time="annual", season=None):
 # test function 
 #cesm_mca, cesm_lia, cesm_diff = extract_climatologies(filename="CESM", time="annual")
 #giss_mca, giss_lia, giss_diff = extract_climatologies(filename="GISS", time="annual")
-hadcm3_mca, hadcm3_lia, hadcm3_diff = extract_climatologies(filename="HADCM3", time="annual")
+#hadcm3_mca, hadcm3_lia, hadcm3_diff = extract_climatologies(filename="HADCM3", time="annual")
 
 def plot_d18Op_global(data_mca, data_lia, data_diff, axes=None, fig=None, axes_cbar=True, labels=None):
     apply_style(fontsize=28, style=None, linewidth=2.5) 
@@ -225,10 +245,6 @@ def plot_prec_global(data_mca, data_lia, data_diff, axes=None, fig=None, axes_cb
 
 
 
-# plot
-apply_style(fontsize=28, style=None, linewidth=2.5)
-projection = ccrs.Robinson(central_longitude=0, globe=None)
-
 def plot_d18Op():
     fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9)) = plt.subplots(nrows = 3, ncols=3, 
                                                      figsize=(30, 18), subplot_kw={"projection": projection})
@@ -294,8 +310,76 @@ def plot_prec():
     plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.10)
     plt.savefig(os.path.join(path_to_plots, "prec_mca_lia.svg"), format= "svg", bbox_inches="tight", dpi=300)
     
+
+
+
+cesm_mca, cesm_lia, cesm_diff = extract_climatologies(filename="CESM", time="annual")
+giss_mca, giss_lia, giss_diff = extract_climatologies(filename="GISS", time="annual")
+
+
+apply_style(fontsize=28, style=None, linewidth=2.5) 
+        
+projection = ccrs.Robinson(central_longitude=0, globe=None)
+
+fig,((ax1, ax2), (ax3, ax4), (ax5, ax6)) = plt.subplots(nrows=3, ncols=2, figsize=(22,25), subplot_kw={"projection":projection})
+
+plot_annual_mean(variable="Precipitation", data_alt=cesm_diff.get("prec"), ax=ax1,
+                 cmap=BrBG, units="mm/month", vmax=150, vmin=-150,
+                 plot_coastlines=True, c_data=cesm_diff.get("slp"), c_vmax=0.5, c_vmin=-0.5, c_levels=10,
+                levels=22, level_ticks=7, add_colorbar=True, cbar_pos= [0.95, 0.65, 0.02, 0.20], 
+                orientation="vertical", bottom_labels=False,
+                left_labels=False, fig=fig, plot_borders=True,
+                plot_projection=projection, title="(a) CESM  (MCA-LIA)", center=True, domain="NH",
+                label_format="%.0f", plot_contour=False)
+
+plot_annual_mean(variable="Precipitation", data_alt=giss_diff.get("prec"), ax=ax2,
+                 cmap=BrBG, units="mm/month", vmax=150, vmin=-150,
+                 plot_coastlines=True, c_data=giss_diff.get("slp"), c_vmax=0.5, c_vmin=-0.5, c_levels=10,
+                levels=22, level_ticks=7, add_colorbar=False, bottom_labels=False,
+                left_labels=False, fig=fig, plot_borders=True,
+                plot_projection=projection, title="(b) GISS", center=True, domain="NH",
+                label_format="%.0f", plot_contour=False)
+
+plot_annual_mean(variable="Temperature", data_alt=cesm_diff.get("temp"), ax=ax3,
+                 cmap=RdBu_r, units="°C", vmax=1.5, vmin=-1.5, 
+                levels=22, level_ticks=7, add_colorbar=True, cbar_pos= [0.95, 0.35, 0.02, 0.20], 
+                orientation="vertical", bottom_labels=False,
+                left_labels=False, fig=fig, plot_borders=True,
+                plot_projection=projection, title="(c)", center=True, domain="NH",
+                label_format="%.1f")
+
+plot_annual_mean(variable="Temperature", data_alt=giss_diff.get("temp"), ax=ax4,
+                 cmap=RdBu_r, units="°C", vmax=1.5, vmin=-1.5, 
+                levels=22, level_ticks=7, add_colorbar=False, bottom_labels=False,
+                left_labels=False, fig=fig, plot_borders=True,
+                plot_projection=projection, title="(d)", center=True, domain="NH",
+                label_format="%.1f")
+
+plot_annual_mean(variable="$\delta^{18}$Op VSMOW", data_alt=cesm_diff.get("d18O"), ax=ax5,
+                 cmap="PiYG", units="‰", vmax=0.5, vmin=-0.5, 
+                levels=22, level_ticks=11, add_colorbar=True, cbar_pos= [0.95, 0.05, 0.02, 0.20], 
+                orientation="vertical", bottom_labels=False,
+                left_labels=False, fig=fig, plot_borders=True,
+                plot_projection=projection, title="(e)", center=True, domain="NH",
+                label_format="%.1f")
+
+plot_annual_mean(variable="$\delta^{18}$Op VSMOW", data_alt=giss_diff.get("d18O"), ax=ax6,
+                 cmap="PiYG", units="‰", vmax=0.5, vmin=-0.5, 
+                levels=22, level_ticks=11, add_colorbar=False, bottom_labels=False,
+                left_labels=False, fig=fig, plot_borders=True,
+                plot_projection=projection, title="(e)", center=True, domain="NH",
+                label_format="%.1f")
     
-if __name__ == "__main__":
-    plot_d18Op()
-    plot_temp()
-    plot_prec()
+fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+plt.tight_layout() 
+plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
+plt.savefig(os.path.join(path_plots, "regional_mca_lia_diff.png"), format= "png", bbox_inches="tight", dpi=600)
+    
+    
+# if __name__ == "__main__":
+    # plot
+    # apply_style(fontsize=28, style=None, linewidth=2.5)
+    # projection = ccrs.Robinson(central_longitude=0, globe=None)
+#     #plot_d18Op()
+#     plot_temp()
+#     #plot_prec()

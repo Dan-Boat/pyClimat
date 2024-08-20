@@ -22,7 +22,7 @@ from pyClimat.utils import extract_region
 from main import extract_eofs_data
 
 path_to_plots="C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/LastMillennium"
-path_to_files="C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/LastMillennium"
+path_to_files="C:/Users/dboateng/Desktop/Python_scripts/ClimatPackage_repogit/examples/Europe/LastMillennium/plots/data"
 
 #paths
 main_path = "D:/Datasets/iGCM_datasets/"
@@ -65,13 +65,14 @@ def perform_eof_and_store(apply_varimax=False, filename=None, path_to_data=None,
 
 
 
-filenames = ["ECHAM5"]
+filenames = ["ECHAM5", "GISS", "CESM"]
 
 for filename in filenames:
+    print(filename)
     perform_eof_and_store(filename=filename, path_to_data=main_path, season="DJF")
-    #perform_eof_and_store(filename=filename, path_to_data=main_path, season="JJA")
+    
 
 
-print(None)
+
 
 

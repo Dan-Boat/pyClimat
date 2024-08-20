@@ -249,7 +249,7 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
             p.axes.coastlines(resolution = coast_resolution, linewidth=1.5, color=coast_color)  # add coastlines outlines to the current axis
     
     if plot_borders == True:
-        p.axes.add_feature(cfeature.BORDERS, edgecolor="black", linewidth = 0.3) #adding country boarder lines
+        p.axes.add_feature(cfeature.BORDERS, edgecolor="grey", linewidth = 0.5) #adding country boarder lines
     
     #setting domain size
     if domain is not None: 
