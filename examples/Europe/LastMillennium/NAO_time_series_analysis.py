@@ -82,7 +82,8 @@ def nao_index_from_models(path, factor=-1, model="CESM"):
     
     return df_series
 
-def pause():
+
+def extract_series(resample=True):
 
     # Read the file line by line and filter out lines starting with '#'
     lines = []
@@ -143,20 +144,31 @@ def pause():
     giss_series = nao_index_from_models(giss, model="GISS", factor=1)
     echam_series = nao_index_from_models(echam, model="ECHAM", factor=-1)
        
-    
-    nao_series = [df2_series.standardize(), df1_series.standardize().resample("15y").mean(), 
-                  cesm_series.standardize().resample("15y").mean(),
-                  giss_series.standardize().resample("15y").mean(),
-                  echam_series.standardize().resample("15y").mean()
-                  ]
+    if resample:
+        nao_series = [df2_series.standardize(), df1_series.standardize().resample("15y").mean(), 
+                      cesm_series.standardize().resample("15y").mean(),
+                      giss_series.standardize().resample("15y").mean(),
+                      echam_series.standardize().resample("15y").mean()
+                      ]
+        
+    else:
+        nao_series = [df2_series.standardize(), df1_series.standardize(), 
+                      cesm_series.standardize(),
+                      giss_series.standardize(),
+                      echam_series.standardize()
+                      ]
+        
     
     
     
     nao = pyleo.MultipleSeries(nao_series, name="North Atlantic Oscillation Comparison")
     
-    
+    return nao
+
+def plot_nao_index():
     apply_style(fontsize=28, style="seaborn-paper", linewidth=3,)
     
+    nao = extract_series()
     
     fig, ax = nao.stackplot(time_unit="year AD", xlim=[850, 2000], colors=["b", "g", "r", "#42eff5", "#a911ba"], figsize=(15,12),
                            ylabel_fontsize=25)
@@ -165,5 +177,13 @@ def pause():
         ax.get(i).axvspan(1650, 1850, facecolor="grey", alpha=0.2)
     
     plt.savefig(os.path.join(path_plots, "nao_comparison.pdf"), bbox_inches="tight", format= "pdf")
+
+def plot_psd():    
+    apply_style(fontsize=28, style="seaborn-paper", linewidth=3,)
     
-pause()
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(15, 12))
+    nao = extract_series(resample=False)
+    
+    nao_psd = nao.spectral(method="wwz")
+    nao_psd.plot(ax=ax)
+    fig.savefig(os.path.join(path_plots, "nao_psd.png"), bbox_inches="tight", format= "png")

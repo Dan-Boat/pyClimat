@@ -27,6 +27,16 @@ from path_to_data_lm import *
 main_path = "D:/Datasets/iGCM_datasets/"
 
 
+"""
+Modfiy the script to plot all correlations on one figure for the two models considered
+
+Save all the correlations and their significant values for further analysis 
+
+"""
+
+
+
+
 
 
 def perform_correlation_nao_ea_with_t2m_prec(pcs_path, path_to_data, nao_mode, ea_mode, 

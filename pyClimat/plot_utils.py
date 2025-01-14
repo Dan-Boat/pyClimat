@@ -273,6 +273,14 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
             maxLon = 164
             minLat = 20
             maxLat = 77
+            
+        elif domain == "GNIP_view":        # Eurasia
+            minLon = -25
+            maxLon = 30
+            minLat = 40
+            maxLat = 72
+            
+            
         elif domain == "Cascades":  # Cascades
             minLon = -129
             maxLon = -120
@@ -340,6 +348,13 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
             maxLon = 10
             minLat = 0
             maxLat = 35
+        
+        elif domain =="Alps":
+            minLon = 3
+            maxLon = 15
+            minLat = 43.5
+            maxLat = 49.5
+        
             
             
         

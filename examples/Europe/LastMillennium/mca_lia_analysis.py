@@ -124,10 +124,6 @@ def extract_climatologies(filename, time="annual", season=None):
     return data_mca, data_lia, data_diff
 
 
-# test function 
-#cesm_mca, cesm_lia, cesm_diff = extract_climatologies(filename="CESM", time="annual")
-#giss_mca, giss_lia, giss_diff = extract_climatologies(filename="GISS", time="annual")
-#hadcm3_mca, hadcm3_lia, hadcm3_diff = extract_climatologies(filename="HADCM3", time="annual")
 
 def plot_d18Op_global(data_mca, data_lia, data_diff, axes=None, fig=None, axes_cbar=True, labels=None):
     apply_style(fontsize=28, style=None, linewidth=2.5) 
@@ -141,7 +137,7 @@ def plot_d18Op_global(data_mca, data_lia, data_diff, axes=None, fig=None, axes_c
     
     
             
-    plot_annual_mean(variable="$\delta^{18}$Op vs SMOW", data_alt=data_mca.get("d18O"), ax=axes[0],
+    plot_annual_mean(variable="$\delta^{18}$Op VSMOW", data_alt=data_mca.get("d18O"), ax=axes[0],
                      cmap=RdYlBu, units="‰", vmax=2, vmin=-30, 
                     levels=22, level_ticks=11, add_colorbar=axes_cbar, cbar_pos= [0.05, 0.05, 0.35, 0.02], 
                     orientation="horizontal", bottom_labels=False,
@@ -149,14 +145,14 @@ def plot_d18Op_global(data_mca, data_lia, data_diff, axes=None, fig=None, axes_c
                     plot_projection=projection, title=labels[0], center=False, domain="NH Wide")
     
    
-    plot_annual_mean(variable="$\delta^{18}$Op vs SMOW", data_alt=data_lia.get("d18O"), ax=axes[1],
+    plot_annual_mean(variable="$\delta^{18}$Op VSMOW", data_alt=data_lia.get("d18O"), ax=axes[1],
                      cmap=RdYlBu, units="‰", vmax=2, vmin=-30, 
                     levels=22, level_ticks=11, add_colorbar=False, 
                     bottom_labels=False,
                     left_labels=False, fig=fig, plot_borders=True, coast_resolution="110m",
                     plot_projection=projection, title=labels[1], center=False, domain="NH Wide")
     
-    plot_annual_mean(variable="$\delta^{18}$Op vs SMOW", data_alt=data_diff.get("d18O"), ax=axes[2],
+    plot_annual_mean(variable="$\delta^{18}$Op VSMOW", data_alt=data_diff.get("d18O"), ax=axes[2],
                      cmap="PiYG", units="‰", vmax=0.5, vmin=-0.5, 
                     levels=22, level_ticks=9, add_colorbar=axes_cbar, cbar_pos= [0.45, 0.05, 0.35, 0.02], 
                     orientation="horizontal", bottom_labels=False,
@@ -311,75 +307,78 @@ def plot_prec():
     plt.savefig(os.path.join(path_to_plots, "prec_mca_lia.svg"), format= "svg", bbox_inches="tight", dpi=300)
     
 
-
+# test function 
+#cesm_mca, cesm_lia, cesm_diff = extract_climatologies(filename="CESM", time="annual")
+#giss_mca, giss_lia, giss_diff = extract_climatologies(filename="GISS", time="annual")
+hadcm3_mca, hadcm3_lia, hadcm3_diff = extract_climatologies(filename="HADCM3", time="annual")
 
 cesm_mca, cesm_lia, cesm_diff = extract_climatologies(filename="CESM", time="annual")
 giss_mca, giss_lia, giss_diff = extract_climatologies(filename="GISS", time="annual")
 
-
-apply_style(fontsize=28, style=None, linewidth=2.5) 
+def plot_mca_lia_diff():
+    apply_style(fontsize=28, style=None, linewidth=2.5) 
+            
+    projection = ccrs.Robinson(central_longitude=0, globe=None)
+    
+    fig,((ax1, ax2), (ax3, ax4), (ax5, ax6)) = plt.subplots(nrows=3, ncols=2, figsize=(22,25), subplot_kw={"projection":projection})
+    
+    plot_annual_mean(variable="Precipitation", data_alt=cesm_diff.get("prec"), ax=ax1,
+                     cmap=BrBG, units="mm/month", vmax=150, vmin=-150,
+                     plot_coastlines=True, c_data=cesm_diff.get("slp"), c_vmax=0.5, c_vmin=-0.5, c_levels=10,
+                    levels=22, level_ticks=7, add_colorbar=True, cbar_pos= [0.95, 0.65, 0.02, 0.20], 
+                    orientation="vertical", bottom_labels=False,
+                    left_labels=False, fig=fig, plot_borders=True,
+                    plot_projection=projection, title="(a) CESM  (MCA-LIA)", center=True, domain="NH",
+                    label_format="%.0f", plot_contour=False)
+    
+    plot_annual_mean(variable="Precipitation", data_alt=giss_diff.get("prec"), ax=ax2,
+                     cmap=BrBG, units="mm/month", vmax=150, vmin=-150,
+                     plot_coastlines=True, c_data=giss_diff.get("slp"), c_vmax=0.5, c_vmin=-0.5, c_levels=10,
+                    levels=22, level_ticks=7, add_colorbar=False, bottom_labels=False,
+                    left_labels=False, fig=fig, plot_borders=True,
+                    plot_projection=projection, title="(b) GISS", center=True, domain="NH",
+                    label_format="%.0f", plot_contour=False)
+    
+    plot_annual_mean(variable="Temperature", data_alt=cesm_diff.get("temp"), ax=ax3,
+                     cmap=RdBu_r, units="°C", vmax=1.5, vmin=-1.5, 
+                    levels=22, level_ticks=7, add_colorbar=True, cbar_pos= [0.95, 0.35, 0.02, 0.20], 
+                    orientation="vertical", bottom_labels=False,
+                    left_labels=False, fig=fig, plot_borders=True,
+                    plot_projection=projection, title="(c)", center=True, domain="NH",
+                    label_format="%.1f")
+    
+    plot_annual_mean(variable="Temperature", data_alt=giss_diff.get("temp"), ax=ax4,
+                     cmap=RdBu_r, units="°C", vmax=1.5, vmin=-1.5, 
+                    levels=22, level_ticks=7, add_colorbar=False, bottom_labels=False,
+                    left_labels=False, fig=fig, plot_borders=True,
+                    plot_projection=projection, title="(d)", center=True, domain="NH",
+                    label_format="%.1f")
+    
+    plot_annual_mean(variable="$\delta^{18}$Op VSMOW", data_alt=cesm_diff.get("d18O"), ax=ax5,
+                     cmap="PiYG", units="‰", vmax=0.5, vmin=-0.5, 
+                    levels=22, level_ticks=11, add_colorbar=True, cbar_pos= [0.95, 0.05, 0.02, 0.20], 
+                    orientation="vertical", bottom_labels=False,
+                    left_labels=False, fig=fig, plot_borders=True,
+                    plot_projection=projection, title="(e)", center=True, domain="NH",
+                    label_format="%.1f")
+    
+    plot_annual_mean(variable="$\delta^{18}$Op VSMOW", data_alt=giss_diff.get("d18O"), ax=ax6,
+                     cmap="PiYG", units="‰", vmax=0.5, vmin=-0.5, 
+                    levels=22, level_ticks=11, add_colorbar=False, bottom_labels=False,
+                    left_labels=False, fig=fig, plot_borders=True,
+                    plot_projection=projection, title="(e)", center=True, domain="NH",
+                    label_format="%.1f")
         
-projection = ccrs.Robinson(central_longitude=0, globe=None)
-
-fig,((ax1, ax2), (ax3, ax4), (ax5, ax6)) = plt.subplots(nrows=3, ncols=2, figsize=(22,25), subplot_kw={"projection":projection})
-
-plot_annual_mean(variable="Precipitation", data_alt=cesm_diff.get("prec"), ax=ax1,
-                 cmap=BrBG, units="mm/month", vmax=150, vmin=-150,
-                 plot_coastlines=True, c_data=cesm_diff.get("slp"), c_vmax=0.5, c_vmin=-0.5, c_levels=10,
-                levels=22, level_ticks=7, add_colorbar=True, cbar_pos= [0.95, 0.65, 0.02, 0.20], 
-                orientation="vertical", bottom_labels=False,
-                left_labels=False, fig=fig, plot_borders=True,
-                plot_projection=projection, title="(a) CESM  (MCA-LIA)", center=True, domain="NH",
-                label_format="%.0f", plot_contour=False)
-
-plot_annual_mean(variable="Precipitation", data_alt=giss_diff.get("prec"), ax=ax2,
-                 cmap=BrBG, units="mm/month", vmax=150, vmin=-150,
-                 plot_coastlines=True, c_data=giss_diff.get("slp"), c_vmax=0.5, c_vmin=-0.5, c_levels=10,
-                levels=22, level_ticks=7, add_colorbar=False, bottom_labels=False,
-                left_labels=False, fig=fig, plot_borders=True,
-                plot_projection=projection, title="(b) GISS", center=True, domain="NH",
-                label_format="%.0f", plot_contour=False)
-
-plot_annual_mean(variable="Temperature", data_alt=cesm_diff.get("temp"), ax=ax3,
-                 cmap=RdBu_r, units="°C", vmax=1.5, vmin=-1.5, 
-                levels=22, level_ticks=7, add_colorbar=True, cbar_pos= [0.95, 0.35, 0.02, 0.20], 
-                orientation="vertical", bottom_labels=False,
-                left_labels=False, fig=fig, plot_borders=True,
-                plot_projection=projection, title="(c)", center=True, domain="NH",
-                label_format="%.1f")
-
-plot_annual_mean(variable="Temperature", data_alt=giss_diff.get("temp"), ax=ax4,
-                 cmap=RdBu_r, units="°C", vmax=1.5, vmin=-1.5, 
-                levels=22, level_ticks=7, add_colorbar=False, bottom_labels=False,
-                left_labels=False, fig=fig, plot_borders=True,
-                plot_projection=projection, title="(d)", center=True, domain="NH",
-                label_format="%.1f")
-
-plot_annual_mean(variable="$\delta^{18}$Op VSMOW", data_alt=cesm_diff.get("d18O"), ax=ax5,
-                 cmap="PiYG", units="‰", vmax=0.5, vmin=-0.5, 
-                levels=22, level_ticks=11, add_colorbar=True, cbar_pos= [0.95, 0.05, 0.02, 0.20], 
-                orientation="vertical", bottom_labels=False,
-                left_labels=False, fig=fig, plot_borders=True,
-                plot_projection=projection, title="(e)", center=True, domain="NH",
-                label_format="%.1f")
-
-plot_annual_mean(variable="$\delta^{18}$Op VSMOW", data_alt=giss_diff.get("d18O"), ax=ax6,
-                 cmap="PiYG", units="‰", vmax=0.5, vmin=-0.5, 
-                levels=22, level_ticks=11, add_colorbar=False, bottom_labels=False,
-                left_labels=False, fig=fig, plot_borders=True,
-                plot_projection=projection, title="(e)", center=True, domain="NH",
-                label_format="%.1f")
+    fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
+    plt.tight_layout() 
+    plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
+    plt.savefig(os.path.join(path_plots, "regional_mca_lia_diff.png"), format= "png", bbox_inches="tight", dpi=600)
+        
     
-fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
-plt.tight_layout() 
-plt.subplots_adjust(left=0.05, right=0.89, top=0.95, bottom=0.10, wspace=0.05)
-plt.savefig(os.path.join(path_plots, "regional_mca_lia_diff.png"), format= "png", bbox_inches="tight", dpi=600)
-    
-    
-# if __name__ == "__main__":
+if __name__ == "__main__":
     # plot
     # apply_style(fontsize=28, style=None, linewidth=2.5)
     # projection = ccrs.Robinson(central_longitude=0, globe=None)
-#     #plot_d18Op()
+    plot_d18Op()
 #     plot_temp()
 #     #plot_prec()

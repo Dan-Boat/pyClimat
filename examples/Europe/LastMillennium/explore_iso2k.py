@@ -143,7 +143,7 @@ mdf_mean = mdf.groupby(["Paleoclimate", "zscore"]).mean()
 
 def plot_distribution(varname, units, data, hue, ax=None, path_to_plots=None, filename=None,
                        colors=None, xlabel=True, ylabel=True, title=None, ax_legend=True,
-                       ymin=None, ymax=None, points_data=None,):
+                       ymin=None, ymax=None, points_data=None, violin_plot=False):
     
     regions = ["Greenland", "North EU", "South EU"]
     
@@ -151,9 +151,13 @@ def plot_distribution(varname, units, data, hue, ax=None, path_to_plots=None, fi
     if ax is None:
         fig,ax = plt.subplots(1,1, sharex=False, figsize=(20, 15))
         
-        
-    boxplot = sns.violinplot(data=data, x="Paleoclimate", y="value", saturation=0.8, ax=ax,
-                          hue=hue, density_norm="width", fill=False, linewidth=3) # count, width, area
+    if violin_plot:    
+        boxplot = sns.violinplot(data=data, x="Paleoclimate", y="value", saturation=0.8, ax=ax,
+                              hue=hue, density_norm="width", fill=True, linewidth=3) # count, width, area
+    
+    else:
+        boxplot = sns.boxplot(data=data, x="Paleoclimate", y="value", saturation=0.7, ax=ax,
+                              hue=hue, gap=0.1, linewidth=2) # count, width, area
     
     if points_data is not None:
         
@@ -204,11 +208,11 @@ def plot_distribution(varname, units, data, hue, ax=None, path_to_plots=None, fi
     if path_to_plots is not None:
         plt.savefig(os.path.join(path_to_plots, filename), bbox_inches="tight", format= "png")
 
-apply_style(fontsize=25, style=None, linewidth=3)
+apply_style(fontsize=25, style=None, linewidth=4)
 
-plot_distribution(varname="Z-score", units=".", data=mdf, hue="zscore", ymax=3, ymin=-3,
+plot_distribution(varname="Z-score", units=".", data=mdf, hue="zscore", ymax=2, ymin=-3,
                   ax_legend=True,xlabel=True, title="Mean Z-score (Ref to 095 to 2000)",
-                  path_to_plots=path_to_plots, filename="regions.png", points_data=mdf_mean,
+                  path_to_plots=path_to_plots, filename="regions.png", points_data=None,
                   )
 # one_data = iso2k_NH.iloc[66]
 

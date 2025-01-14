@@ -303,10 +303,10 @@ def plot_annual_mean(variable, data_alt, cmap, units, ax=None, vmax=None, vmin=N
         
         if center == True:
             ax.scatter(x=GNIP_data["lon"], y=GNIP_data["lat"], c=GNIP_data["d18op"], cmap=cmap, vmax=vmax, vmin=vmin, 
-                       norm=norm, edgecolor="black", s= 140, transform=projection,linewidth=2)
+                       norm=norm, edgecolor="black", s= 300, transform=projection,linewidth=2)
         else:
             ax.scatter(x=GNIP_data["lon"], y=GNIP_data["lat"], c=GNIP_data["d18op"], 
-                       cmap=cmap, vmax=vmax, vmin=vmin, edgecolor="black", s= 140,
+                       cmap=cmap, vmax=vmax, vmin=vmin, edgecolor="black", s= 300,
                        transform=projection,linewidth=2)
     
     if title is not None:
