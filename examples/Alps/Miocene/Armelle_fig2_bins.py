@@ -53,9 +53,14 @@ mio_slm = mio_slm_data.SLM
 
 
 # file names 
-W1E1_278_filename = "a015_hpc-bw_e5w2.3_t159_MIO_W1E1_278ppm_t159l31.6h"
-W1E1_450_filename = "a014_hpc-bw_e5w2.3_t159_MIO_W1E1_450ppm_t159l31.6h"
+#W1E1_278_filename = "a015_hpc-bw_e5w2.3_t159_MIO_W1E1_278ppm_t159l31.6h"
+#W1E1_450_filename = "a014_hpc-bw_e5w2.3_t159_MIO_W1E1_450ppm_t159l31.6h"
 #W1E1_PI_filename = "a002_hpc-bw_e5w2.3_t159_PI_Alps_east_100_t159l31.6h"
+
+
+# for the trial 
+W1E1_278_filename = "a017_hpc-bw_e5w2.3_t159_MIO_W2E1_278ppm_t159l31.6h"
+W1E1_450_filename = "a016_hpc-bw_e5w2.3_t159_MIO_W2E1_450ppm_t159l31.6h"
 
 # reading data 
 # read data (long-term means)
@@ -123,7 +128,7 @@ for marker, d in df_pst.groupby('symbol'):
 fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and cartopy is to apply canvas firt 
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.10)
-plt.savefig(os.path.join(path_to_plots, "mmct_proxy_bins.pdf"), format= "pdf", dpi=600)
+plt.savefig(os.path.join(path_to_plots, "mmct_w2e1_proxy_bins.pdf"), format= "pdf", dpi=600)
 
 
 apply_style(fontsize=28, style=None, linewidth=2.5) 
@@ -163,4 +168,4 @@ fig.canvas.draw()   # the only way to apply tight_layout to matplotlib and carto
 plt.tight_layout() 
 plt.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.10)
 
-plt.savefig(os.path.join(path_to_plots, "mco_proxy_bins.pdf"), format= "pdf", dpi=600)
+plt.savefig(os.path.join(path_to_plots, "mco_w2e2_proxy_bins.pdf"), format= "pdf", dpi=600)

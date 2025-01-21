@@ -35,7 +35,7 @@ mmco_slm_path = "D:/Datasets/topo/Miotopofiles/CTL_Mio_Herold/topo_Herold_Miocen
 
 df_gnip = pd.read_csv(gnip_path)
 df_gnip = df_gnip[(df_gnip["lat"] >= 35) & (df_gnip["lat"] <= 50)]
-df_gnip = df_gnip[(df_gnip["lon"] >= 0) & (df_gnip["lon"] <= 12)]
+df_gnip = df_gnip[(df_gnip["lon"] >= 6) & (df_gnip["lon"] <= 12)]
 
 
 #load datasets 
@@ -91,10 +91,10 @@ def extract_vars_and_analysis(data, wiso):
 
     d18op_alt = compute_lterm_mean(data=d18op, time="annual")
     
-    prof_mean = extract_profile(data=d18op_alt, maxlon=10, minlon=6, maxlat=49, minlat=35, dim="lat",
+    prof_mean = extract_profile(data=d18op_alt, maxlon=12, minlon=6, maxlat=50.5, minlat=35, dim="lat",
                                 method="mean")
     
-    prof_std = extract_profile(data=d18op_alt, maxlon=10, minlon=6, maxlat=49, minlat=35, dim="lat",
+    prof_std = extract_profile(data=d18op_alt, maxlon=12, minlon=6, maxlat=50.5, minlat=35, dim="lat",
                                 method="std")
     
     return prof_mean, prof_std
@@ -149,4 +149,4 @@ ax.legend(bbox_to_anchor=(0.01, -0.15, 1., 0.102), loc=3, ncol=3, borderaxespad=
                   fontsize=20)
 
 
-plt.savefig(os.path.join(path_to_plots, "d18Ow_model_proxy_profile.pdf"), format= "pdf", bbox_inches="tight", dpi=600)
+plt.savefig(os.path.join(path_to_plots, "d18Ow_model_proxy_profile_35to50_6to12.pdf"), format= "pdf", bbox_inches="tight", dpi=600)
