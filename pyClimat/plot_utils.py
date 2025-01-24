@@ -350,10 +350,10 @@ def plot_background(p, domain=None, use_AlbersEqualArea=False,ax=None, left_labe
             maxLat = 35
         
         elif domain =="Alps":
-            minLon = 3
-            maxLon = 15
-            minLat = 43.5
-            maxLat = 49.5
+            minLon = -5
+            maxLon = 20
+            minLat = 40
+            maxLat = 55
         
             
             
