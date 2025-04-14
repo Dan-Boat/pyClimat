@@ -19,6 +19,16 @@ Classifier: Programming Language :: Python :: 3.7
 Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9
 Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: xarray
+Requires-Dist: statsmodels
+Requires-Dist: seaborn
+Requires-Dist: scikit-learn
+Requires-Dist: scipy
+Requires-Dist: eofs
+Requires-Dist: Cartopy
+Requires-Dist: matplotlib
 
 
 <h1 align="center">Welcome to REAME pyClimat 👋</h1>

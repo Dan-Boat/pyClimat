@@ -5,5 +5,14 @@
 /examples/Alps/plots
 /examples/Europe/LastMillennium/plots
 /examples/Europe/LastMillennium/save_files
+*.DS_Store
+*.ipynb_checkpoints
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg-info
+*.egg
+
 
 *__pycache__*
